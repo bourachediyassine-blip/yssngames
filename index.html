@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>YSSN Games 🎮</title>
-<link rel="manifest" href="manifest.json" crossorigin="use-credentials">
+<link rel="apple-touch-icon" href="icon.png">
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
 <style>
 /* ══ RESET & VARIABLES ══ */
@@ -195,6 +195,381 @@ body.light-mode .cell.dark{background:#b58863;}
 </style>
 </head>
 <body>
+<!-- ══ SPLASH SCREEN ══ -->
+<div id="splashScreen" style="position:fixed;inset:0;z-index:99999;background:#0a0a0f;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:0;overflow:hidden;transition:opacity 0.6s ease,transform 0.6s ease;">
+  <!-- Animated bg particles -->
+  <div style="position:absolute;inset:0;overflow:hidden;pointer-events:none;">
+    <div style="position:absolute;width:600px;height:600px;border-radius:50%;background:radial-gradient(circle,rgba(124,58,237,0.15),transparent 70%);top:50%;left:50%;transform:translate(-50%,-50%);animation:pulse 3s ease-in-out infinite;"></div>
+    <div style="position:absolute;width:300px;height:300px;border-radius:50%;background:radial-gradient(circle,rgba(239,68,68,0.08),transparent 70%);top:20%;right:10%;animation:blobFloat1 5s ease-in-out infinite;"></div>
+    <div style="position:absolute;width:200px;height:200px;border-radius:50%;background:radial-gradient(circle,rgba(6,214,160,0.08),transparent 70%);bottom:20%;left:10%;animation:blobFloat2 6s ease-in-out infinite;"></div>
+    <!-- Grid lines -->
+    <div style="position:absolute;inset:0;background-image:linear-gradient(rgba(124,58,237,0.04) 1px,transparent 1px),linear-gradient(90deg,rgba(124,58,237,0.04) 1px,transparent 1px);background-size:60px 60px;"></div>
+  </div>
+
+  <!-- Logo -->
+  <div style="position:relative;display:flex;flex-direction:column;align-items:center;gap:12px;">
+    <div id="splashIcon" style="width:90px;height:90px;border-radius:24px;background:linear-gradient(135deg,#7c3aed,#a855f7);display:flex;align-items:center;justify-content:center;font-size:2.8rem;box-shadow:0 20px 60px rgba(124,58,237,0.5);animation:splashIconIn 0.8s cubic-bezier(0.175,0.885,0.32,1.275) both;">🎮</div>
+    <div style="font-family:'Bebas Neue',sans-serif;font-size:clamp(2.5rem,10vw,4rem);letter-spacing:8px;background:linear-gradient(135deg,#fff,rgba(255,255,255,0.7));-webkit-background-clip:text;-webkit-text-fill-color:transparent;animation:splashTitleIn 0.7s 0.3s ease both;opacity:0;">YASSINE GAMES</div>
+    <div style="font-size:0.65rem;letter-spacing:6px;color:rgba(167,139,250,0.5);animation:splashTitleIn 0.7s 0.5s ease both;opacity:0;">العب · تحدّى · استمتع</div>
+  </div>
+
+  <!-- Loading bar -->
+  <div style="margin-top:50px;width:180px;height:2px;background:rgba(255,255,255,0.06);border-radius:2px;overflow:hidden;animation:splashTitleIn 0.5s 0.6s ease both;opacity:0;">
+    <div id="splashBar" style="height:100%;width:0%;background:linear-gradient(90deg,#7c3aed,#a855f7,#06d6a0);border-radius:2px;transition:width 0.05s linear;"></div>
+  </div>
+  <div id="splashPct" style="font-family:'Bebas Neue',sans-serif;font-size:0.8rem;letter-spacing:3px;color:rgba(255,255,255,0.2);margin-top:8px;animation:splashTitleIn 0.5s 0.7s ease both;opacity:0;">0%</div>
+  <div id="splashLabel" style="font-family:'Cairo',sans-serif;font-size:0.7rem;color:rgba(255,255,255,0.15);margin-top:4px;animation:splashTitleIn 0.5s 0.8s ease both;opacity:0;letter-spacing:1px;">جاري التحميل...</div>
+</div>
+
+<style>
+@keyframes splashIconIn{0%{transform:scale(0) rotate(-20deg);opacity:0;}100%{transform:scale(1) rotate(0deg);opacity:1;}}
+@keyframes splashTitleIn{0%{transform:translateY(16px);opacity:0;}100%{transform:translateY(0);opacity:1;}}
+</style>
+
+<script>
+(function(){
+  const bar = document.getElementById('splashBar');
+  const pct = document.getElementById('splashPct');
+  const splash = document.getElementById('splashScreen');
+  let p = 0;
+  const iv = setInterval(()=>{
+    p += Math.random()*4 + 1;
+    if(p >= 100){ p=100; clearInterval(iv);
+      bar.style.width='100%'; pct.textContent='100%';
+      setTimeout(()=>{
+        splash.style.opacity='0';
+        splash.style.transform='scale(1.05)';
+        setTimeout(()=>{ splash.style.display='none'; },600);
+      },400);
+    }
+    bar.style.width=p+'%';
+    pct.textContent=Math.floor(p)+'%';
+  },40);
+})();
+
+// ══ BOTTOM NAV ══
+function bottomNavGo(tab) {
+  SFX.play('click');
+  // Update active state
+  ['bnHome','bnGames','bnShare','bnContact'].forEach(id=>{
+    const btn = document.getElementById(id);
+    if(!btn) return;
+    const span = btn.querySelectorAll('span')[1];
+    if(span) span.style.color = 'rgba(240,240,240,0.3)';
+  });
+
+  if(tab === 'home') {
+    goHome();
+    const b = document.getElementById('bnHome');
+    if(b) b.querySelectorAll('span')[1].style.color = 'var(--accent2)';
+  } else if(tab === 'games') {
+    showScreen('games-screen');
+    const b = document.getElementById('bnGames');
+    if(b) b.querySelectorAll('span')[1].style.color = 'var(--accent2)';
+  } else if(tab === 'contact') {
+    showScreen('contact-screen');
+    const b = document.getElementById('bnContact');
+    if(b) b.querySelectorAll('span')[1].style.color = 'var(--accent2)';
+  } else if(tab === 'share') {
+    showShareOverlay();
+  }
+}
+
+// Reset nav to home when goHome is called
+const _origGoHome = goHome;
+function goHome() {
+  _origGoHome();
+  ['bnHome','bnGames','bnShare','bnContact'].forEach(id=>{
+    const btn = document.getElementById(id);
+    if(!btn) return;
+    const span = btn.querySelectorAll('span')[1];
+    if(span) span.style.color = 'rgba(240,240,240,0.3)';
+  });
+  const b = document.getElementById('bnHome');
+  if(b) b.querySelectorAll('span')[1].style.color = 'var(--accent2)';
+}
+
+// ══ SHARE OVERLAY ══
+function showShareOverlay() {
+  const url = window.location.href;
+  const text = 'جرّب YSSN Games — أفضل منصة ألعاب عربية! 🎮';
+  const ov = document.createElement('div');
+  ov.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.88);z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:30px 20px;animation:fadeIn 0.25s ease;';
+  ov.onclick = (e)=>{ if(e.target===ov) ov.remove(); };
+  ov.innerHTML = `
+    <div style="width:min(400px,95vw);display:flex;flex-direction:column;gap:0;">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;">
+        <div>
+          <div style="font-family:'Bebas Neue',sans-serif;font-size:2rem;letter-spacing:4px;color:#fff;">شارك اللعبة</div>
+          <div style="font-size:0.62rem;letter-spacing:4px;color:rgba(240,240,240,0.25);">أخبر أصدقاءك</div>
+        </div>
+        <button onclick="this.closest('[style]').remove()" style="width:36px;height:36px;border-radius:50%;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);color:rgba(240,240,240,0.5);font-size:1.1rem;cursor:pointer;">✕</button>
+      </div>
+
+      <!-- Referral note -->
+      <div style="padding:10px 14px;background:rgba(251,191,36,0.06);border:1px solid rgba(251,191,36,0.15);border-radius:12px;margin-bottom:14px;display:flex;align-items:center;gap:10px;">
+        <span style="font-size:1.2rem;">🎁</span>
+        <div style="font-size:0.78rem;color:rgba(251,191,36,0.7);">شارك مع أصدقائك وادعُهم للعب معك!</div>
+      </div>
+      <!-- URL box -->
+      <div style="display:flex;gap:8px;margin-bottom:14px;">
+        <div style="flex:1;padding:12px 14px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:12px;font-size:0.75rem;color:rgba(240,240,240,0.35);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-family:monospace;">\${url}</div>
+        <button onclick="navigator.clipboard.writeText('\${url}');this.textContent='✅';setTimeout(()=>this.textContent='📋',1500);" style="padding:12px 14px;background:rgba(124,58,237,0.15);border:1px solid rgba(124,58,237,0.25);border-radius:12px;color:rgba(167,139,250,0.8);font-size:1rem;cursor:pointer;transition:all 0.2s;white-space:nowrap;">📋</button>
+      </div>
+
+      <!-- Share buttons -->
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+        <button onclick="window.open('https://wa.me/?text=${encodeURIComponent(text+' '+url)}','_blank')" style="display:flex;align-items:center;gap:10px;padding:14px 16px;background:rgba(37,211,102,0.08);border:1px solid rgba(37,211,102,0.18);border-radius:14px;color:rgba(37,211,102,0.8);font-family:'Cairo',sans-serif;font-size:0.9rem;font-weight:600;cursor:pointer;transition:all 0.2s;" onmouseover="this.style.background='rgba(37,211,102,0.15)'" onmouseout="this.style.background='rgba(37,211,102,0.08)'">
+          <span style="font-size:1.3rem;">💬</span> واتساب
+        </button>
+        <button onclick="window.open('https://t.me/share/url?url=${encodeURIComponent(url)}&text=${encodeURIComponent(text)}','_blank')" style="display:flex;align-items:center;gap:10px;padding:14px 16px;background:rgba(0,136,204,0.08);border:1px solid rgba(0,136,204,0.18);border-radius:14px;color:rgba(0,136,204,0.8);font-family:'Cairo',sans-serif;font-size:0.9rem;font-weight:600;cursor:pointer;transition:all 0.2s;" onmouseover="this.style.background='rgba(0,136,204,0.15)'" onmouseout="this.style.background='rgba(0,136,204,0.08)'">
+          <span style="font-size:1.3rem;">✈️</span> تيليغرام
+        </button>
+        <button onclick="if(navigator.share){navigator.share({title:'YSSN Games',text:'${text}',url:'${url}'});}else{navigator.clipboard.writeText(url);}" style="grid-column:span 2;display:flex;align-items:center;justify-content:center;gap:10px;padding:14px 16px;background:linear-gradient(135deg,rgba(124,58,237,0.15),rgba(168,85,247,0.1));border:1px solid rgba(124,58,237,0.25);border-radius:14px;color:rgba(167,139,250,0.9);font-family:'Cairo',sans-serif;font-size:0.95rem;font-weight:700;cursor:pointer;transition:all 0.2s;" onmouseover="this.style.background='linear-gradient(135deg,rgba(124,58,237,0.25),rgba(168,85,247,0.18))'" onmouseout="this.style.background='linear-gradient(135deg,rgba(124,58,237,0.15),rgba(168,85,247,0.1))'">
+          <span style="font-size:1.3rem;">🔗</span> مشاركة سريعة
+        </button>
+      </div>
+    </div>`;
+  document.body.appendChild(ov);
+}
+
+
+// ══ SPLASH: Simulated resource loading ══
+(function(){
+  const bar = document.getElementById('splashBar');
+  const pct = document.getElementById('splashPct');
+  const label = document.getElementById('splashLabel');
+  const splash = document.getElementById('splashScreen');
+  if(!splash) return;
+
+  const steps = [
+    {p:15, txt:"تحميل الواجهة..."},
+    {p:30, txt:"تهيئة الألعاب..."},
+    {p:50, txt:"تحميل الداما والشطرنج..."},
+    {p:68, txt:"تحميل لوغارو والإمبوستر..."},
+    {p:82, txt:"تحضير الأصوات..."},
+    {p:93, txt:"اللمسات الأخيرة..."},
+    {p:100, txt:"جاهز! 🎮"},
+  ];
+  let cur=0, p=0;
+
+  function setProgress(target, txt){
+    if(label) label.textContent = txt;
+    const iv = setInterval(()=>{
+      p += 1.5;
+      if(p >= target){ p=target; clearInterval(iv);
+        if(bar) bar.style.width=p+'%';
+        if(pct) pct.textContent=Math.floor(p)+'%';
+        cur++;
+        if(cur < steps.length){
+          setTimeout(()=>setProgress(steps[cur].p, steps[cur].txt), 120);
+        } else {
+          setTimeout(()=>{
+            splash.style.opacity='0';
+            splash.style.transform='scale(1.04)';
+            setTimeout(()=>{ splash.style.display='none'; },650);
+          },500);
+        }
+        return;
+      }
+      if(bar) bar.style.width=p+'%';
+      if(pct) pct.textContent=Math.floor(p)+'%';
+    }, 18);
+  }
+  setTimeout(()=>setProgress(steps[0].p, steps[0].txt), 600);
+})();
+
+
+// ══════════════════════════════════════
+// 🎲 RANDOM GAME
+// ══════════════════════════════════════
+function launchRandomGame(){
+  SFX.play('dice');
+  const games = [
+    ()=>{ showScreen('dama-mode'); },
+    ()=>{ showScreen('chess-mode'); },
+    ()=>{ showScreen('loup'); },
+    ()=>{ showScreen('imposter'); },
+  ];
+  // Show random pick animation overlay
+  const ov = document.createElement('div');
+  ov.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.9);z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;animation:fadeIn 0.2s ease;';
+  const icons = ['🔵','♟️','🐺','🕵️'];
+  const names = ['DAMA','CHESS','LOUP GAROU','IMPOSTER'];
+  let i=0;
+  ov.innerHTML = `
+    <div style="font-size:0.65rem;letter-spacing:5px;color:rgba(251,191,36,0.5);">🎲 اختيار عشوائي</div>
+    <div id="randIcon" style="font-size:5rem;animation:pop 0.3s ease;"></div>
+    <div id="randName" style="font-family:'Bebas Neue',sans-serif;font-size:2.5rem;letter-spacing:4px;color:#fff;min-height:50px;"></div>
+  `;
+  document.body.appendChild(ov);
+  // Slot machine effect
+  let spins = 0, maxSpins = 14;
+  const iv = setInterval(()=>{
+    i = (i+1) % 4;
+    ov.querySelector('#randIcon').textContent = icons[i];
+    ov.querySelector('#randName').textContent = names[i];
+    spins++;
+    if(spins >= maxSpins){
+      clearInterval(iv);
+      const chosen = Math.floor(Math.random()*4);
+      ov.querySelector('#randIcon').textContent = icons[chosen];
+      ov.querySelector('#randName').textContent = names[chosen];
+      ov.querySelector('#randName').style.background = 'linear-gradient(135deg,#fbbf24,#f59e0b)';
+      ov.querySelector('#randName').style.webkitBackgroundClip = 'text';
+      ov.querySelector('#randName').style.webkitTextFillColor = 'transparent';
+      SFX.play('success');
+      setTimeout(()=>{
+        ov.style.opacity='0'; ov.style.transition='opacity 0.4s';
+        setTimeout(()=>{ ov.remove(); games[chosen](); },400);
+      },900);
+    }
+  }, 80);
+}
+
+// ══════════════════════════════════════
+// ⛶ FULLSCREEN
+// ══════════════════════════════════════
+function toggleFullscreen(btn){
+  if(!document.fullscreenElement){
+    document.documentElement.requestFullscreen().catch(()=>{});
+    if(btn){ btn.textContent='✕ خروج الشاشة'; }
+  } else {
+    document.exitFullscreen();
+    if(btn){ btn.textContent='⛶ ملء الشاشة'; }
+  }
+}
+document.addEventListener('fullscreenchange',()=>{
+  const btn = document.querySelector('[onclick*="toggleFullscreen"]');
+  if(btn) btn.textContent = document.fullscreenElement ? '✕ خروج الشاشة' : '⛶ ملء الشاشة';
+});
+
+// ══════════════════════════════════════
+// 🔐 AUTH (localStorage-based)
+// ══════════════════════════════════════
+let currentUser = null;
+
+function initAuth(){
+  const saved = localStorage.getItem('yssn_session');
+  if(saved){
+    currentUser = JSON.parse(saved);
+    updateUserUI();
+  } else {
+    // Show login on first visit
+    const visited = localStorage.getItem('yssn_visited');
+    if(!visited){ showScreen('login-screen'); }
+  }
+}
+
+function switchAuthTab(tab){
+  const isLogin = tab==='login';
+  document.getElementById('loginForm').style.display = isLogin ? 'flex' : 'none';
+  document.getElementById('registerForm').style.display = isLogin ? 'none' : 'flex';
+  document.getElementById('tabLogin').style.background = isLogin ? 'linear-gradient(135deg,#7c3aed,#a855f7)' : 'transparent';
+  document.getElementById('tabLogin').style.color = isLogin ? '#fff' : 'rgba(240,240,240,0.4)';
+  document.getElementById('tabRegister').style.background = !isLogin ? 'linear-gradient(135deg,#7c3aed,#a855f7)' : 'transparent';
+  document.getElementById('tabRegister').style.color = !isLogin ? '#fff' : 'rgba(240,240,240,0.4)';
+}
+
+function doLogin(){
+  SFX.play('click');
+  const u = document.getElementById('loginUsername').value.trim();
+  const p = document.getElementById('loginPassword').value;
+  const err = document.getElementById('loginError');
+  if(!u||!p){ err.textContent='يرجى ملء جميع الحقول'; err.style.display='block'; return; }
+  const users = JSON.parse(localStorage.getItem('yssn_users')||'{}');
+  if(!users[u]){ err.textContent='اسم المستخدم غير موجود'; err.style.display='block'; return; }
+  if(users[u].password !== btoa(p)){ err.textContent='كلمة السر غير صحيحة'; err.style.display='block'; return; }
+  err.style.display='none';
+  currentUser = {username:u, name:users[u].name};
+  localStorage.setItem('yssn_session', JSON.stringify(currentUser));
+  localStorage.setItem('yssn_visited','1');
+  SFX.play('success');
+  updateUserUI();
+  goHome();
+}
+
+function doRegister(){
+  SFX.play('click');
+  const name = document.getElementById('regName').value.trim();
+  const u = document.getElementById('regUsername').value.trim();
+  const p = document.getElementById('regPassword').value;
+  const err = document.getElementById('regError');
+  if(!name||!u||!p){ err.textContent='يرجى ملء جميع الحقول'; err.style.display='block'; return; }
+  if(u.length<3){ err.textContent='اسم المستخدم قصير جداً (3 أحرف على الأقل)'; err.style.display='block'; return; }
+  if(p.length<4){ err.textContent='كلمة السر قصيرة جداً (4 أحرف على الأقل)'; err.style.display='block'; return; }
+  const users = JSON.parse(localStorage.getItem('yssn_users')||'{}');
+  if(users[u]){ err.textContent='اسم المستخدم محجوز، جرب اسماً آخر'; err.style.display='block'; return; }
+  users[u] = {name, password:btoa(p), createdAt:Date.now()};
+  localStorage.setItem('yssn_users', JSON.stringify(users));
+  err.style.display='none';
+  currentUser = {username:u, name};
+  localStorage.setItem('yssn_session', JSON.stringify(currentUser));
+  localStorage.setItem('yssn_visited','1');
+  SFX.play('success');
+  updateUserUI();
+  goHome();
+}
+
+function guestLogin(){
+  SFX.play('click');
+  currentUser = {username:'guest', name:'ضيف'};
+  localStorage.setItem('yssn_visited','1');
+  updateUserUI();
+  goHome();
+}
+
+function logoutUser(){
+  currentUser = null;
+  localStorage.removeItem('yssn_session');
+  showScreen('login-screen');
+}
+
+function updateUserUI(){
+  // Update topbar with user avatar
+  const existing = document.getElementById('userAvatarBtn');
+  if(existing) existing.remove();
+  if(!currentUser) return;
+  const topbarBtns = document.querySelector('.topbar-btns');
+  if(!topbarBtns) return;
+  const initials = currentUser.name.slice(0,2).toUpperCase();
+  const btn = document.createElement('button');
+  btn.id = 'userAvatarBtn';
+  btn.onclick = showUserMenu;
+  btn.style.cssText = 'width:30px;height:30px;border-radius:50%;background:linear-gradient(135deg,#7c3aed,#a855f7);border:none;color:#fff;font-family:"Cairo",sans-serif;font-size:0.7rem;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;';
+  btn.textContent = initials;
+  topbarBtns.insertBefore(btn, topbarBtns.firstChild);
+}
+
+function showUserMenu(){
+  SFX.play('click');
+  const ov = document.createElement('div');
+  ov.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:9999;display:flex;align-items:flex-end;justify-content:center;animation:fadeIn 0.2s ease;';
+  ov.onclick = (e)=>{ if(e.target===ov) ov.remove(); };
+  ov.innerHTML = `
+    <div style="width:min(420px,100%);background:#111118;border-top:1px solid rgba(255,255,255,0.08);border-radius:20px 20px 0 0;padding:24px 20px 40px;animation:slideUp 0.3s ease;">
+      <div style="display:flex;align-items:center;gap:14px;margin-bottom:20px;padding-bottom:16px;border-bottom:1px solid rgba(255,255,255,0.06);">
+        <div style="width:52px;height:52px;border-radius:50%;background:linear-gradient(135deg,#7c3aed,#a855f7);display:flex;align-items:center;justify-content:center;font-family:'Cairo',sans-serif;font-size:1.2rem;font-weight:700;color:#fff;">${currentUser.name.slice(0,2).toUpperCase()}</div>
+        <div>
+          <div style="font-size:1rem;font-weight:700;color:#fff;">${currentUser.name}</div>
+          <div style="font-size:0.75rem;color:rgba(240,240,240,0.3);">@${currentUser.username}</div>
+        </div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:8px;">
+        <button onclick="this.closest('[style]').remove();goHome();" style="padding:13px 16px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.07);border-radius:12px;color:rgba(240,240,240,0.6);font-family:'Cairo',sans-serif;font-size:0.9rem;cursor:pointer;text-align:right;">🏠 الصفحة الرئيسية</button>
+        <button onclick="this.closest('[style]').remove();showScreen('leaderboard');" style="padding:13px 16px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.07);border-radius:12px;color:rgba(240,240,240,0.6);font-family:'Cairo',sans-serif;font-size:0.9rem;cursor:pointer;text-align:right;">🏆 لوحة المتصدرين</button>
+        <button onclick="this.closest('[style]').remove();showShareOverlay();" style="padding:13px 16px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.07);border-radius:12px;color:rgba(240,240,240,0.6);font-family:'Cairo',sans-serif;font-size:0.9rem;cursor:pointer;text-align:right;">🔗 دعوة صديق</button>
+        <button onclick="this.closest('[style]').remove();logoutUser();" style="padding:13px 16px;background:rgba(239,68,68,0.06);border:1px solid rgba(239,68,68,0.15);border-radius:12px;color:rgba(239,68,68,0.7);font-family:'Cairo',sans-serif;font-size:0.9rem;cursor:pointer;text-align:right;">🚪 تسجيل الخروج</button>
+      </div>
+    </div>`;
+  document.body.appendChild(ov);
+}
+
+// Init auth on load
+window.addEventListener('DOMContentLoaded', initAuth);
+
+</script>
+
 
 <!-- HOME -->
 <div class="screen active" id="home">
@@ -215,6 +590,15 @@ body.light-mode .cell.dark{background:#b58863;}
     <div class="logo-icon">🎮</div>
     <div class="logo-title">YASSINE GAMES</div>
     <div class="logo-sub">اختر لعبتك وابدأ</div>
+    <!-- Random + Fullscreen buttons -->
+    <div style="display:flex;gap:10px;margin-top:14px;justify-content:center;">
+      <button onclick="launchRandomGame()" style="display:flex;align-items:center;gap:7px;padding:10px 20px;background:linear-gradient(135deg,rgba(251,191,36,0.12),rgba(245,158,11,0.08));border:1px solid rgba(251,191,36,0.25);border-radius:30px;color:rgba(251,191,36,0.85);font-family:'Cairo',sans-serif;font-size:0.85rem;font-weight:700;cursor:pointer;transition:all 0.2s;letter-spacing:1px;" onmouseover="this.style.background='linear-gradient(135deg,rgba(251,191,36,0.22),rgba(245,158,11,0.15))';this.style.transform='translateY(-2px)'" onmouseout="this.style.background='linear-gradient(135deg,rgba(251,191,36,0.12),rgba(245,158,11,0.08))';this.style.transform=''">
+        🎲 أنا محظوظ
+      </button>
+      <button onclick="toggleFullscreen(this)" style="display:flex;align-items:center;gap:7px;padding:10px 18px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.09);border-radius:30px;color:rgba(240,240,240,0.45);font-family:'Cairo',sans-serif;font-size:0.85rem;cursor:pointer;transition:all 0.2s;" onmouseover="this.style.background='rgba(255,255,255,0.08)';this.style.color='rgba(240,240,240,0.8)'" onmouseout="this.style.background='rgba(255,255,255,0.04)';this.style.color='rgba(240,240,240,0.45)'">
+        ⛶ ملء الشاشة
+      </button>
+    </div>
   </div>
 
   <div class="games-grid">
@@ -641,132 +1025,122 @@ body.light-mode .cell.dark{background:#b58863;}
 <script>
 // ── WORDS (hidden, never shown) ──
 const ALL_WORDS = [
-  // طبيعة وبيئة
-  {w:"الشلال",h:"الماء المتساقط",d:"تدفق مائي يسقط من مرتفع، يُشكّل ضجيجاً جميلاً"},
-  {w:"الصحراء",h:"الرمال الواسعة",d:"منطقة جافة شاسعة تغطيها الرمال وترتفع فيها الحرارة"},
-  {w:"البركان",h:"النار من الأرض",d:"جبل يقذف الحمم والغازات من باطن الأرض"},
-  {w:"الغابة",h:"الأشجار الكثيفة",d:"مساحة واسعة مليئة بالأشجار والحيوانات"},
-  {w:"الجبل",h:"القمة العالية",d:"كتلة أرضية ضخمة مرتفعة تُغطّى قمتها بالثلج أحياناً"},
-  {w:"الشاطئ",h:"الرمل والبحر",d:"الشريط الترابي أو الرملي المحاذي للبحر"},
-  {w:"النهر",h:"الماء الجاري",d:"مجرى مائي طبيعي يتدفق نحو البحر أو البحيرة"},
-  {w:"الكهف",h:"الحفرة في الجبل",d:"تجويف طبيعي في الصخر أو الجبل يستخدمه الإنسان والحيوان"},
-  {w:"الزلزال",h:"اهتزاز الأرض",d:"حركة مفاجئة في طبقات الأرض تُحدث دماراً"},
-  {w:"العاصفة",h:"الريح والمطر",d:"ظاهرة جوية عنيفة تجمع الرياح والمطر والرعد"},
-  {w:"الصخرة",h:"الحجر الضخم",d:"كتلة صلبة من الحجر الطبيعي"},
-  {w:"الجزيرة",h:"اليابسة في الماء",d:"قطعة أرض محاطة بالماء من جميع الجهات"},
-  {w:"الغيمة",h:"البخار في السماء",d:"تجمّع من بخار الماء في السماء يحمل المطر"},
-  {w:"الضباب",h:"الغيمة على الأرض",d:"بخار ماء كثيف يقترب من سطح الأرض ويقلّل الرؤية"},
-  {w:"الثلج",h:"المطر المتجمد",d:"تساقط بلورات جليدية بيضاء من السماء"},
-  {w:"البحيرة",h:"الماء الساكن",d:"مساحة مائية محاطة باليابسة من جميع الجهات"},
-  // حيوانات
-  {w:"الفهد",h:"السرعة والبقع",d:"أسرع حيوان بري في العالم، جسمه منقّط بالبقع السوداء"},
-  {w:"الدلفين",h:"السمكة الذكية",d:"ثدييّ بحري ذكي جداً يتواصل بالأصوات ويعيش في مجموعات"},
-  {w:"التمساح",h:"الزاحف المائي",d:"زاحف ضخم يعيش قرب الأنهار وله فك قوي جداً"},
-  {w:"النسر",h:"الطائر الملكي",d:"طائر ضخم جارح يحلق عالياً ويرى فريسته من مسافات بعيدة"},
-  {w:"الغزال",h:"الظبي السريع",d:"حيوان رشيق يتميز بسرعته وقرنيه وعيناً واسعتين"},
-  {w:"الذئب",h:"كلب البرية",d:"حيوان مفترس يعيش في أسراب ويُصدر صوت العواء ليلاً"},
-  {w:"الأخطبوط",h:"ثمانية أذرع في البحر",d:"رخوي بحري يملك ثمانية أذرع ويغيّر لونه للتمويه"},
-  {w:"الببر",h:"النمر المخطط",d:"أكبر أنواع القطط، جسمه مخطط بالأسود على البرتقالي"},
-  {w:"الزرافة",h:"أطول حيوان",d:"أطول حيوان بري على وجه الأرض، عنقه طويل جداً"},
-  {w:"البومة",h:"طائر الليل",d:"طائر يرى في الظلام ويصطاد ليلاً، يرمز للحكمة"},
-  {w:"السلحفاة",h:"الحيوان البطيء",d:"زاحف يحمل قوقعة صلبة على ظهره ويعيش طويلاً"},
-  {w:"القرش",h:"سمكة الأسنان",d:"سمكة مفترسة ضخمة تملك أسناناً حادة وتسبح بسرعة"},
-  {w:"الطاووس",h:"الطائر الملوّن",d:"طائر يتميز بذيله الضخم المزيّن بألوان زاهية"},
-  {w:"الخفاش",h:"يطير في الظلام",d:"الثديّ الوحيد القادر على الطيران، يعيش في الكهوف"},
-  {w:"العقرب",h:"الذيل المسموم",d:"حشرة صحراوية لها قرصة مؤلمة وذيل ينتهي بإبرة سامة"},
-  {w:"القنفذ",h:"الظهر الشائك",d:"حيوان صغير مغطى بأشواك دفاعية ويتكوّر عند الخطر"},
-  {w:"الحرباء",h:"تغيّر لونها",d:"زاحف صغير قادر على تغيير لونه ليتناسب مع محيطه"},
-  // طعام وشراب
-  {w:"القهوة",h:"المشروب المرّ",d:"مشروب ساخن يُصنع من حبوب البن المحمّصة"},
-  {w:"الخبز",h:"العجين المخبوز",d:"غذاء أساسي يُصنع من الدقيق والماء ويُخبز في الفرن"},
-  {w:"العسل",h:"ما تصنعه النحلة",d:"سائل حلو طبيعي تنتجه النحل من رحيق الزهور"},
-  {w:"الرمان",h:"الفاكهة الحمراء",d:"فاكهة حمراء اللون مليئة بالبذور العصيرية"},
-  {w:"التمر",h:"ثمرة النخلة",d:"ثمرة النخيل الحلوة الشائعة في البلاد العربية"},
-  {w:"الزيتون",h:"ثمرة شجر السلام",d:"ثمرة خضراء أو سوداء تُستخرج منها زيت الزيتون"},
-  {w:"الفلفل",h:"التوابل الحارة",d:"توابل مصنوعة من الفلفل المجفف، تُضاف للطعام"},
-  {w:"اللوز",h:"المكسرات البيضاء",d:"بذرة صلبة تُؤكل طازجة أو مجففة، غنية بالبروتين"},
-  {w:"الثوم",h:"يُطيّب الطعام",d:"نبات بصلي ذو رائحة قوية يُستخدم في الطهي"},
-  {w:"الليمون",h:"الحامض الأصفر",d:"فاكهة حمضية صفراء اللون حامضة الطعم"},
-  {w:"الشاي",h:"المشروب الساخن",d:"مشروب يُحضَّر بنقع أوراق الشاي في الماء الساخن"},
-  {w:"العنب",h:"الفاكهة الصغيرة",d:"فاكهة صغيرة تنمو في عناقيد، يُصنع منها الزبيب"},
-  // مهن
-  {w:"الطبيب",h:"يعالج الناس",d:"شخص متخصص في تشخيص الأمراض وعلاج المرضى"},
-  {w:"القاضي",h:"يحكم بين الناس",d:"شخص يُطبّق القانون ويصدر الأحكام في المحاكم"},
-  {w:"الرسام",h:"يرسم اللوحات",d:"فنان يُعبّر عن أفكاره بالألوان والريشة على القماش"},
-  {w:"المعلم",h:"ينقل المعرفة",d:"شخص يُعلّم الطلاب في المدرسة وينقل إليهم المعرفة"},
-  {w:"الملاح",h:"قائد السفينة",d:"شخص يتحكم في توجيه السفينة ويقرأ خرائط البحر"},
-  {w:"الشاعر",h:"ينظم الكلام",d:"أديب يُعبّر عن مشاعره وأفكاره عبر قصائد موزونة"},
-  {w:"الجندي",h:"يحمل السلاح",d:"شخص منتسب للجيش يدافع عن وطنه"},
-  {w:"الصياد",h:"يصطاد السمك",d:"شخص يستخدم الشبكة أو الخيط لصيد الأسماك"},
-  {w:"المهندس",h:"يصمم المباني",d:"متخصص يُخطط وينفذ المشاريع التقنية والإنشائية"},
-  {w:"الخياط",h:"يصنع الملابس",d:"شخص يقطع الأقمشة ويخيطها لصنع الملابس"},
-  {w:"النجار",h:"يعمل بالخشب",d:"حرفي يشكّل الخشب ويصنع منه الأثاث والأبواب"},
-  {w:"الممرضة",h:"تساعد الطبيب",d:"متخصصة في تقديم الرعاية الصحية للمرضى"},
-  {w:"الطاهي",h:"يطبخ في المطعم",d:"شخص محترف في إعداد وطهي الأطعمة"},
-  {w:"الحارس",h:"يحرس المكان",d:"شخص مُكلَّف بحراسة مكان ما وضمان أمنه"},
-  // أماكن
-  {w:"المسجد",h:"مكان الصلاة",d:"مكان ديني يؤمّه المسلمون لأداء الصلاة والعبادة"},
-  {w:"المستشفى",h:"مكان العلاج",d:"مؤسسة صحية يُعالج فيها المرضى ويُجرى فيها العمليات"},
-  {w:"الملعب",h:"ساحة الرياضة",d:"مكان مُعدّ لممارسة الرياضة أمام جمهور"},
-  {w:"المكتبة",h:"خزانة الكتب",d:"مكان يضم مجموعات كبيرة من الكتب للقراءة أو الاستعارة"},
-  {w:"المدرسة",h:"مكان التعليم",d:"مؤسسة تعليمية يذهب إليها الأطفال لتلقّي العلم"},
-  {w:"السوق",h:"مكان البيع والشراء",d:"مكان تجاري يجتمع فيه البائعون والمشترون"},
-  {w:"المطار",h:"ساحة الطائرات",d:"منشأة يُقلع منها الطيران ويهبط فيها"},
-  {w:"السجن",h:"مكان العقوبة",d:"مكان يُحتجز فيه المحكوم عليهم بعقوبات"},
-  {w:"القلعة",h:"حصن قديم",d:"منشأة عسكرية محصّنة بالجدران كانت تُستخدم للدفاع"},
-  {w:"المتحف",h:"معرض التاريخ",d:"مكان يعرض مقتنيات تاريخية وفنية وعلمية للزوار"},
-  {w:"المزرعة",h:"أرض الزراعة",d:"قطعة أرض تُزرع فيها المحاصيل أو تُربى فيها الحيوانات"},
-  {w:"البرج",h:"بناء شاهق",d:"مبنى طويل جداً، يُستخدم للسكن أو الاتصالات أو المراقبة"},
-  // أشياء
-  {w:"المرآة",h:"تعكس الوجه",d:"سطح زجاجي يعكس صورة من يقف أمامه"},
-  {w:"البوصلة",h:"تُحدد الاتجاه",d:"أداة تُشير دائماً نحو الشمال لمساعدة المسافرين"},
-  {w:"الساعة",h:"تقيس الوقت",d:"جهاز يُستخدم لقياس الوقت وتحديد الساعات"},
-  {w:"المفتاح",h:"يفتح الأقفال",d:"أداة معدنية مصممة لفتح أو غلق قفل بعينه"},
-  {w:"المطرقة",h:"أداة الطرق",d:"أداة يدوية ثقيلة تُستخدم لطرق المسامير وكسر الأشياء"},
-  {w:"الشمعة",h:"النور في الظلام",d:"قطعة شمع بفتيلة تُضيء عند إشعالها"},
-  {w:"المنظار",h:"يُقرّب البعيد",d:"جهاز بصري يُكبّر الأشياء البعيدة لرؤيتها بوضوح"},
-  {w:"الدرع",h:"واقي المحارب",d:"غطاء واقٍ يلبسه المحارب لحماية جسمه في المعارك"},
-  {w:"السيف",h:"السلاح الحاد",d:"سلاح قديم ذو نصل طويل حاد يُستخدم في القتال"},
-  {w:"الطبل",h:"آلة الإيقاع",d:"آلة موسيقية إيقاعية يُضرب عليها لإصدار دقات"},
-  // مشاعر وقيم
-  {w:"الشجاعة",h:"مواجهة الخوف",d:"القدرة على مواجهة الخطر أو الصعوبات دون تردد"},
-  {w:"الغيرة",h:"تألم لنجاح الآخر",d:"شعور سلبي يُصيب الشخص حين يرى نجاح غيره"},
-  {w:"الفضول",h:"حب الاكتشاف",d:"الرغبة الشديدة في معرفة الأشياء واكتشافها"},
-  {w:"الوفاء",h:"الإخلاص للعهد",d:"الالتزام بالوعود والعهود وعدم الخيانة"},
-  {w:"الحسد",h:"تمني زوال نعمة",d:"تمني زوال النعمة عن الآخرين والتألم لرؤية خيرهم"},
-  {w:"الكرم",h:"العطاء بسخاء",d:"صفة طيبة تعني العطاء والمشاركة بدون تردد"},
-  {w:"الصدق",h:"مطابقة القول للواقع",d:"قول الحقيقة وعدم الكذب في أي موقف"},
-  // علوم وتكنولوجيا
-  {w:"الكهرباء",h:"الطاقة في الأسلاك",d:"طاقة تنتقل عبر الأسلاك وتُشغّل الأجهزة"},
-  {w:"المغناطيس",h:"يجذب الحديد",d:"جسم له خاصية جذب المعادن كالحديد والنيكل"},
-  {w:"الضوء",h:"يُنير الظلام",d:"إشعاع مرئي يصدر عن الشمس أو المصابيح"},
-  {w:"الجاذبية",h:"تُبقينا على الأرض",d:"قوة طبيعية تجذب الأجسام نحو مركز الأرض"},
-  {w:"الفضاء",h:"ما بعد السماء",d:"الفراغ الواسع الذي تتحرك فيه الكواكب والنجوم"},
-  // رياضة وترفيه
-  {w:"الملاكمة",h:"الضربات باليد",d:"رياضة قتالية يتبادل فيها الملاكمان الضربات بالقفازات"},
-  {w:"الشطرنج",h:"لعبة العقول",d:"لعبة استراتيجية بين لاعبَين على رقعة تضم 64 مربعاً"},
-  {w:"الرقص",h:"الحركة على الموسيقى",d:"حركات جسدية إيقاعية تتناسق مع الموسيقى"},
-  {w:"التسلق",h:"الصعود للأعلى",d:"رياضة تعتمد على تسلق الجبال أو الجدران الصخرية"},
-  {w:"السباحة",h:"الحركة في الماء",d:"رياضة تعتمد على تحريك الجسم داخل الماء"},
-  {w:"الغناء",h:"تحريك الصوت",d:"فن إصدار أصوات موسيقية منغّمة بالصوت البشري"},
-  {w:"الرسم",h:"الألوان على الورق",d:"فن تصوير الأشياء بالألوان أو الأقلام على سطح"},
-  // فصول ومظاهر
-  {w:"الربيع",h:"موسم الأزهار",d:"الفصل الذي تتفتح فيه الأزهار ويعتدل الطقس"},
-  {w:"الخريف",h:"تساقط الأوراق",d:"فصل تتحول فيه أوراق الأشجار للأصفر وتتساقط"},
-  {w:"الفجر",h:"بداية النهار",d:"الوقت الذي يظهر فيه ضوء الشمس قبيل الشروق"},
-  {w:"الغروب",h:"نهاية النهار",d:"الوقت الذي تغيب فيه الشمس وتتلوّن السماء بالأحمر"},
-  {w:"الليل",h:"وقت النجوم",d:"الفترة المظلمة من اليوم بعد غياب الشمس"},
-  // متفرقات
-  {w:"الصدى",h:"تكرار الصوت",d:"انعكاس الصوت عن سطح صلب فيُسمع مرتين"},
-  {w:"الظل",h:"ما يُخلّفه الجسم",d:"المنطقة المظلمة خلف الجسم الحاجب للضوء"},
-  {w:"الحدود",h:"بين بلدَين",d:"الخطوط التي تفصل بين دولتين أو منطقتين"},
-  {w:"الوهم",h:"شيء غير حقيقي",d:"تصوّر أو إدراك خاطئ للواقع لا أساس له من الصحة"},
-  {w:"الأثر",h:"ما تتركه خلفك",d:"العلامة أو البصمة التي يتركها شيء ما بعد زواله"},
-  {w:"القدر",h:"المصير المكتوب",d:"ما قُدّر للإنسان في حياته مما لا يملك تغييره"},
-  {w:"الذاكرة",h:"خزانة الأحداث",d:"القدرة العقلية على تخزين المعلومات والأحداث الماضية"},
-  {w:"الحلم",h:"ما تراه نائماً",d:"ما يراه النائم من مشاهد وأحداث أثناء النوم"},
-  {w:"الوداع",h:"لحظة الرحيل",d:"لحظة الافتراق والتحية الأخيرة عند مغادرة شخص"},
-  {w:"السر",h:"كلام مخفي",d:"معلومة لا يُفصح عنها وتبقى طيّ الكتمان"},
+  {w:"الشلال",h:"الطبيعة",d:"تدفق مائي يسقط من مرتفع ويُشكّل صوتاً قوياً"},
+  {w:"الصحراء",h:"المناخ",d:"منطقة جافة شاسعة تغطيها الرمال وترتفع فيها الحرارة"},
+  {w:"البركان",h:"الأرض",d:"جبل يقذف الحمم والغازات من باطن الأرض"},
+  {w:"الغابة",h:"البرية",d:"مساحة واسعة مليئة بالأشجار والحيوانات البرية"},
+  {w:"الجبل",h:"التضاريس",d:"كتلة أرضية ضخمة مرتفعة تُغطّى قمتها بالثلج أحياناً"},
+  {w:"الشاطئ",h:"الساحل",d:"الشريط الرملي المحاذي للبحر حيث يلتقي البر بالماء"},
+  {w:"النهر",h:"الجغرافيا",d:"مجرى مائي طبيعي يتدفق نحو البحر أو البحيرة"},
+  {w:"الكهف",h:"الجيولوجيا",d:"تجويف طبيعي في الصخر يستخدمه الإنسان والحيوان"},
+  {w:"الزلزال",h:"الكوارث",d:"حركة مفاجئة في طبقات الأرض تُحدث دماراً كبيراً"},
+  {w:"العاصفة",h:"الجو",d:"ظاهرة جوية عنيفة تجمع الرياح والمطر والرعد"},
+  {w:"الضباب",h:"المناخ",d:"بخار ماء كثيف يقترب من سطح الأرض ويقلّل الرؤية"},
+  {w:"الثلج",h:"الشتاء",d:"تساقط بلورات جليدية بيضاء من السماء في الشتاء"},
+  {w:"البحيرة",h:"الجغرافيا",d:"مساحة مائية محاطة باليابسة من جميع الجهات"},
+  {w:"الجزيرة",h:"الجغرافيا",d:"قطعة أرض محاطة بالماء من جميع الجهات"},
+  {w:"الغيمة",h:"الجو",d:"تجمّع من بخار الماء في السماء يحمل المطر"},
+  {w:"الصخرة",h:"التضاريس",d:"كتلة صلبة من الحجر الطبيعي تقاوم الزمن"},
+  {w:"الرياح",h:"المناخ",d:"تدفق الهواء في الغلاف الجوي من منطقة لأخرى"},
+  {w:"الفهد",h:"الحيوانات",d:"أسرع حيوان بري في العالم جسمه منقّط بالبقع السوداء"},
+  {w:"الدلفين",h:"البحر",d:"ثديّ بحري ذكي جداً يتواصل بالأصوات ويعيش في مجموعات"},
+  {w:"التمساح",h:"الزواحف",d:"زاحف ضخم يعيش قرب الأنهار وله فك قوي جداً"},
+  {w:"النسر",h:"الطيور",d:"طائر ضخم جارح يحلق عالياً ويرى فريسته من بعيد"},
+  {w:"الغزال",h:"الحيوانات",d:"حيوان رشيق يتميز بسرعته وقرنيه وعيناه واسعتان"},
+  {w:"الذئب",h:"الحيوانات",d:"حيوان مفترس يعيش في أسراب ويُصدر العواء ليلاً"},
+  {w:"الأخطبوط",h:"البحر",d:"رخوي بحري يملك ثمانية أذرع ويغيّر لونه للتمويه"},
+  {w:"الببر",h:"الحيوانات",d:"أكبر أنواع القطط جسمه مخطط بالأسود والبرتقالي"},
+  {w:"الزرافة",h:"الحيوانات",d:"أطول حيوان بري على وجه الأرض بسبب عنقه الطويل"},
+  {w:"البومة",h:"الطيور",d:"طائر يرى في الظلام ويصطاد ليلاً ويرمز للحكمة"},
+  {w:"السلحفاة",h:"الزواحف",d:"زاحف يحمل قوقعة صلبة على ظهره ويعيش طويلاً"},
+  {w:"القرش",h:"البحر",d:"سمكة مفترسة ضخمة تملك أسناناً حادة وتسبح بسرعة"},
+  {w:"الطاووس",h:"الطيور",d:"طائر يتميز بذيله الضخم المزيّن بألوان زاهية"},
+  {w:"الخفاش",h:"الحيوانات",d:"الثديّ الوحيد القادر على الطيران يعيش في الكهوف"},
+  {w:"العقرب",h:"الحشرات",d:"حشرة صحراوية لها ذيل ينتهي بإبرة سامة"},
+  {w:"القنفذ",h:"الحيوانات",d:"حيوان صغير مغطى بأشواك دفاعية يتكوّر عند الخطر"},
+  {w:"الحرباء",h:"الزواحف",d:"زاحف صغير يغيّر لونه ليتناسب مع محيطه"},
+  {w:"القهوة",h:"المشروبات",d:"مشروب يُصنع من حبوب البن المحمّصة"},
+  {w:"الخبز",h:"الغذاء",d:"غذاء يُصنع من الدقيق والماء ويُخبز في الفرن"},
+  {w:"العسل",h:"الغذاء",d:"سائل حلو تنتجه النحل من رحيق الزهور"},
+  {w:"الرمان",h:"الفواكه",d:"فاكهة حمراء اللون مليئة بالبذور العصيرية"},
+  {w:"التمر",h:"الفواكه",d:"ثمرة النخيل الحلوة الشائعة في البلاد العربية"},
+  {w:"الزيتون",h:"الفواكه",d:"ثمرة تُستخرج منها زيت الزيتون وتؤكل مخللة"},
+  {w:"الثوم",h:"التوابل",d:"نبات بصلي ذو رائحة قوية يُستخدم في الطهي"},
+  {w:"الليمون",h:"الفواكه",d:"فاكهة حمضية صفراء اللون تُضاف للمشروبات"},
+  {w:"الشاي",h:"المشروبات",d:"مشروب يُحضَّر بنقع الأوراق في الماء الساخن"},
+  {w:"العنب",h:"الفواكه",d:"فاكهة صغيرة تنمو في عناقيد ويُصنع منها الزبيب"},
+  {w:"الطبيب",h:"الصحة",d:"شخص متخصص في تشخيص الأمراض ومعالجة المرضى"},
+  {w:"القاضي",h:"القانون",d:"شخص يُطبّق القانون ويصدر الأحكام في المحاكم"},
+  {w:"الرسام",h:"الفن",d:"فنان يُعبّر عن أفكاره بالألوان والريشة على القماش"},
+  {w:"المعلم",h:"التعليم",d:"شخص يُعلّم الطلاب وينقل إليهم المعرفة في المدرسة"},
+  {w:"الملاح",h:"البحرية",d:"شخص يتحكم في توجيه السفينة ويقرأ خرائط البحر"},
+  {w:"الشاعر",h:"الأدب",d:"أديب يُعبّر عن مشاعره عبر قصائد موزونة"},
+  {w:"الجندي",h:"الجيش",d:"شخص منتسب للجيش يحمي وطنه في المعارك"},
+  {w:"الصياد",h:"البحر",d:"شخص يستخدم الشبكة أو الخيط لصيد الأسماك"},
+  {w:"المهندس",h:"التقنية",d:"متخصص يُخطط وينفذ المشاريع التقنية والإنشائية"},
+  {w:"الخياط",h:"الملابس",d:"شخص يقطع الأقمشة ويخيطها لصنع الملابس"},
+  {w:"النجار",h:"الحرف",d:"حرفي يشكّل الخشب ويصنع منه الأثاث والأبواب"},
+  {w:"الطاهي",h:"الطعام",d:"شخص محترف في إعداد وطهي الأطعمة في المطاعم"},
+  {w:"الحارس",h:"الأمن",d:"شخص مُكلَّف بحراسة مكان ما وضمان أمنه"},
+  {w:"المسجد",h:"الدين",d:"مكان يؤمّه المسلمون لأداء الصلاة والعبادة"},
+  {w:"المستشفى",h:"الصحة",d:"مؤسسة صحية يُعالج فيها المرضى وتُجرى العمليات"},
+  {w:"الملعب",h:"الرياضة",d:"مكان مُعدّ لممارسة الرياضة أمام آلاف المشجعين"},
+  {w:"المكتبة",h:"الثقافة",d:"مكان يضم مجموعات كبيرة من الكتب للقراءة"},
+  {w:"المدرسة",h:"التعليم",d:"مؤسسة يذهب إليها الأطفال لتلقّي العلم"},
+  {w:"السوق",h:"التجارة",d:"مكان يجتمع فيه البائعون والمشترون لتبادل البضائع"},
+  {w:"المطار",h:"النقل",d:"منشأة يُقلع منها الطيران ويهبط فيها المسافرون"},
+  {w:"السجن",h:"القانون",d:"مكان يُحتجز فيه المحكوم عليهم بعقوبات قانونية"},
+  {w:"القلعة",h:"التاريخ",d:"منشأة عسكرية محصّنة كانت تُستخدم للدفاع قديماً"},
+  {w:"المتحف",h:"الثقافة",d:"مكان يعرض مقتنيات تاريخية وفنية للزوار"},
+  {w:"المزرعة",h:"الزراعة",d:"قطعة أرض تُزرع فيها المحاصيل أو تُربى الحيوانات"},
+  {w:"البرج",h:"العمارة",d:"مبنى طويل جداً يُستخدم للسكن أو الاتصالات"},
+  {w:"الميناء",h:"النقل",d:"مكان على الشاطئ ترسو فيه السفن وتُفرَّغ البضائع"},
+  {w:"المرآة",h:"الزجاج",d:"سطح زجاجي يعكس صورة من يقف أمامه بدقة"},
+  {w:"البوصلة",h:"الملاحة",d:"أداة تُشير دائماً نحو الشمال لمساعدة المسافرين"},
+  {w:"الساعة",h:"الأجهزة",d:"جهاز يُستخدم لقياس الوقت وتحديد الساعات"},
+  {w:"المفتاح",h:"المعادن",d:"أداة معدنية مصممة لفتح أو غلق قفل بعينه"},
+  {w:"الشمعة",h:"الإضاءة",d:"قطعة شمع بفتيلة تُضيء الأماكن المظلمة"},
+  {w:"المنظار",h:"الأدوات",d:"جهاز بصري يُكبّر الأشياء البعيدة لرؤيتها"},
+  {w:"الدرع",h:"العسكرية",d:"غطاء واقٍ يلبسه المحارب لحماية جسمه"},
+  {w:"السيف",h:"الأسلحة",d:"سلاح ذو نصل طويل حاد يُستخدم في المعارك"},
+  {w:"الطبل",h:"الموسيقى",d:"آلة يُضرب عليها لإصدار دقات إيقاعية"},
+  {w:"الشجاعة",h:"الشخصية",d:"القدرة على مواجهة الخطر والصعوبات دون تردد"},
+  {w:"الغيرة",h:"المشاعر",d:"شعور يُصيب الشخص حين يرى نجاح غيره"},
+  {w:"الفضول",h:"الشخصية",d:"الرغبة الشديدة في معرفة الأشياء واكتشاف المجهول"},
+  {w:"الوفاء",h:"القيم",d:"الالتزام بالوعود والعهود وعدم الخيانة"},
+  {w:"الكرم",h:"القيم",d:"صفة تعني المشاركة والإعطاء بسخاء دون تردد"},
+  {w:"الصدق",h:"الأخلاق",d:"قول الحقيقة وعدم الكذب في أي موقف"},
+  {w:"الكهرباء",h:"الطاقة",d:"طاقة تنتقل عبر الأسلاك وتُشغّل الأجهزة"},
+  {w:"المغناطيس",h:"الفيزياء",d:"جسم له خاصية جذب المعادن كالحديد والنيكل"},
+  {w:"الجاذبية",h:"الفيزياء",d:"قوة طبيعية تجذب الأجسام نحو مركز الأرض"},
+  {w:"الفضاء",h:"العلوم",d:"الفراغ الواسع الذي تتحرك فيه الكواكب والنجوم"},
+  {w:"الملاكمة",h:"الرياضة",d:"رياضة يتبادل فيها المتنافسان الضربات بالقفازات"},
+  {w:"الشطرنج",h:"الألعاب",d:"لعبة بين لاعبَين على رقعة تضم 64 مربعاً"},
+  {w:"الرقص",h:"الفنون",d:"حركات جسدية إيقاعية تتناسق مع الموسيقى"},
+  {w:"التسلق",h:"الرياضة",d:"رياضة تعتمد على الصعود فوق الجبال أو الجدران"},
+  {w:"السباحة",h:"الرياضة",d:"رياضة تعتمد على تحريك الجسم داخل الماء"},
+  {w:"الغناء",h:"الفنون",d:"فن إصدار أصوات موسيقية منغّمة بالصوت البشري"},
+  {w:"الربيع",h:"الفصول",d:"الفصل الذي تتفتح فيه الأزهار ويعتدل الطقس"},
+  {w:"الخريف",h:"الفصول",d:"فصل تتحول فيه أوراق الأشجار للأصفر وتتساقط"},
+  {w:"الفجر",h:"الوقت",d:"الوقت الذي يظهر فيه ضوء الشمس قبيل الشروق"},
+  {w:"الغروب",h:"الوقت",d:"الوقت الذي تغيب فيه الشمس وتتلوّن السماء"},
+  {w:"الليل",h:"الوقت",d:"الفترة المظلمة من اليوم بعد غياب الشمس تماماً"},
+  {w:"الصدى",h:"الصوت",d:"انعكاس الصوت عن سطح صلب فيُسمع أكثر من مرة"},
+  {w:"الظل",h:"الضوء",d:"المنطقة المظلمة التي يُخلّفها الجسم الحاجب للضوء"},
+  {w:"الوهم",h:"النفس",d:"تصوّر خاطئ للواقع لا أساس له من الصحة"},
+  {w:"الأثر",h:"التاريخ",d:"العلامة التي يتركها شيء ما بعد زواله"},
+  {w:"الذاكرة",h:"العقل",d:"القدرة العقلية على تخزين المعلومات واسترجاعها"},
+  {w:"الحلم",h:"النوم",d:"ما يراه النائم من مشاهد وأحداث أثناء نومه"},
+  {w:"الوداع",h:"المشاعر",d:"لحظة الافتراق والتحية الأخيرة عند مغادرة شخص"},
+  {w:"السر",h:"التواصل",d:"معلومة لا يُفصح عنها وتبقى مخفية بين أشخاص"},
+  {w:"البيانو",h:"الموسيقى",d:"آلة موسيقية ضخمة ذات مفاتيح بيضاء وسوداء"},
+  {w:"الطائرة",h:"النقل",d:"مركبة تطير في الجو وتنقل الركاب بين المدن"},
+  {w:"القطار",h:"النقل",d:"مركبة تسير على قضبان حديدية وتنقل الركاب"},
+  {w:"الكتاب",h:"الثقافة",d:"مجموعة أوراق مكتوبة مجلّدة معاً تحمل علماً"},
+  {w:"الهاتف",h:"التكنولوجيا",d:"جهاز يُستخدم للتواصل الصوتي والمرئي عن بُعد"},
+  {w:"الخريطة",h:"الجغرافيا",d:"رسم يُمثّل منطقة جغرافية معينة بشكل مُصغَّر"},
+  {w:"المقص",h:"الأدوات",d:"أداة ذات نصلين حادين تُستخدم لقطع الورق والقماش"},
+  {w:"الميزان",h:"الأدوات",d:"أداة تُستخدم لقياس وزن الأشياء بدقة"},
 ];
 
 // ── NAV ──
@@ -2904,7 +3278,489 @@ const SFX = (() => {
   return { play, toggleMute, isMuted: ()=>muted };
 })();
 
+
+// ══ BOTTOM NAV ══
+function bottomNavGo(tab) {
+  SFX.play('click');
+  // Update active state
+  ['bnHome','bnGames','bnShare','bnContact'].forEach(id=>{
+    const btn = document.getElementById(id);
+    if(!btn) return;
+    const span = btn.querySelectorAll('span')[1];
+    if(span) span.style.color = 'rgba(240,240,240,0.3)';
+  });
+
+  if(tab === 'home') {
+    goHome();
+    const b = document.getElementById('bnHome');
+    if(b) b.querySelectorAll('span')[1].style.color = 'var(--accent2)';
+  } else if(tab === 'games') {
+    showScreen('games-screen');
+    const b = document.getElementById('bnGames');
+    if(b) b.querySelectorAll('span')[1].style.color = 'var(--accent2)';
+  } else if(tab === 'contact') {
+    showScreen('contact-screen');
+    const b = document.getElementById('bnContact');
+    if(b) b.querySelectorAll('span')[1].style.color = 'var(--accent2)';
+  } else if(tab === 'share') {
+    showShareOverlay();
+  }
+}
+
+// Reset nav to home when goHome is called
+const _origGoHome = goHome;
+function goHome() {
+  _origGoHome();
+  ['bnHome','bnGames','bnShare','bnContact'].forEach(id=>{
+    const btn = document.getElementById(id);
+    if(!btn) return;
+    const span = btn.querySelectorAll('span')[1];
+    if(span) span.style.color = 'rgba(240,240,240,0.3)';
+  });
+  const b = document.getElementById('bnHome');
+  if(b) b.querySelectorAll('span')[1].style.color = 'var(--accent2)';
+}
+
+// ══ SHARE OVERLAY ══
+function showShareOverlay() {
+  const url = window.location.href;
+  const text = 'جرّب YSSN Games — أفضل منصة ألعاب عربية! 🎮';
+  const ov = document.createElement('div');
+  ov.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.88);z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:30px 20px;animation:fadeIn 0.25s ease;';
+  ov.onclick = (e)=>{ if(e.target===ov) ov.remove(); };
+  ov.innerHTML = `
+    <div style="width:min(400px,95vw);display:flex;flex-direction:column;gap:0;">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;">
+        <div>
+          <div style="font-family:'Bebas Neue',sans-serif;font-size:2rem;letter-spacing:4px;color:#fff;">شارك اللعبة</div>
+          <div style="font-size:0.62rem;letter-spacing:4px;color:rgba(240,240,240,0.25);">أخبر أصدقاءك</div>
+        </div>
+        <button onclick="this.closest('[style]').remove()" style="width:36px;height:36px;border-radius:50%;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);color:rgba(240,240,240,0.5);font-size:1.1rem;cursor:pointer;">✕</button>
+      </div>
+
+      <!-- Referral note -->
+      <div style="padding:10px 14px;background:rgba(251,191,36,0.06);border:1px solid rgba(251,191,36,0.15);border-radius:12px;margin-bottom:14px;display:flex;align-items:center;gap:10px;">
+        <span style="font-size:1.2rem;">🎁</span>
+        <div style="font-size:0.78rem;color:rgba(251,191,36,0.7);">شارك مع أصدقائك وادعُهم للعب معك!</div>
+      </div>
+      <!-- URL box -->
+      <div style="display:flex;gap:8px;margin-bottom:14px;">
+        <div style="flex:1;padding:12px 14px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:12px;font-size:0.75rem;color:rgba(240,240,240,0.35);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-family:monospace;">\${url}</div>
+        <button onclick="navigator.clipboard.writeText('\${url}');this.textContent='✅';setTimeout(()=>this.textContent='📋',1500);" style="padding:12px 14px;background:rgba(124,58,237,0.15);border:1px solid rgba(124,58,237,0.25);border-radius:12px;color:rgba(167,139,250,0.8);font-size:1rem;cursor:pointer;transition:all 0.2s;white-space:nowrap;">📋</button>
+      </div>
+
+      <!-- Share buttons -->
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+        <button onclick="window.open('https://wa.me/?text=${encodeURIComponent(text+' '+url)}','_blank')" style="display:flex;align-items:center;gap:10px;padding:14px 16px;background:rgba(37,211,102,0.08);border:1px solid rgba(37,211,102,0.18);border-radius:14px;color:rgba(37,211,102,0.8);font-family:'Cairo',sans-serif;font-size:0.9rem;font-weight:600;cursor:pointer;transition:all 0.2s;" onmouseover="this.style.background='rgba(37,211,102,0.15)'" onmouseout="this.style.background='rgba(37,211,102,0.08)'">
+          <span style="font-size:1.3rem;">💬</span> واتساب
+        </button>
+        <button onclick="window.open('https://t.me/share/url?url=${encodeURIComponent(url)}&text=${encodeURIComponent(text)}','_blank')" style="display:flex;align-items:center;gap:10px;padding:14px 16px;background:rgba(0,136,204,0.08);border:1px solid rgba(0,136,204,0.18);border-radius:14px;color:rgba(0,136,204,0.8);font-family:'Cairo',sans-serif;font-size:0.9rem;font-weight:600;cursor:pointer;transition:all 0.2s;" onmouseover="this.style.background='rgba(0,136,204,0.15)'" onmouseout="this.style.background='rgba(0,136,204,0.08)'">
+          <span style="font-size:1.3rem;">✈️</span> تيليغرام
+        </button>
+        <button onclick="if(navigator.share){navigator.share({title:'YSSN Games',text:'${text}',url:'${url}'});}else{navigator.clipboard.writeText(url);}" style="grid-column:span 2;display:flex;align-items:center;justify-content:center;gap:10px;padding:14px 16px;background:linear-gradient(135deg,rgba(124,58,237,0.15),rgba(168,85,247,0.1));border:1px solid rgba(124,58,237,0.25);border-radius:14px;color:rgba(167,139,250,0.9);font-family:'Cairo',sans-serif;font-size:0.95rem;font-weight:700;cursor:pointer;transition:all 0.2s;" onmouseover="this.style.background='linear-gradient(135deg,rgba(124,58,237,0.25),rgba(168,85,247,0.18))'" onmouseout="this.style.background='linear-gradient(135deg,rgba(124,58,237,0.15),rgba(168,85,247,0.1))'">
+          <span style="font-size:1.3rem;">🔗</span> مشاركة سريعة
+        </button>
+      </div>
+    </div>`;
+  document.body.appendChild(ov);
+}
+
+
+// ══ SPLASH: Simulated resource loading ══
+(function(){
+  const bar = document.getElementById('splashBar');
+  const pct = document.getElementById('splashPct');
+  const label = document.getElementById('splashLabel');
+  const splash = document.getElementById('splashScreen');
+  if(!splash) return;
+
+  const steps = [
+    {p:15, txt:"تحميل الواجهة..."},
+    {p:30, txt:"تهيئة الألعاب..."},
+    {p:50, txt:"تحميل الداما والشطرنج..."},
+    {p:68, txt:"تحميل لوغارو والإمبوستر..."},
+    {p:82, txt:"تحضير الأصوات..."},
+    {p:93, txt:"اللمسات الأخيرة..."},
+    {p:100, txt:"جاهز! 🎮"},
+  ];
+  let cur=0, p=0;
+
+  function setProgress(target, txt){
+    if(label) label.textContent = txt;
+    const iv = setInterval(()=>{
+      p += 1.5;
+      if(p >= target){ p=target; clearInterval(iv);
+        if(bar) bar.style.width=p+'%';
+        if(pct) pct.textContent=Math.floor(p)+'%';
+        cur++;
+        if(cur < steps.length){
+          setTimeout(()=>setProgress(steps[cur].p, steps[cur].txt), 120);
+        } else {
+          setTimeout(()=>{
+            splash.style.opacity='0';
+            splash.style.transform='scale(1.04)';
+            setTimeout(()=>{ splash.style.display='none'; },650);
+          },500);
+        }
+        return;
+      }
+      if(bar) bar.style.width=p+'%';
+      if(pct) pct.textContent=Math.floor(p)+'%';
+    }, 18);
+  }
+  setTimeout(()=>setProgress(steps[0].p, steps[0].txt), 600);
+})();
+
+
+// ══════════════════════════════════════
+// 🎲 RANDOM GAME
+// ══════════════════════════════════════
+function launchRandomGame(){
+  SFX.play('dice');
+  const games = [
+    ()=>{ showScreen('dama-mode'); },
+    ()=>{ showScreen('chess-mode'); },
+    ()=>{ showScreen('loup'); },
+    ()=>{ showScreen('imposter'); },
+  ];
+  // Show random pick animation overlay
+  const ov = document.createElement('div');
+  ov.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.9);z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;animation:fadeIn 0.2s ease;';
+  const icons = ['🔵','♟️','🐺','🕵️'];
+  const names = ['DAMA','CHESS','LOUP GAROU','IMPOSTER'];
+  let i=0;
+  ov.innerHTML = `
+    <div style="font-size:0.65rem;letter-spacing:5px;color:rgba(251,191,36,0.5);">🎲 اختيار عشوائي</div>
+    <div id="randIcon" style="font-size:5rem;animation:pop 0.3s ease;"></div>
+    <div id="randName" style="font-family:'Bebas Neue',sans-serif;font-size:2.5rem;letter-spacing:4px;color:#fff;min-height:50px;"></div>
+  `;
+  document.body.appendChild(ov);
+  // Slot machine effect
+  let spins = 0, maxSpins = 14;
+  const iv = setInterval(()=>{
+    i = (i+1) % 4;
+    ov.querySelector('#randIcon').textContent = icons[i];
+    ov.querySelector('#randName').textContent = names[i];
+    spins++;
+    if(spins >= maxSpins){
+      clearInterval(iv);
+      const chosen = Math.floor(Math.random()*4);
+      ov.querySelector('#randIcon').textContent = icons[chosen];
+      ov.querySelector('#randName').textContent = names[chosen];
+      ov.querySelector('#randName').style.background = 'linear-gradient(135deg,#fbbf24,#f59e0b)';
+      ov.querySelector('#randName').style.webkitBackgroundClip = 'text';
+      ov.querySelector('#randName').style.webkitTextFillColor = 'transparent';
+      SFX.play('success');
+      setTimeout(()=>{
+        ov.style.opacity='0'; ov.style.transition='opacity 0.4s';
+        setTimeout(()=>{ ov.remove(); games[chosen](); },400);
+      },900);
+    }
+  }, 80);
+}
+
+// ══════════════════════════════════════
+// ⛶ FULLSCREEN
+// ══════════════════════════════════════
+function toggleFullscreen(btn){
+  if(!document.fullscreenElement){
+    document.documentElement.requestFullscreen().catch(()=>{});
+    if(btn){ btn.textContent='✕ خروج الشاشة'; }
+  } else {
+    document.exitFullscreen();
+    if(btn){ btn.textContent='⛶ ملء الشاشة'; }
+  }
+}
+document.addEventListener('fullscreenchange',()=>{
+  const btn = document.querySelector('[onclick*="toggleFullscreen"]');
+  if(btn) btn.textContent = document.fullscreenElement ? '✕ خروج الشاشة' : '⛶ ملء الشاشة';
+});
+
+// ══════════════════════════════════════
+// 🔐 AUTH (localStorage-based)
+// ══════════════════════════════════════
+let currentUser = null;
+
+function initAuth(){
+  const saved = localStorage.getItem('yssn_session');
+  if(saved){
+    currentUser = JSON.parse(saved);
+    updateUserUI();
+  } else {
+    // Show login on first visit
+    const visited = localStorage.getItem('yssn_visited');
+    if(!visited){ showScreen('login-screen'); }
+  }
+}
+
+function switchAuthTab(tab){
+  const isLogin = tab==='login';
+  document.getElementById('loginForm').style.display = isLogin ? 'flex' : 'none';
+  document.getElementById('registerForm').style.display = isLogin ? 'none' : 'flex';
+  document.getElementById('tabLogin').style.background = isLogin ? 'linear-gradient(135deg,#7c3aed,#a855f7)' : 'transparent';
+  document.getElementById('tabLogin').style.color = isLogin ? '#fff' : 'rgba(240,240,240,0.4)';
+  document.getElementById('tabRegister').style.background = !isLogin ? 'linear-gradient(135deg,#7c3aed,#a855f7)' : 'transparent';
+  document.getElementById('tabRegister').style.color = !isLogin ? '#fff' : 'rgba(240,240,240,0.4)';
+}
+
+function doLogin(){
+  SFX.play('click');
+  const u = document.getElementById('loginUsername').value.trim();
+  const p = document.getElementById('loginPassword').value;
+  const err = document.getElementById('loginError');
+  if(!u||!p){ err.textContent='يرجى ملء جميع الحقول'; err.style.display='block'; return; }
+  const users = JSON.parse(localStorage.getItem('yssn_users')||'{}');
+  if(!users[u]){ err.textContent='اسم المستخدم غير موجود'; err.style.display='block'; return; }
+  if(users[u].password !== btoa(p)){ err.textContent='كلمة السر غير صحيحة'; err.style.display='block'; return; }
+  err.style.display='none';
+  currentUser = {username:u, name:users[u].name};
+  localStorage.setItem('yssn_session', JSON.stringify(currentUser));
+  localStorage.setItem('yssn_visited','1');
+  SFX.play('success');
+  updateUserUI();
+  goHome();
+}
+
+function doRegister(){
+  SFX.play('click');
+  const name = document.getElementById('regName').value.trim();
+  const u = document.getElementById('regUsername').value.trim();
+  const p = document.getElementById('regPassword').value;
+  const err = document.getElementById('regError');
+  if(!name||!u||!p){ err.textContent='يرجى ملء جميع الحقول'; err.style.display='block'; return; }
+  if(u.length<3){ err.textContent='اسم المستخدم قصير جداً (3 أحرف على الأقل)'; err.style.display='block'; return; }
+  if(p.length<4){ err.textContent='كلمة السر قصيرة جداً (4 أحرف على الأقل)'; err.style.display='block'; return; }
+  const users = JSON.parse(localStorage.getItem('yssn_users')||'{}');
+  if(users[u]){ err.textContent='اسم المستخدم محجوز، جرب اسماً آخر'; err.style.display='block'; return; }
+  users[u] = {name, password:btoa(p), createdAt:Date.now()};
+  localStorage.setItem('yssn_users', JSON.stringify(users));
+  err.style.display='none';
+  currentUser = {username:u, name};
+  localStorage.setItem('yssn_session', JSON.stringify(currentUser));
+  localStorage.setItem('yssn_visited','1');
+  SFX.play('success');
+  updateUserUI();
+  goHome();
+}
+
+function guestLogin(){
+  SFX.play('click');
+  currentUser = {username:'guest', name:'ضيف'};
+  localStorage.setItem('yssn_visited','1');
+  updateUserUI();
+  goHome();
+}
+
+function logoutUser(){
+  currentUser = null;
+  localStorage.removeItem('yssn_session');
+  showScreen('login-screen');
+}
+
+function updateUserUI(){
+  // Update topbar with user avatar
+  const existing = document.getElementById('userAvatarBtn');
+  if(existing) existing.remove();
+  if(!currentUser) return;
+  const topbarBtns = document.querySelector('.topbar-btns');
+  if(!topbarBtns) return;
+  const initials = currentUser.name.slice(0,2).toUpperCase();
+  const btn = document.createElement('button');
+  btn.id = 'userAvatarBtn';
+  btn.onclick = showUserMenu;
+  btn.style.cssText = 'width:30px;height:30px;border-radius:50%;background:linear-gradient(135deg,#7c3aed,#a855f7);border:none;color:#fff;font-family:"Cairo",sans-serif;font-size:0.7rem;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;';
+  btn.textContent = initials;
+  topbarBtns.insertBefore(btn, topbarBtns.firstChild);
+}
+
+function showUserMenu(){
+  SFX.play('click');
+  const ov = document.createElement('div');
+  ov.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:9999;display:flex;align-items:flex-end;justify-content:center;animation:fadeIn 0.2s ease;';
+  ov.onclick = (e)=>{ if(e.target===ov) ov.remove(); };
+  ov.innerHTML = `
+    <div style="width:min(420px,100%);background:#111118;border-top:1px solid rgba(255,255,255,0.08);border-radius:20px 20px 0 0;padding:24px 20px 40px;animation:slideUp 0.3s ease;">
+      <div style="display:flex;align-items:center;gap:14px;margin-bottom:20px;padding-bottom:16px;border-bottom:1px solid rgba(255,255,255,0.06);">
+        <div style="width:52px;height:52px;border-radius:50%;background:linear-gradient(135deg,#7c3aed,#a855f7);display:flex;align-items:center;justify-content:center;font-family:'Cairo',sans-serif;font-size:1.2rem;font-weight:700;color:#fff;">${currentUser.name.slice(0,2).toUpperCase()}</div>
+        <div>
+          <div style="font-size:1rem;font-weight:700;color:#fff;">${currentUser.name}</div>
+          <div style="font-size:0.75rem;color:rgba(240,240,240,0.3);">@${currentUser.username}</div>
+        </div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:8px;">
+        <button onclick="this.closest('[style]').remove();goHome();" style="padding:13px 16px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.07);border-radius:12px;color:rgba(240,240,240,0.6);font-family:'Cairo',sans-serif;font-size:0.9rem;cursor:pointer;text-align:right;">🏠 الصفحة الرئيسية</button>
+        <button onclick="this.closest('[style]').remove();showScreen('leaderboard');" style="padding:13px 16px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.07);border-radius:12px;color:rgba(240,240,240,0.6);font-family:'Cairo',sans-serif;font-size:0.9rem;cursor:pointer;text-align:right;">🏆 لوحة المتصدرين</button>
+        <button onclick="this.closest('[style]').remove();showShareOverlay();" style="padding:13px 16px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.07);border-radius:12px;color:rgba(240,240,240,0.6);font-family:'Cairo',sans-serif;font-size:0.9rem;cursor:pointer;text-align:right;">🔗 دعوة صديق</button>
+        <button onclick="this.closest('[style]').remove();logoutUser();" style="padding:13px 16px;background:rgba(239,68,68,0.06);border:1px solid rgba(239,68,68,0.15);border-radius:12px;color:rgba(239,68,68,0.7);font-family:'Cairo',sans-serif;font-size:0.9rem;cursor:pointer;text-align:right;">🚪 تسجيل الخروج</button>
+      </div>
+    </div>`;
+  document.body.appendChild(ov);
+}
+
+// Init auth on load
+window.addEventListener('DOMContentLoaded', initAuth);
+
 </script>
+
+<!-- ══ BOTTOM NAV ══ -->
+<div id="bottomNav" style="position:fixed;bottom:0;left:0;right:0;z-index:1000;background:rgba(10,10,15,0.92);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-top:1px solid rgba(255,255,255,0.07);padding:8px 0 calc(8px + env(safe-area-inset-bottom));display:flex;align-items:center;justify-content:space-around;">
+  <button onclick="bottomNavGo('home')" id="bnHome" class="bn-btn active-bn" style="display:flex;flex-direction:column;align-items:center;gap:3px;background:none;border:none;cursor:pointer;padding:6px 20px;border-radius:12px;transition:all 0.2s;min-width:64px;">
+    <span style="font-size:1.3rem;">🏠</span>
+    <span style="font-family:'Cairo',sans-serif;font-size:0.6rem;letter-spacing:1px;color:var(--accent2);">الرئيسية</span>
+  </button>
+  <button onclick="bottomNavGo('games')" id="bnGames" class="bn-btn" style="display:flex;flex-direction:column;align-items:center;gap:3px;background:none;border:none;cursor:pointer;padding:6px 20px;border-radius:12px;transition:all 0.2s;min-width:64px;">
+    <span style="font-size:1.3rem;">🎮</span>
+    <span style="font-family:'Cairo',sans-serif;font-size:0.6rem;letter-spacing:1px;color:rgba(240,240,240,0.3);">الألعاب</span>
+  </button>
+  <button onclick="bottomNavGo('share')" id="bnShare" class="bn-btn" style="display:flex;flex-direction:column;align-items:center;gap:3px;background:none;border:none;cursor:pointer;padding:6px 20px;border-radius:12px;transition:all 0.2s;min-width:64px;">
+    <span style="font-size:1.3rem;">🔗</span>
+    <span style="font-family:'Cairo',sans-serif;font-size:0.6rem;letter-spacing:1px;color:rgba(240,240,240,0.3);">مشاركة</span>
+  </button>
+  <button onclick="bottomNavGo('contact')" id="bnContact" class="bn-btn" style="display:flex;flex-direction:column;align-items:center;gap:3px;background:none;border:none;cursor:pointer;padding:6px 20px;border-radius:12px;transition:all 0.2s;min-width:64px;">
+    <span style="font-size:1.3rem;">✉️</span>
+    <span style="font-family:'Cairo',sans-serif;font-size:0.6rem;letter-spacing:1px;color:rgba(240,240,240,0.3);">تواصل</span>
+  </button>
+</div>
+
+<!-- ══ CONTACT SCREEN ══ -->
+<div class="screen" id="contact-screen">
+  <button class="back-btn" onclick="goHome()">← رجوع</button>
+  <div style="display:flex;flex-direction:column;align-items:center;min-height:100vh;padding:80px 20px 120px;gap:0;position:relative;overflow:hidden;">
+    <div style="position:absolute;inset:0;background:radial-gradient(circle at 50% 30%,rgba(6,214,160,0.06),transparent 60%);pointer-events:none;"></div>
+    <div style="font-family:'Bebas Neue',sans-serif;font-size:clamp(2.5rem,10vw,4rem);letter-spacing:5px;background:linear-gradient(135deg,#06d6a0,#0ea5e9);-webkit-background-clip:text;-webkit-text-fill-color:transparent;animation:fadeDown 0.5s ease both;line-height:1;margin-bottom:6px;">تواصل معنا</div>
+    <div style="font-size:0.65rem;letter-spacing:5px;color:rgba(6,214,160,0.3);margin-bottom:36px;animation:fadeDown 0.5s 0.1s ease both;opacity:0;">نحن هنا دائماً</div>
+
+    <div style="width:min(420px,95vw);display:flex;flex-direction:column;gap:12px;animation:slideUp 0.5s 0.15s ease both;opacity:0;">
+
+      <!-- Card: Instagram -->
+      <a href="https://instagram.com" target="_blank" style="text-decoration:none;display:flex;align-items:center;gap:14px;padding:16px 18px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.07);border-radius:16px;transition:all 0.2s;" onmouseover="this.style.borderColor='rgba(225,48,108,0.4)';this.style.background='rgba(225,48,108,0.06)'" onmouseout="this.style.borderColor='rgba(255,255,255,0.07)';this.style.background='rgba(255,255,255,0.03)'">
+        <div style="width:44px;height:44px;border-radius:12px;background:linear-gradient(135deg,#f09433,#e6683c,#dc2743,#cc2366,#bc1888);display:flex;align-items:center;justify-content:center;font-size:1.4rem;flex-shrink:0;">📸</div>
+        <div><div style="font-size:0.9rem;font-weight:700;color:rgba(240,240,240,0.85);">Instagram</div><div style="font-size:0.75rem;color:rgba(240,240,240,0.3);margin-top:2px;">@yassine.games</div></div>
+        <div style="margin-right:auto;color:rgba(255,255,255,0.2);font-size:0.9rem;">←</div>
+      </a>
+
+      <!-- Card: Email -->
+      <a href="mailto:contact@yassinegames.com" style="text-decoration:none;display:flex;align-items:center;gap:14px;padding:16px 18px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.07);border-radius:16px;transition:all 0.2s;" onmouseover="this.style.borderColor='rgba(14,165,233,0.4)';this.style.background='rgba(14,165,233,0.06)'" onmouseout="this.style.borderColor='rgba(255,255,255,0.07)';this.style.background='rgba(255,255,255,0.03)'">
+        <div style="width:44px;height:44px;border-radius:12px;background:linear-gradient(135deg,#0ea5e9,#0284c7);display:flex;align-items:center;justify-content:center;font-size:1.4rem;flex-shrink:0;">✉️</div>
+        <div><div style="font-size:0.9rem;font-weight:700;color:rgba(240,240,240,0.85);">البريد الإلكتروني</div><div style="font-size:0.75rem;color:rgba(240,240,240,0.3);margin-top:2px;">contact@yassinegames.com</div></div>
+        <div style="margin-right:auto;color:rgba(255,255,255,0.2);font-size:0.9rem;">←</div>
+      </a>
+
+      <!-- Card: TikTok -->
+      <a href="https://tiktok.com" target="_blank" style="text-decoration:none;display:flex;align-items:center;gap:14px;padding:16px 18px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.07);border-radius:16px;transition:all 0.2s;" onmouseover="this.style.borderColor='rgba(255,255,255,0.2)';this.style.background='rgba(255,255,255,0.06)'" onmouseout="this.style.borderColor='rgba(255,255,255,0.07)';this.style.background='rgba(255,255,255,0.03)'">
+        <div style="width:44px;height:44px;border-radius:12px;background:linear-gradient(135deg,#010101,#333);display:flex;align-items:center;justify-content:center;font-size:1.4rem;flex-shrink:0;">🎵</div>
+        <div><div style="font-size:0.9rem;font-weight:700;color:rgba(240,240,240,0.85);">TikTok</div><div style="font-size:0.75rem;color:rgba(240,240,240,0.3);margin-top:2px;">@yassine.games</div></div>
+        <div style="margin-right:auto;color:rgba(255,255,255,0.2);font-size:0.9rem;">←</div>
+      </a>
+
+      <!-- Login/logout button -->
+      <div style="display:flex;gap:8px;margin-top:4px;">
+        <button onclick="currentUser ? showUserMenu() : showScreen('login-screen')" style="flex:1;padding:13px;background:linear-gradient(135deg,rgba(124,58,237,0.12),rgba(168,85,247,0.08));border:1px solid rgba(124,58,237,0.2);border-radius:14px;color:rgba(167,139,250,0.8);font-family:'Cairo',sans-serif;font-size:0.9rem;font-weight:600;cursor:pointer;" id="contactAuthBtn">🔐 تسجيل الدخول</button>
+      </div>
+
+      <!-- About box -->
+      <div style="padding:18px;background:rgba(124,58,237,0.05);border:1px solid rgba(124,58,237,0.12);border-radius:16px;margin-top:8px;">
+        <div style="font-size:0.65rem;letter-spacing:4px;color:rgba(167,139,250,0.4);margin-bottom:10px;">عن المشروع</div>
+        <p style="font-size:0.88rem;color:rgba(240,240,240,0.45);line-height:1.8;margin:0;">YSSN Games منصة ألعاب عربية مصممة للأصدقاء والعائلة. نهدف إلى تقديم تجربة ترفيهية ممتعة وبسيطة بلمسة عربية أصيلة.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ GAMES LIST SCREEN ══ -->
+<div class="screen" id="games-screen">
+  <button class="back-btn" onclick="goHome()">← رجوع</button>
+  <div style="display:flex;flex-direction:column;align-items:center;min-height:100vh;padding:80px 20px 120px;gap:0;position:relative;">
+    <div style="position:absolute;inset:0;background:radial-gradient(circle at 50% 20%,rgba(124,58,237,0.07),transparent 60%);pointer-events:none;"></div>
+    <div style="font-family:'Bebas Neue',sans-serif;font-size:clamp(2.5rem,10vw,4rem);letter-spacing:5px;background:linear-gradient(135deg,#a855f7,#7c3aed);-webkit-background-clip:text;-webkit-text-fill-color:transparent;animation:fadeDown 0.5s ease both;line-height:1;margin-bottom:6px;">الألعاب</div>
+    <div style="font-size:0.65rem;letter-spacing:5px;color:rgba(167,139,250,0.3);margin-bottom:36px;animation:fadeDown 0.5s 0.1s ease both;opacity:0;">اختر لعبتك</div>
+
+    <div style="width:min(420px,95vw);display:flex;flex-direction:column;gap:10px;animation:slideUp 0.5s 0.15s ease both;opacity:0;">
+      <div onclick="SFX.play('click');goHome();setTimeout(()=>openDama(),100);" style="display:flex;align-items:center;gap:14px;padding:16px 18px;background:rgba(14,165,233,0.05);border:1px solid rgba(14,165,233,0.12);border-radius:16px;cursor:pointer;transition:all 0.2s;" onmouseover="this.style.borderColor='rgba(14,165,233,0.35)';this.style.transform='translateX(-4px)'" onmouseout="this.style.borderColor='rgba(14,165,233,0.12)';this.style.transform=''">
+        <div style="width:48px;height:48px;border-radius:14px;background:rgba(14,165,233,0.1);display:flex;align-items:center;justify-content:center;font-size:1.6rem;">🔵</div>
+        <div><div style="font-family:'Bebas Neue',sans-serif;font-size:1.3rem;letter-spacing:2px;color:#fff;">DAMA</div><div style="font-size:0.75rem;color:rgba(240,240,240,0.3);">لعبة الداما الكلاسيكية</div></div>
+        <div style="margin-right:auto;font-size:0.8rem;color:rgba(14,165,233,0.4);">←</div>
+      </div>
+      <div onclick="SFX.play('click');goHome();setTimeout(()=>openChess(),100);" style="display:flex;align-items:center;gap:14px;padding:16px 18px;background:rgba(245,158,11,0.05);border:1px solid rgba(245,158,11,0.12);border-radius:16px;cursor:pointer;transition:all 0.2s;" onmouseover="this.style.borderColor='rgba(245,158,11,0.35)';this.style.transform='translateX(-4px)'" onmouseout="this.style.borderColor='rgba(245,158,11,0.12)';this.style.transform=''">
+        <div style="width:48px;height:48px;border-radius:14px;background:rgba(245,158,11,0.1);display:flex;align-items:center;justify-content:center;font-size:1.6rem;">♟️</div>
+        <div><div style="font-family:'Bebas Neue',sans-serif;font-size:1.3rem;letter-spacing:2px;color:#fff;">CHESS</div><div style="font-size:0.75rem;color:rgba(240,240,240,0.3);">الشطرنج الكلاسيكي</div></div>
+        <div style="margin-right:auto;font-size:0.8rem;color:rgba(245,158,11,0.4);">←</div>
+      </div>
+      <div onclick="SFX.play('click');goHome();setTimeout(()=>openLoup(),100);" style="display:flex;align-items:center;gap:14px;padding:16px 18px;background:rgba(124,58,237,0.05);border:1px solid rgba(124,58,237,0.12);border-radius:16px;cursor:pointer;transition:all 0.2s;" onmouseover="this.style.borderColor='rgba(124,58,237,0.35)';this.style.transform='translateX(-4px)'" onmouseout="this.style.borderColor='rgba(124,58,237,0.12)';this.style.transform=''">
+        <div style="width:48px;height:48px;border-radius:14px;background:rgba(124,58,237,0.1);display:flex;align-items:center;justify-content:center;font-size:1.6rem;">🐺</div>
+        <div><div style="font-family:'Bebas Neue',sans-serif;font-size:1.3rem;letter-spacing:2px;color:#fff;">LOUP GAROU</div><div style="font-size:0.75rem;color:rgba(240,240,240,0.3);">من الذئب بينكم؟</div></div>
+        <div style="margin-right:auto;font-size:0.8rem;color:rgba(124,58,237,0.4);">←</div>
+      </div>
+      <div onclick="SFX.play('click');goHome();setTimeout(()=>openSpy(),100);" style="display:flex;align-items:center;gap:14px;padding:16px 18px;background:rgba(239,68,68,0.05);border:1px solid rgba(239,68,68,0.12);border-radius:16px;cursor:pointer;transition:all 0.2s;" onmouseover="this.style.borderColor='rgba(239,68,68,0.35)';this.style.transform='translateX(-4px)'" onmouseout="this.style.borderColor='rgba(239,68,68,0.12)';this.style.transform=''">
+        <div style="width:48px;height:48px;border-radius:14px;background:rgba(239,68,68,0.1);display:flex;align-items:center;justify-content:center;font-size:1.6rem;">🕵️</div>
+        <div><div style="font-family:'Bebas Neue',sans-serif;font-size:1.3rem;letter-spacing:2px;color:#fff;">IMPOSTER</div><div style="font-size:0.75rem;color:rgba(240,240,240,0.3);">من المتسلل؟</div></div>
+        <div style="margin-right:auto;font-size:0.8rem;color:rgba(239,68,68,0.4);">←</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ══ LOGIN SCREEN ══ -->
+<div class="screen" id="login-screen">
+  <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;padding:40px 20px 100px;position:relative;overflow:hidden;">
+    <!-- BG -->
+    <div style="position:absolute;inset:0;pointer-events:none;overflow:hidden;">
+      <div style="position:absolute;width:500px;height:500px;border-radius:50%;background:radial-gradient(circle,rgba(124,58,237,0.12),transparent 70%);top:50%;left:50%;transform:translate(-50%,-50%);animation:pulse 4s ease-in-out infinite;"></div>
+      <div style="position:absolute;inset:0;background-image:linear-gradient(rgba(124,58,237,0.03) 1px,transparent 1px),linear-gradient(90deg,rgba(124,58,237,0.03) 1px,transparent 1px);background-size:50px 50px;"></div>
+    </div>
+
+    <!-- Logo -->
+    <div style="position:relative;display:flex;flex-direction:column;align-items:center;gap:10px;margin-bottom:36px;">
+      <div style="width:72px;height:72px;border-radius:20px;background:linear-gradient(135deg,#7c3aed,#a855f7);display:flex;align-items:center;justify-content:center;font-size:2.2rem;box-shadow:0 16px 48px rgba(124,58,237,0.45);animation:pop 0.6s cubic-bezier(0.175,0.885,0.32,1.275) both;">🎮</div>
+      <div style="font-family:'Bebas Neue',sans-serif;font-size:2rem;letter-spacing:6px;background:linear-gradient(135deg,#fff,rgba(255,255,255,0.6));-webkit-background-clip:text;-webkit-text-fill-color:transparent;animation:fadeDown 0.5s 0.2s ease both;opacity:0;">YASSINE GAMES</div>
+    </div>
+
+    <!-- Card -->
+    <div style="width:min(400px,95vw);background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);border-radius:20px;padding:28px 24px;animation:slideUp 0.5s 0.3s ease both;opacity:0;">
+
+      <!-- Tabs -->
+      <div style="display:flex;background:rgba(255,255,255,0.04);border-radius:12px;padding:3px;gap:3px;margin-bottom:24px;" id="authTabs">
+        <button onclick="switchAuthTab('login')" id="tabLogin" style="flex:1;padding:9px;border-radius:9px;border:none;background:linear-gradient(135deg,#7c3aed,#a855f7);color:#fff;font-family:'Cairo',sans-serif;font-size:0.88rem;font-weight:700;cursor:pointer;transition:all 0.2s;">تسجيل الدخول</button>
+        <button onclick="switchAuthTab('register')" id="tabRegister" style="flex:1;padding:9px;border-radius:9px;border:none;background:transparent;color:rgba(240,240,240,0.4);font-family:'Cairo',sans-serif;font-size:0.88rem;cursor:pointer;transition:all 0.2s;">حساب جديد</button>
+      </div>
+
+      <!-- Login Form -->
+      <div id="loginForm" style="display:flex;flex-direction:column;gap:12px;">
+        <div>
+          <div style="font-size:0.65rem;letter-spacing:3px;color:rgba(240,240,240,0.25);margin-bottom:6px;">اسم المستخدم</div>
+          <input id="loginUsername" type="text" placeholder="أدخل اسمك..." maxlength="20" style="width:100%;padding:12px 14px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:12px;color:#fff;font-family:'Cairo',sans-serif;font-size:0.9rem;outline:none;transition:all 0.2s;box-sizing:border-box;" onfocus="this.style.borderColor='rgba(124,58,237,0.5)'" onblur="this.style.borderColor='rgba(255,255,255,0.1)'"/>
+        </div>
+        <div>
+          <div style="font-size:0.65rem;letter-spacing:3px;color:rgba(240,240,240,0.25);margin-bottom:6px;">كلمة السر</div>
+          <input id="loginPassword" type="password" placeholder="••••••••" maxlength="30" style="width:100%;padding:12px 14px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:12px;color:#fff;font-family:'Cairo',sans-serif;font-size:0.9rem;outline:none;transition:all 0.2s;box-sizing:border-box;" onfocus="this.style.borderColor='rgba(124,58,237,0.5)'" onblur="this.style.borderColor='rgba(255,255,255,0.1)'" onkeydown="if(event.key==='Enter')doLogin()"/>
+        </div>
+        <div id="loginError" style="display:none;padding:10px 14px;background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.2);border-radius:10px;font-size:0.8rem;color:rgba(239,68,68,0.8);text-align:center;"></div>
+        <button onclick="doLogin()" style="padding:14px;background:linear-gradient(135deg,#7c3aed,#a855f7);border:none;border-radius:12px;color:#fff;font-family:'Cairo',sans-serif;font-size:1rem;font-weight:700;cursor:pointer;box-shadow:0 6px 20px rgba(124,58,237,0.35);transition:all 0.2s;margin-top:4px;" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform=''">دخول 🚀</button>
+        <button onclick="guestLogin()" style="padding:12px;background:transparent;border:1px solid rgba(255,255,255,0.08);border-radius:12px;color:rgba(240,240,240,0.35);font-family:'Cairo',sans-serif;font-size:0.88rem;cursor:pointer;transition:all 0.2s;" onmouseover="this.style.borderColor='rgba(255,255,255,0.2)';this.style.color='rgba(240,240,240,0.6)'" onmouseout="this.style.borderColor='rgba(255,255,255,0.08)';this.style.color='rgba(240,240,240,0.35)'">الدخول كضيف 👤</button>
+      </div>
+
+      <!-- Register Form -->
+      <div id="registerForm" style="display:none;flex-direction:column;gap:12px;">
+        <div>
+          <div style="font-size:0.65rem;letter-spacing:3px;color:rgba(240,240,240,0.25);margin-bottom:6px;">الاسم الكامل</div>
+          <input id="regName" type="text" placeholder="اسمك الكامل..." maxlength="20" style="width:100%;padding:12px 14px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:12px;color:#fff;font-family:'Cairo',sans-serif;font-size:0.9rem;outline:none;transition:all 0.2s;box-sizing:border-box;" onfocus="this.style.borderColor='rgba(124,58,237,0.5)'" onblur="this.style.borderColor='rgba(255,255,255,0.1)'"/>
+        </div>
+        <div>
+          <div style="font-size:0.65rem;letter-spacing:3px;color:rgba(240,240,240,0.25);margin-bottom:6px;">اسم المستخدم</div>
+          <input id="regUsername" type="text" placeholder="اسم فريد..." maxlength="20" style="width:100%;padding:12px 14px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:12px;color:#fff;font-family:'Cairo',sans-serif;font-size:0.9rem;outline:none;transition:all 0.2s;box-sizing:border-box;" onfocus="this.style.borderColor='rgba(124,58,237,0.5)'" onblur="this.style.borderColor='rgba(255,255,255,0.1)'"/>
+        </div>
+        <div>
+          <div style="font-size:0.65rem;letter-spacing:3px;color:rgba(240,240,240,0.25);margin-bottom:6px;">كلمة السر</div>
+          <input id="regPassword" type="password" placeholder="••••••••" maxlength="30" style="width:100%;padding:12px 14px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:12px;color:#fff;font-family:'Cairo',sans-serif;font-size:0.9rem;outline:none;transition:all 0.2s;box-sizing:border-box;" onfocus="this.style.borderColor='rgba(124,58,237,0.5)'" onblur="this.style.borderColor='rgba(255,255,255,0.1)'"/>
+        </div>
+        <div id="regError" style="display:none;padding:10px 14px;background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.2);border-radius:10px;font-size:0.8rem;color:rgba(239,68,68,0.8);text-align:center;"></div>
+        <button onclick="doRegister()" style="padding:14px;background:linear-gradient(135deg,#7c3aed,#a855f7);border:none;border-radius:12px;color:#fff;font-family:'Cairo',sans-serif;font-size:1rem;font-weight:700;cursor:pointer;box-shadow:0 6px 20px rgba(124,58,237,0.35);transition:all 0.2s;margin-top:4px;" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform=''">إنشاء الحساب ✨</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 </body>
 <!-- SPY -->
 <div class="screen" id="imposter">
@@ -3191,15 +4047,173 @@ const SFX = (() => {
   </div>
 </div>
 
+
+
+
+<!-- ══ BOTTOM NAV ══ -->
+<div id="bottomNav" style="position:fixed;bottom:0;left:0;right:0;z-index:1000;background:rgba(10,10,15,0.92);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-top:1px solid rgba(255,255,255,0.07);padding:8px 0 calc(8px + env(safe-area-inset-bottom));display:flex;align-items:center;justify-content:space-around;">
+  <button onclick="bottomNavGo('home')" id="bnHome" class="bn-btn active-bn" style="display:flex;flex-direction:column;align-items:center;gap:3px;background:none;border:none;cursor:pointer;padding:6px 20px;border-radius:12px;transition:all 0.2s;min-width:64px;">
+    <span style="font-size:1.3rem;">🏠</span>
+    <span style="font-family:'Cairo',sans-serif;font-size:0.6rem;letter-spacing:1px;color:var(--accent2);">الرئيسية</span>
+  </button>
+  <button onclick="bottomNavGo('games')" id="bnGames" class="bn-btn" style="display:flex;flex-direction:column;align-items:center;gap:3px;background:none;border:none;cursor:pointer;padding:6px 20px;border-radius:12px;transition:all 0.2s;min-width:64px;">
+    <span style="font-size:1.3rem;">🎮</span>
+    <span style="font-family:'Cairo',sans-serif;font-size:0.6rem;letter-spacing:1px;color:rgba(240,240,240,0.3);">الألعاب</span>
+  </button>
+  <button onclick="bottomNavGo('share')" id="bnShare" class="bn-btn" style="display:flex;flex-direction:column;align-items:center;gap:3px;background:none;border:none;cursor:pointer;padding:6px 20px;border-radius:12px;transition:all 0.2s;min-width:64px;">
+    <span style="font-size:1.3rem;">🔗</span>
+    <span style="font-family:'Cairo',sans-serif;font-size:0.6rem;letter-spacing:1px;color:rgba(240,240,240,0.3);">مشاركة</span>
+  </button>
+  <button onclick="bottomNavGo('contact')" id="bnContact" class="bn-btn" style="display:flex;flex-direction:column;align-items:center;gap:3px;background:none;border:none;cursor:pointer;padding:6px 20px;border-radius:12px;transition:all 0.2s;min-width:64px;">
+    <span style="font-size:1.3rem;">✉️</span>
+    <span style="font-family:'Cairo',sans-serif;font-size:0.6rem;letter-spacing:1px;color:rgba(240,240,240,0.3);">تواصل</span>
+  </button>
+</div>
+
+<!-- ══ CONTACT SCREEN ══ -->
+<div class="screen" id="contact-screen">
+  <button class="back-btn" onclick="goHome()">← رجوع</button>
+  <div style="display:flex;flex-direction:column;align-items:center;min-height:100vh;padding:80px 20px 120px;gap:0;position:relative;overflow:hidden;">
+    <div style="position:absolute;inset:0;background:radial-gradient(circle at 50% 30%,rgba(6,214,160,0.06),transparent 60%);pointer-events:none;"></div>
+    <div style="font-family:'Bebas Neue',sans-serif;font-size:clamp(2.5rem,10vw,4rem);letter-spacing:5px;background:linear-gradient(135deg,#06d6a0,#0ea5e9);-webkit-background-clip:text;-webkit-text-fill-color:transparent;animation:fadeDown 0.5s ease both;line-height:1;margin-bottom:6px;">تواصل معنا</div>
+    <div style="font-size:0.65rem;letter-spacing:5px;color:rgba(6,214,160,0.3);margin-bottom:36px;animation:fadeDown 0.5s 0.1s ease both;opacity:0;">نحن هنا دائماً</div>
+
+    <div style="width:min(420px,95vw);display:flex;flex-direction:column;gap:12px;animation:slideUp 0.5s 0.15s ease both;opacity:0;">
+
+      <!-- Card: Instagram -->
+      <a href="https://instagram.com" target="_blank" style="text-decoration:none;display:flex;align-items:center;gap:14px;padding:16px 18px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.07);border-radius:16px;transition:all 0.2s;" onmouseover="this.style.borderColor='rgba(225,48,108,0.4)';this.style.background='rgba(225,48,108,0.06)'" onmouseout="this.style.borderColor='rgba(255,255,255,0.07)';this.style.background='rgba(255,255,255,0.03)'">
+        <div style="width:44px;height:44px;border-radius:12px;background:linear-gradient(135deg,#f09433,#e6683c,#dc2743,#cc2366,#bc1888);display:flex;align-items:center;justify-content:center;font-size:1.4rem;flex-shrink:0;">📸</div>
+        <div><div style="font-size:0.9rem;font-weight:700;color:rgba(240,240,240,0.85);">Instagram</div><div style="font-size:0.75rem;color:rgba(240,240,240,0.3);margin-top:2px;">@yassine.games</div></div>
+        <div style="margin-right:auto;color:rgba(255,255,255,0.2);font-size:0.9rem;">←</div>
+      </a>
+
+      <!-- Card: Email -->
+      <a href="mailto:contact@yassinegames.com" style="text-decoration:none;display:flex;align-items:center;gap:14px;padding:16px 18px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.07);border-radius:16px;transition:all 0.2s;" onmouseover="this.style.borderColor='rgba(14,165,233,0.4)';this.style.background='rgba(14,165,233,0.06)'" onmouseout="this.style.borderColor='rgba(255,255,255,0.07)';this.style.background='rgba(255,255,255,0.03)'">
+        <div style="width:44px;height:44px;border-radius:12px;background:linear-gradient(135deg,#0ea5e9,#0284c7);display:flex;align-items:center;justify-content:center;font-size:1.4rem;flex-shrink:0;">✉️</div>
+        <div><div style="font-size:0.9rem;font-weight:700;color:rgba(240,240,240,0.85);">البريد الإلكتروني</div><div style="font-size:0.75rem;color:rgba(240,240,240,0.3);margin-top:2px;">contact@yassinegames.com</div></div>
+        <div style="margin-right:auto;color:rgba(255,255,255,0.2);font-size:0.9rem;">←</div>
+      </a>
+
+      <!-- Card: TikTok -->
+      <a href="https://tiktok.com" target="_blank" style="text-decoration:none;display:flex;align-items:center;gap:14px;padding:16px 18px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.07);border-radius:16px;transition:all 0.2s;" onmouseover="this.style.borderColor='rgba(255,255,255,0.2)';this.style.background='rgba(255,255,255,0.06)'" onmouseout="this.style.borderColor='rgba(255,255,255,0.07)';this.style.background='rgba(255,255,255,0.03)'">
+        <div style="width:44px;height:44px;border-radius:12px;background:linear-gradient(135deg,#010101,#333);display:flex;align-items:center;justify-content:center;font-size:1.4rem;flex-shrink:0;">🎵</div>
+        <div><div style="font-size:0.9rem;font-weight:700;color:rgba(240,240,240,0.85);">TikTok</div><div style="font-size:0.75rem;color:rgba(240,240,240,0.3);margin-top:2px;">@yassine.games</div></div>
+        <div style="margin-right:auto;color:rgba(255,255,255,0.2);font-size:0.9rem;">←</div>
+      </a>
+
+      <!-- Login/logout button -->
+      <div style="display:flex;gap:8px;margin-top:4px;">
+        <button onclick="currentUser ? showUserMenu() : showScreen('login-screen')" style="flex:1;padding:13px;background:linear-gradient(135deg,rgba(124,58,237,0.12),rgba(168,85,247,0.08));border:1px solid rgba(124,58,237,0.2);border-radius:14px;color:rgba(167,139,250,0.8);font-family:'Cairo',sans-serif;font-size:0.9rem;font-weight:600;cursor:pointer;" id="contactAuthBtn">🔐 تسجيل الدخول</button>
+      </div>
+
+      <!-- About box -->
+      <div style="padding:18px;background:rgba(124,58,237,0.05);border:1px solid rgba(124,58,237,0.12);border-radius:16px;margin-top:8px;">
+        <div style="font-size:0.65rem;letter-spacing:4px;color:rgba(167,139,250,0.4);margin-bottom:10px;">عن المشروع</div>
+        <p style="font-size:0.88rem;color:rgba(240,240,240,0.45);line-height:1.8;margin:0;">YSSN Games منصة ألعاب عربية مصممة للأصدقاء والعائلة. نهدف إلى تقديم تجربة ترفيهية ممتعة وبسيطة بلمسة عربية أصيلة.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ GAMES LIST SCREEN ══ -->
+<div class="screen" id="games-screen">
+  <button class="back-btn" onclick="goHome()">← رجوع</button>
+  <div style="display:flex;flex-direction:column;align-items:center;min-height:100vh;padding:80px 20px 120px;gap:0;position:relative;">
+    <div style="position:absolute;inset:0;background:radial-gradient(circle at 50% 20%,rgba(124,58,237,0.07),transparent 60%);pointer-events:none;"></div>
+    <div style="font-family:'Bebas Neue',sans-serif;font-size:clamp(2.5rem,10vw,4rem);letter-spacing:5px;background:linear-gradient(135deg,#a855f7,#7c3aed);-webkit-background-clip:text;-webkit-text-fill-color:transparent;animation:fadeDown 0.5s ease both;line-height:1;margin-bottom:6px;">الألعاب</div>
+    <div style="font-size:0.65rem;letter-spacing:5px;color:rgba(167,139,250,0.3);margin-bottom:36px;animation:fadeDown 0.5s 0.1s ease both;opacity:0;">اختر لعبتك</div>
+
+    <div style="width:min(420px,95vw);display:flex;flex-direction:column;gap:10px;animation:slideUp 0.5s 0.15s ease both;opacity:0;">
+      <div onclick="SFX.play('click');goHome();setTimeout(()=>openDama(),100);" style="display:flex;align-items:center;gap:14px;padding:16px 18px;background:rgba(14,165,233,0.05);border:1px solid rgba(14,165,233,0.12);border-radius:16px;cursor:pointer;transition:all 0.2s;" onmouseover="this.style.borderColor='rgba(14,165,233,0.35)';this.style.transform='translateX(-4px)'" onmouseout="this.style.borderColor='rgba(14,165,233,0.12)';this.style.transform=''">
+        <div style="width:48px;height:48px;border-radius:14px;background:rgba(14,165,233,0.1);display:flex;align-items:center;justify-content:center;font-size:1.6rem;">🔵</div>
+        <div><div style="font-family:'Bebas Neue',sans-serif;font-size:1.3rem;letter-spacing:2px;color:#fff;">DAMA</div><div style="font-size:0.75rem;color:rgba(240,240,240,0.3);">لعبة الداما الكلاسيكية</div></div>
+        <div style="margin-right:auto;font-size:0.8rem;color:rgba(14,165,233,0.4);">←</div>
+      </div>
+      <div onclick="SFX.play('click');goHome();setTimeout(()=>openChess(),100);" style="display:flex;align-items:center;gap:14px;padding:16px 18px;background:rgba(245,158,11,0.05);border:1px solid rgba(245,158,11,0.12);border-radius:16px;cursor:pointer;transition:all 0.2s;" onmouseover="this.style.borderColor='rgba(245,158,11,0.35)';this.style.transform='translateX(-4px)'" onmouseout="this.style.borderColor='rgba(245,158,11,0.12)';this.style.transform=''">
+        <div style="width:48px;height:48px;border-radius:14px;background:rgba(245,158,11,0.1);display:flex;align-items:center;justify-content:center;font-size:1.6rem;">♟️</div>
+        <div><div style="font-family:'Bebas Neue',sans-serif;font-size:1.3rem;letter-spacing:2px;color:#fff;">CHESS</div><div style="font-size:0.75rem;color:rgba(240,240,240,0.3);">الشطرنج الكلاسيكي</div></div>
+        <div style="margin-right:auto;font-size:0.8rem;color:rgba(245,158,11,0.4);">←</div>
+      </div>
+      <div onclick="SFX.play('click');goHome();setTimeout(()=>openLoup(),100);" style="display:flex;align-items:center;gap:14px;padding:16px 18px;background:rgba(124,58,237,0.05);border:1px solid rgba(124,58,237,0.12);border-radius:16px;cursor:pointer;transition:all 0.2s;" onmouseover="this.style.borderColor='rgba(124,58,237,0.35)';this.style.transform='translateX(-4px)'" onmouseout="this.style.borderColor='rgba(124,58,237,0.12)';this.style.transform=''">
+        <div style="width:48px;height:48px;border-radius:14px;background:rgba(124,58,237,0.1);display:flex;align-items:center;justify-content:center;font-size:1.6rem;">🐺</div>
+        <div><div style="font-family:'Bebas Neue',sans-serif;font-size:1.3rem;letter-spacing:2px;color:#fff;">LOUP GAROU</div><div style="font-size:0.75rem;color:rgba(240,240,240,0.3);">من الذئب بينكم؟</div></div>
+        <div style="margin-right:auto;font-size:0.8rem;color:rgba(124,58,237,0.4);">←</div>
+      </div>
+      <div onclick="SFX.play('click');goHome();setTimeout(()=>openSpy(),100);" style="display:flex;align-items:center;gap:14px;padding:16px 18px;background:rgba(239,68,68,0.05);border:1px solid rgba(239,68,68,0.12);border-radius:16px;cursor:pointer;transition:all 0.2s;" onmouseover="this.style.borderColor='rgba(239,68,68,0.35)';this.style.transform='translateX(-4px)'" onmouseout="this.style.borderColor='rgba(239,68,68,0.12)';this.style.transform=''">
+        <div style="width:48px;height:48px;border-radius:14px;background:rgba(239,68,68,0.1);display:flex;align-items:center;justify-content:center;font-size:1.6rem;">🕵️</div>
+        <div><div style="font-family:'Bebas Neue',sans-serif;font-size:1.3rem;letter-spacing:2px;color:#fff;">IMPOSTER</div><div style="font-size:0.75rem;color:rgba(240,240,240,0.3);">من المتسلل؟</div></div>
+        <div style="margin-right:auto;font-size:0.8rem;color:rgba(239,68,68,0.4);">←</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ══ LOGIN SCREEN ══ -->
+<div class="screen" id="login-screen">
+  <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;padding:40px 20px 100px;position:relative;overflow:hidden;">
+    <!-- BG -->
+    <div style="position:absolute;inset:0;pointer-events:none;overflow:hidden;">
+      <div style="position:absolute;width:500px;height:500px;border-radius:50%;background:radial-gradient(circle,rgba(124,58,237,0.12),transparent 70%);top:50%;left:50%;transform:translate(-50%,-50%);animation:pulse 4s ease-in-out infinite;"></div>
+      <div style="position:absolute;inset:0;background-image:linear-gradient(rgba(124,58,237,0.03) 1px,transparent 1px),linear-gradient(90deg,rgba(124,58,237,0.03) 1px,transparent 1px);background-size:50px 50px;"></div>
+    </div>
+
+    <!-- Logo -->
+    <div style="position:relative;display:flex;flex-direction:column;align-items:center;gap:10px;margin-bottom:36px;">
+      <div style="width:72px;height:72px;border-radius:20px;background:linear-gradient(135deg,#7c3aed,#a855f7);display:flex;align-items:center;justify-content:center;font-size:2.2rem;box-shadow:0 16px 48px rgba(124,58,237,0.45);animation:pop 0.6s cubic-bezier(0.175,0.885,0.32,1.275) both;">🎮</div>
+      <div style="font-family:'Bebas Neue',sans-serif;font-size:2rem;letter-spacing:6px;background:linear-gradient(135deg,#fff,rgba(255,255,255,0.6));-webkit-background-clip:text;-webkit-text-fill-color:transparent;animation:fadeDown 0.5s 0.2s ease both;opacity:0;">YASSINE GAMES</div>
+    </div>
+
+    <!-- Card -->
+    <div style="width:min(400px,95vw);background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);border-radius:20px;padding:28px 24px;animation:slideUp 0.5s 0.3s ease both;opacity:0;">
+
+      <!-- Tabs -->
+      <div style="display:flex;background:rgba(255,255,255,0.04);border-radius:12px;padding:3px;gap:3px;margin-bottom:24px;" id="authTabs">
+        <button onclick="switchAuthTab('login')" id="tabLogin" style="flex:1;padding:9px;border-radius:9px;border:none;background:linear-gradient(135deg,#7c3aed,#a855f7);color:#fff;font-family:'Cairo',sans-serif;font-size:0.88rem;font-weight:700;cursor:pointer;transition:all 0.2s;">تسجيل الدخول</button>
+        <button onclick="switchAuthTab('register')" id="tabRegister" style="flex:1;padding:9px;border-radius:9px;border:none;background:transparent;color:rgba(240,240,240,0.4);font-family:'Cairo',sans-serif;font-size:0.88rem;cursor:pointer;transition:all 0.2s;">حساب جديد</button>
+      </div>
+
+      <!-- Login Form -->
+      <div id="loginForm" style="display:flex;flex-direction:column;gap:12px;">
+        <div>
+          <div style="font-size:0.65rem;letter-spacing:3px;color:rgba(240,240,240,0.25);margin-bottom:6px;">اسم المستخدم</div>
+          <input id="loginUsername" type="text" placeholder="أدخل اسمك..." maxlength="20" style="width:100%;padding:12px 14px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:12px;color:#fff;font-family:'Cairo',sans-serif;font-size:0.9rem;outline:none;transition:all 0.2s;box-sizing:border-box;" onfocus="this.style.borderColor='rgba(124,58,237,0.5)'" onblur="this.style.borderColor='rgba(255,255,255,0.1)'"/>
+        </div>
+        <div>
+          <div style="font-size:0.65rem;letter-spacing:3px;color:rgba(240,240,240,0.25);margin-bottom:6px;">كلمة السر</div>
+          <input id="loginPassword" type="password" placeholder="••••••••" maxlength="30" style="width:100%;padding:12px 14px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:12px;color:#fff;font-family:'Cairo',sans-serif;font-size:0.9rem;outline:none;transition:all 0.2s;box-sizing:border-box;" onfocus="this.style.borderColor='rgba(124,58,237,0.5)'" onblur="this.style.borderColor='rgba(255,255,255,0.1)'" onkeydown="if(event.key==='Enter')doLogin()"/>
+        </div>
+        <div id="loginError" style="display:none;padding:10px 14px;background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.2);border-radius:10px;font-size:0.8rem;color:rgba(239,68,68,0.8);text-align:center;"></div>
+        <button onclick="doLogin()" style="padding:14px;background:linear-gradient(135deg,#7c3aed,#a855f7);border:none;border-radius:12px;color:#fff;font-family:'Cairo',sans-serif;font-size:1rem;font-weight:700;cursor:pointer;box-shadow:0 6px 20px rgba(124,58,237,0.35);transition:all 0.2s;margin-top:4px;" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform=''">دخول 🚀</button>
+        <button onclick="guestLogin()" style="padding:12px;background:transparent;border:1px solid rgba(255,255,255,0.08);border-radius:12px;color:rgba(240,240,240,0.35);font-family:'Cairo',sans-serif;font-size:0.88rem;cursor:pointer;transition:all 0.2s;" onmouseover="this.style.borderColor='rgba(255,255,255,0.2)';this.style.color='rgba(240,240,240,0.6)'" onmouseout="this.style.borderColor='rgba(255,255,255,0.08)';this.style.color='rgba(240,240,240,0.35)'">الدخول كضيف 👤</button>
+      </div>
+
+      <!-- Register Form -->
+      <div id="registerForm" style="display:none;flex-direction:column;gap:12px;">
+        <div>
+          <div style="font-size:0.65rem;letter-spacing:3px;color:rgba(240,240,240,0.25);margin-bottom:6px;">الاسم الكامل</div>
+          <input id="regName" type="text" placeholder="اسمك الكامل..." maxlength="20" style="width:100%;padding:12px 14px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:12px;color:#fff;font-family:'Cairo',sans-serif;font-size:0.9rem;outline:none;transition:all 0.2s;box-sizing:border-box;" onfocus="this.style.borderColor='rgba(124,58,237,0.5)'" onblur="this.style.borderColor='rgba(255,255,255,0.1)'"/>
+        </div>
+        <div>
+          <div style="font-size:0.65rem;letter-spacing:3px;color:rgba(240,240,240,0.25);margin-bottom:6px;">اسم المستخدم</div>
+          <input id="regUsername" type="text" placeholder="اسم فريد..." maxlength="20" style="width:100%;padding:12px 14px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:12px;color:#fff;font-family:'Cairo',sans-serif;font-size:0.9rem;outline:none;transition:all 0.2s;box-sizing:border-box;" onfocus="this.style.borderColor='rgba(124,58,237,0.5)'" onblur="this.style.borderColor='rgba(255,255,255,0.1)'"/>
+        </div>
+        <div>
+          <div style="font-size:0.65rem;letter-spacing:3px;color:rgba(240,240,240,0.25);margin-bottom:6px;">كلمة السر</div>
+          <input id="regPassword" type="password" placeholder="••••••••" maxlength="30" style="width:100%;padding:12px 14px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:12px;color:#fff;font-family:'Cairo',sans-serif;font-size:0.9rem;outline:none;transition:all 0.2s;box-sizing:border-box;" onfocus="this.style.borderColor='rgba(124,58,237,0.5)'" onblur="this.style.borderColor='rgba(255,255,255,0.1)'"/>
+        </div>
+        <div id="regError" style="display:none;padding:10px 14px;background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.2);border-radius:10px;font-size:0.8rem;color:rgba(239,68,68,0.8);text-align:center;"></div>
+        <button onclick="doRegister()" style="padding:14px;background:linear-gradient(135deg,#7c3aed,#a855f7);border:none;border-radius:12px;color:#fff;font-family:'Cairo',sans-serif;font-size:1rem;font-weight:700;cursor:pointer;box-shadow:0 6px 20px rgba(124,58,237,0.35);transition:all 0.2s;margin-top:4px;" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform=''">إنشاء الحساب ✨</button>
+      </div>
+    </div>
+  </div>
+</div>
 <script>
   if ('serviceWorker' in navigator) {
-    window.addEventListener('load', () => {
-      navigator.serviceWorker.register('./sw.js')
-        .then(reg => console.log('PWA جاهز!', reg))
-        .catch(err => console.log('فشل التسجيل', err));
-    });
+    navigator.serviceWorker.register('./sw.js')
+      .then(() => console.log("PWA جاهز للعمل أوفلاين!"))
+      .catch((err) => console.log("فشل تسجيل الـ SW:", err));
   }
 </script>
-
 </body>
 </html>
