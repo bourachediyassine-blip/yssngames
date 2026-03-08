@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>YSSN Games 🎮</title>
+<link rel="apple-touch-icon" href="icon.png">
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
 <style>
 /* ══ RESET & VARIABLES ══ */
@@ -446,7 +447,7 @@ document.addEventListener('fullscreenchange',()=>{
 // ══════════════════════════════════════
 // 🔐 AUTH (localStorage-based)
 // ══════════════════════════════════════
-let currentUser = null;
+var currentUser = null;
 
 function initAuth(){
   const saved = localStorage.getItem('yssn_session');
@@ -3277,49 +3278,6 @@ const SFX = (() => {
   return { play, toggleMute, isMuted: ()=>muted };
 })();
 
-
-// ══ BOTTOM NAV ══
-function bottomNavGo(tab) {
-  SFX.play('click');
-  // Update active state
-  ['bnHome','bnGames','bnShare','bnContact'].forEach(id=>{
-    const btn = document.getElementById(id);
-    if(!btn) return;
-    const span = btn.querySelectorAll('span')[1];
-    if(span) span.style.color = 'rgba(240,240,240,0.3)';
-  });
-
-  if(tab === 'home') {
-    goHome();
-    const b = document.getElementById('bnHome');
-    if(b) b.querySelectorAll('span')[1].style.color = 'var(--accent2)';
-  } else if(tab === 'games') {
-    showScreen('games-screen');
-    const b = document.getElementById('bnGames');
-    if(b) b.querySelectorAll('span')[1].style.color = 'var(--accent2)';
-  } else if(tab === 'contact') {
-    showScreen('contact-screen');
-    const b = document.getElementById('bnContact');
-    if(b) b.querySelectorAll('span')[1].style.color = 'var(--accent2)';
-  } else if(tab === 'share') {
-    showShareOverlay();
-  }
-}
-
-// Reset nav to home when goHome is called
-const _origGoHome = goHome;
-function goHome() {
-  _origGoHome();
-  ['bnHome','bnGames','bnShare','bnContact'].forEach(id=>{
-    const btn = document.getElementById(id);
-    if(!btn) return;
-    const span = btn.querySelectorAll('span')[1];
-    if(span) span.style.color = 'rgba(240,240,240,0.3)';
-  });
-  const b = document.getElementById('bnHome');
-  if(b) b.querySelectorAll('span')[1].style.color = 'var(--accent2)';
-}
-
 // ══ SHARE OVERLAY ══
 function showShareOverlay() {
   const url = window.location.href;
@@ -3478,7 +3436,7 @@ document.addEventListener('fullscreenchange',()=>{
 // ══════════════════════════════════════
 // 🔐 AUTH (localStorage-based)
 // ══════════════════════════════════════
-let currentUser = null;
+var currentUser = null;
 
 function initAuth(){
   const saved = localStorage.getItem('yssn_session');
@@ -4207,6 +4165,15 @@ window.addEventListener('DOMContentLoaded', initAuth);
     </div>
   </div>
 </div>
+
+   <script>
+
+    if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('./sw.js')
+      .then(() => console.log("PWA جاهز للعمل أوفلاين!"))
+      .catch((err) => console.log("فشل تسجيل الـ SW:", err));
+      }
+    </script>
 
 </body>
 </html>
