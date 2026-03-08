@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<body>
+    <h3>جاري إنشاء الأيقونة...</h3>
+    <canvas id="myCanvas" width="512" height="512" style="display:none;"></canvas>
+    <script>
+        const canvas = document.getElementById('myCanvas');
+        const ctx = canvas.getContext('2d');
+
+        // خلفية داكنة تناسب تصميم موقعك
+        ctx.fillStyle = '#1a1a2e';
+        ctx.fillRect(0, 0, 512, 512);
+
+        // رسم شكل خارجي (Rounded Rect)
+        ctx.fillStyle = '#6366f1';
+        roundRect(ctx, 100, 100, 312, 312, 50, true);
+
+        // رسم دائرة في المنتصف لتمثيل شعار ألعاب
+        ctx.fillStyle = 'white';
+        ctx.beginPath();
+        ctx.arc(256, 256, 80, 0, Math.PI * 2);
+        ctx.fill();
+
+        // تحميل الصورة تلقائياً
+        const link = document.createElement('a');
+        link.download = 'icon.png';
+        link.href = canvas.toDataURL('image/png');
+        link.click();
+
+        function roundRect(ctx, x, y, width, height, radius, fill) {
+            ctx.beginPath();
+            ctx.moveTo(x + radius, y);
+            ctx.lineTo(x + width - radius, y);
+            ctx.quadraticCurveTo(x + width, y, x + width, y + radius);
+            ctx.lineTo(x + width, y + height - radius);
+            ctx.quadraticCurveTo(x + width, y + height, x + width - radius, y + height);
+            ctx.lineTo(x + radius, y + height);
+            ctx.quadraticCurveTo(x, y + height, x, y + height - radius);
+            ctx.lineTo(x, y + radius);
+            ctx.quadraticCurveTo(x, y, x + radius, y);
+            ctx.closePath();
+            if (fill) ctx.fill();
+        }
+    </script>
+</body>
+</html>

@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>YSSN Games 🎮</title>
-<link rel="manifest" href="manifest.json" crossorigin="use-credentials">
+<link rel="apple-touch-icon" href="icon.png">
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
 <style>
 /* ══ RESET & VARIABLES ══ */
@@ -3193,11 +3193,9 @@ const SFX = (() => {
 
 <script>
   if ('serviceWorker' in navigator) {
-    window.addEventListener('load', () => {
-      navigator.serviceWorker.register('./sw.js')
-        .then(reg => console.log('PWA جاهز!', reg))
-        .catch(err => console.log('فشل التسجيل', err));
-    });
+    navigator.serviceWorker.register('./sw.js')
+      .then(() => console.log("PWA جاهز للعمل أوفلاين!"))
+      .catch((err) => console.log("فشل تسجيل الـ SW:", err));
   }
 </script>
 

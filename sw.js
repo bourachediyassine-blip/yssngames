@@ -1,14 +1,26 @@
-const cacheName = 'v1-cache';
-const assetsToCache = ['./index.html', './manifest.json'];
+const CACHE_NAME = 'yassine-games-v1';
+const ASSETS = [
+  './',
+  './index.html',
+  './manifest.json',
+  './icon.png',
+  
+];
 
-self.addEventListener('install', e => {
-  e.waitUntil(
-    caches.open(cacheName).then(cache => cache.addAll(assetsToCache))
+// تثبيت الـ Service Worker وتخزين الملفات
+self.addEventListener('install', (event) => {
+  event.waitUntil(
+    caches.open(CACHE_NAME).then((cache) => {
+      return cache.addAll(ASSETS);
+    })
   );
 });
 
-self.addEventListener('fetch', e => {
-  e.respondWith(
-    caches.match(e.request).then(res => res || fetch(e.request))
+// جلب الملفات من الكاش عند انقطاع الإنترنت
+self.addEventListener('fetch', (event) => {
+  event.respondWith(
+    caches.match(event.request).then((response) => {
+      return response || fetch(event.request);
+    })
   );
 });
