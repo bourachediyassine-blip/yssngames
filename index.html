@@ -10,7 +10,52 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="YSSN Games">
 <link rel="apple-touch-icon" href="icon.png">
-<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&family=Bebas+Neue&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&family=Bebas+Neue&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
+<style>
+/* ══ OFFLINE FONT FALLBACKS ══ */
+@font-face {
+  font-family: 'Cairo';
+  font-style: normal;
+  font-weight: 400;
+  src: local('Cairo'), local('Cairo-Regular');
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Cairo';
+  font-style: normal;
+  font-weight: 600;
+  src: local('Cairo SemiBold'), local('Cairo-SemiBold');
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Cairo';
+  font-style: normal;
+  font-weight: 700;
+  src: local('Cairo Bold'), local('Cairo-Bold');
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Cairo';
+  font-style: normal;
+  font-weight: 900;
+  src: local('Cairo Black'), local('Cairo-Black');
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Bebas Neue';
+  font-style: normal;
+  font-weight: 400;
+  src: local('Bebas Neue'), local('BebasNeue-Regular');
+  font-display: swap;
+}
+/* Fallback stack if fonts not installed */
+:root {
+  --font-ar: 'Cairo', 'Segoe UI', 'Tahoma', 'Arial', sans-serif;
+  --font-display: 'Bebas Neue', 'Impact', 'Arial Black', sans-serif;
+}
+</style>
 <style>
 
 /* ══ RESET & VARIABLES ══ */
@@ -33,7 +78,7 @@ body.light-mode{
   --border:rgba(0,0,0,0.08);--border2:rgba(0,0,0,0.14);
   --white:#0f172a;--dark:#f8fafc;--dark2:#ffffff;--dark3:#f1f5f9;
 }
-body{background:var(--bg);color:var(--text);font-family:"Cairo",sans-serif;min-height:100vh;overflow-x:hidden;transition:background 0.4s,color 0.4s;padding-bottom:70px;}
+body{background:var(--bg);color:var(--text);font-family:var(--font-ar);min-height:100vh;overflow-x:hidden;transition:background 0.4s,color 0.4s;padding-bottom:40px;}
 
 /* Noise overlay */
 body::before{content:"";position:fixed;inset:0;background:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");pointer-events:none;z-index:0;opacity:0.4;}
@@ -51,16 +96,54 @@ body::after{content:"";position:fixed;inset:0;background:
 /* ══ HOME ══ */
 #home{min-height:100vh;align-items:center;justify-content:flex-start;padding:0 20px 40px;text-align:center;gap:0;}
 
-/* Top bar */
-.topbar{width:100%;max-width:520px;display:flex;align-items:center;justify-content:space-between;padding:20px 0 0;margin-bottom:28px;}
-.topbar-btns{display:flex;gap:8px;}
-.topbar-btn{background:var(--surface);border:1px solid var(--border2);color:var(--text2);font-family:"Cairo",sans-serif;font-size:0.75rem;padding:7px 12px;border-radius:20px;cursor:pointer;transition:var(--transition);letter-spacing:0.5px;}
+/* ══ TOP BAR — Clean Modern Design ══ */
+.topbar{
+  width:100%;max-width:520px;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:16px 0 0;margin-bottom:24px;
+}
+.topbar-left{display:flex;align-items:center;gap:10px;}
+.topbar-right{display:flex;align-items:center;gap:6px;}
+
+/* Icon buttons (small circular) */
+.tb-icon-btn{
+  width:36px;height:36px;border-radius:50%;
+  background:var(--surface);border:1px solid var(--border2);
+  color:var(--text2);font-size:1rem;
+  display:flex;align-items:center;justify-content:center;
+  cursor:pointer;transition:var(--transition);
+  flex-shrink:0;
+}
+.tb-icon-btn:hover{background:var(--surface2);color:var(--text);border-color:var(--accent);}
+
+/* Auth button */
+.tb-auth-btn{
+  display:flex;align-items:center;gap:6px;
+  padding:7px 14px;
+  background:linear-gradient(135deg,#7c3aed,#a855f7);
+  border:none;border-radius:20px;
+  color:#fff;font-family:var(--font-ar);
+  font-size:0.82rem;font-weight:700;
+  cursor:pointer;transition:var(--transition);
+  white-space:nowrap;
+}
+.tb-auth-btn:hover{transform:translateY(-1px);box-shadow:0 4px 16px rgba(124,58,237,0.4);}
+.tb-auth-btn.signed-in{background:linear-gradient(135deg,#06d6a0,#0ea5e9);}
+
+/* Logo brand */
+.topbar-brand{display:flex;align-items:center;gap:8px;}
+.topbar-logo{width:34px;height:34px;border-radius:10px;background:linear-gradient(135deg,var(--accent),var(--accentG));display:flex;align-items:center;justify-content:center;font-size:1.1rem;animation:logoFloat 3s ease-in-out infinite;}
+.topbar-name{font-family:var(--font-display);font-size:1rem;letter-spacing:3px;background:linear-gradient(135deg,var(--accent2),var(--accentG));-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+
+/* Deprecated — keep for compatibility */
+.topbar-btns{display:flex;gap:6px;}
+.topbar-btn{background:var(--surface);border:1px solid var(--border2);color:var(--text2);font-family:var(--font-ar);font-size:0.75rem;padding:7px 12px;border-radius:20px;cursor:pointer;transition:var(--transition);}
 .topbar-btn:hover{background:var(--surface2);color:var(--text);border-color:var(--accent);}
 
 /* Logo */
 .logo-wrap{display:flex;flex-direction:column;align-items:center;gap:4px;margin-bottom:32px;}
 .logo-icon{width:72px;height:72px;border-radius:20px;background:linear-gradient(135deg,var(--accent),var(--accent2),var(--accentG));display:flex;align-items:center;justify-content:center;font-size:2rem;box-shadow:0 8px 32px rgba(124,58,237,0.4),0 0 0 1px rgba(168,85,247,0.2);animation:logoFloat 3s ease-in-out infinite;}
-.logo-title{font-family:"Bebas Neue",sans-serif;font-size:2.2rem;letter-spacing:4px;background:linear-gradient(135deg,var(--accent2),var(--accentG));-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.logo-title{font-family:var(--font-display);font-size:2.2rem;letter-spacing:4px;background:linear-gradient(135deg,var(--accent2),var(--accentG));-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
 .logo-sub{font-size:0.7rem;letter-spacing:5px;color:var(--text3);text-transform:uppercase;}
 
 @keyframes logoFloat{0%,100%{transform:translateY(0) rotate(0deg);}50%{transform:translateY(-8px) rotate(2deg);}}
@@ -76,7 +159,7 @@ body::after{content:"";position:fixed;inset:0;background:
 .card-inner{padding:20px 16px 16px;display:flex;flex-direction:column;gap:6px;flex:1;}
 .card-tag{font-size:0.6rem;letter-spacing:3px;color:var(--text3);text-transform:uppercase;}
 .card-icon{font-size:2rem;line-height:1;filter:drop-shadow(0 4px 8px rgba(0,0,0,0.3));}
-.card-title{font-family:"Bebas Neue",sans-serif;font-size:1.5rem;letter-spacing:2px;color:var(--text);line-height:1;}
+.card-title{font-family:var(--font-display);font-size:1.5rem;letter-spacing:2px;color:var(--text);line-height:1;}
 .card-desc{font-size:0.72rem;color:var(--text3);line-height:1.4;}
 .card-bar{height:3px;background:var(--glow1,rgba(124,58,237,0.5));border-radius:0 0 var(--radius) var(--radius);}
 
@@ -89,7 +172,7 @@ body.light-mode .theme-btn::after{left:23px;background:var(--accent);}
 .section-label{font-size:0.62rem;letter-spacing:4px;color:var(--text3);text-transform:uppercase;align-self:flex-start;margin:4px 0 -4px;}
 
 /* ══ BACK BTN ══ */
-.back-btn{position:fixed;top:16px;left:16px;z-index:100;background:var(--surface);border:1px solid var(--border2);color:var(--text2);font-family:"Cairo",sans-serif;font-size:0.8rem;padding:8px 14px;border-radius:20px;cursor:pointer;transition:var(--transition);backdrop-filter:blur(8px);}
+.back-btn{position:fixed;top:16px;left:16px;z-index:100;background:var(--surface);border:1px solid var(--border2);color:var(--text2);font-family:var(--font-ar);font-size:0.8rem;padding:8px 14px;border-radius:20px;cursor:pointer;transition:var(--transition);backdrop-filter:blur(8px);}
 .back-btn:hover{color:var(--text);border-color:var(--accent);background:var(--surface2);}
 
 /* ══ ANIMATIONS ══ */
@@ -109,7 +192,7 @@ body.light-mode .theme-btn::after{left:23px;background:var(--accent);}
 .screen.active .game-card:nth-child(4){animation:cardIn 0.4s 0.2s ease both;}
 
 /* ══ DAMA ══ */
-.dama-title{font-family:"Bebas Neue",sans-serif;font-size:clamp(2rem,8vw,3rem);color:var(--text);letter-spacing:3px;text-align:center;padding-top:60px;}
+.dama-title{font-family:var(--font-display);font-size:clamp(2rem,8vw,3rem);color:var(--text);letter-spacing:3px;text-align:center;padding-top:60px;}
 .dama-status{font-size:0.8rem;letter-spacing:2px;color:var(--text2);text-align:center;margin:4px 0;}
 .must-eat-msg{background:rgba(239,68,68,0.15);border:1px solid rgba(239,68,68,0.3);color:#f87171;padding:6px 16px;border-radius:20px;font-size:0.8rem;display:none;text-align:center;}
 .must-eat-msg.show{display:block;}
@@ -127,18 +210,18 @@ body.light-mode .cell.dark{background:#b58863;}
 .piece.king::after{content:"♛";position:absolute;font-size:0.7em;color:rgba(251,191,36,0.9);top:50%;left:50%;transform:translate(-50%,-50%);}
 .piece{position:relative;}
 .dama-controls{display:flex;gap:10px;justify-content:center;padding:12px;}
-.timer-btn-small,.undo-btn{padding:9px 20px;background:var(--surface);border:1px solid var(--border2);border-radius:20px;color:var(--text2);font-family:"Cairo",sans-serif;font-size:0.85rem;cursor:pointer;transition:var(--transition);}
+.timer-btn-small,.undo-btn{padding:9px 20px;background:var(--surface);border:1px solid var(--border2);border-radius:20px;color:var(--text2);font-family:var(--font-ar);font-size:0.85rem;cursor:pointer;transition:var(--transition);}
 .timer-btn-small:hover,.undo-btn:hover{border-color:var(--accent);color:var(--text);}
 .undo-btn.active{border-color:rgba(251,191,36,0.4);color:var(--gold);}
 
 /* ══ SPY ══ */
-.spy-title{font-family:"Bebas Neue",sans-serif;font-size:clamp(2rem,8vw,3rem);color:var(--text);letter-spacing:3px;}
+.spy-title{font-family:var(--font-display);font-size:clamp(2rem,8vw,3rem);color:var(--text);letter-spacing:3px;}
 .spy-sub{font-size:0.75rem;letter-spacing:4px;color:var(--text3);}
 .spy-setup{width:min(400px,95vw);display:flex;flex-direction:column;gap:10px;}
 .input-label{font-size:0.7rem;letter-spacing:3px;color:var(--text3);text-transform:uppercase;}
 .players-list{display:flex;flex-direction:column;gap:6px;}
 .player-row{display:flex;gap:8px;align-items:center;}
-.player-in{flex:1;padding:10px 14px;background:var(--surface);border:1px solid var(--border2);border-radius:8px;color:var(--text);font-family:"Cairo",sans-serif;font-size:0.9rem;outline:none;transition:var(--transition);}
+.player-in{flex:1;padding:10px 14px;background:var(--surface);border:1px solid var(--border2);border-radius:8px;color:var(--text);font-family:var(--font-ar);font-size:0.9rem;outline:none;transition:var(--transition);}
 .player-in:focus{border-color:var(--accent);}
 .player-in::placeholder{color:var(--text3);}
 .add-player-btn,.remove-player-btn{padding:8px 14px;background:var(--surface);border:1px solid var(--border2);border-radius:8px;color:var(--text2);font-size:0.9rem;cursor:pointer;transition:var(--transition);}
@@ -164,8 +247,8 @@ body.light-mode .cell.dark{background:#b58863;}
 
 /* ══ MODE SELECT shared ══ */
 .mode-screen{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;padding:70px 20px 40px;}
-.mode-title{font-family:"Bebas Neue",sans-serif;font-size:clamp(2.5rem,9vw,4rem);letter-spacing:3px;}
-.mode-btn{width:min(400px,95vw);padding:14px;background:var(--surface);border:1px solid var(--border2);border-radius:var(--radius2);color:var(--text);font-family:"Cairo",sans-serif;font-size:0.95rem;cursor:pointer;transition:var(--transition);text-align:center;}
+.mode-title{font-family:var(--font-display);font-size:clamp(2.5rem,9vw,4rem);letter-spacing:3px;}
+.mode-btn{width:min(400px,95vw);padding:14px;background:var(--surface);border:1px solid var(--border2);border-radius:var(--radius2);color:var(--text);font-family:var(--font-ar);font-size:0.95rem;cursor:pointer;transition:var(--transition);text-align:center;}
 .mode-btn:hover{background:var(--surface2);border-color:var(--accent);transform:translateX(-4px);}
 .mode-divider{font-size:0.65rem;letter-spacing:4px;color:var(--text3);text-transform:uppercase;}
 .mode-btn-bot{border-color:rgba(124,58,237,0.25);color:rgba(167,139,250,0.9);}
@@ -175,6 +258,17 @@ body.light-mode .cell.dark{background:#b58863;}
 ::-webkit-scrollbar{width:4px;}
 ::-webkit-scrollbar-track{background:transparent;}
 ::-webkit-scrollbar-thumb{background:var(--border2);border-radius:2px;}
+
+/* Side Nav */
+#bottomNav button:hover {
+  background:rgba(124,58,237,0.15) !important;
+  border-color:rgba(124,58,237,0.4) !important;
+  color:rgba(167,139,250,0.9) !important;
+  transform:scale(1.05);
+}
+
+/* Toast */
+#yssn-toast { opacity:0; }
 /* ══ BLOB ANIMATIONS ══ */
 @keyframes blobFloat1{0%,100%{transform:translate(0,0) scale(1);}50%{transform:translate(30px,-20px) scale(1.05);}}
 @keyframes blobFloat2{0%,100%{transform:translate(0,0) scale(1);}50%{transform:translate(-20px,30px) scale(1.03);}}
@@ -184,7 +278,7 @@ body.light-mode .cell.dark{background:#b58863;}
 .lg-input:focus{border-color:rgba(124,58,237,0.5)!important;box-shadow:0 0 0 3px rgba(124,58,237,0.08);}
 
 /* ══ player-input base ══ */
-.player-input{flex:1;padding:10px 14px;background:var(--surface);border:1px solid var(--border2);border-radius:10px;color:var(--text);font-family:"Cairo",sans-serif;font-size:0.9rem;outline:none;transition:all 0.2s;}
+.player-input{flex:1;padding:10px 14px;background:var(--surface);border:1px solid var(--border2);border-radius:10px;color:var(--text);font-family:var(--font-ar);font-size:0.9rem;outline:none;transition:all 0.2s;}
 .player-input::placeholder{color:var(--text3);}
 .rm-btn{padding:8px 12px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:8px;color:rgba(240,240,240,0.3);cursor:pointer;transition:all 0.2s;font-size:0.85rem;}
 .rm-btn:hover{border-color:rgba(239,68,68,0.3);color:#f87171;background:rgba(239,68,68,0.08);}
@@ -194,8 +288,8 @@ body.light-mode .cell.dark{background:#b58863;}
 .transition-screen{display:none!important;position:fixed;inset:0;background:rgba(0,0,0,0.97);z-index:9999;flex-direction:column;align-items:center;justify-content:center;gap:20px;}
 .transition-screen.show{display:flex!important;}
 .transition-msg{font-size:1rem;letter-spacing:3px;color:rgba(240,240,240,0.4);text-transform:uppercase;}
-.transition-name{font-family:"Bebas Neue",sans-serif;font-size:clamp(3rem,12vw,6rem);color:#fff;letter-spacing:4px;}
-.transition-btn{padding:14px 40px;background:linear-gradient(135deg,var(--accent),var(--accent2));border:none;border-radius:12px;color:#fff;font-family:"Cairo",sans-serif;font-size:1.1rem;font-weight:700;cursor:pointer;letter-spacing:1px;}
+.transition-name{font-family:var(--font-display);font-size:clamp(3rem,12vw,6rem);color:#fff;letter-spacing:4px;}
+.transition-btn{padding:14px 40px;background:linear-gradient(135deg,var(--accent),var(--accent2));border:none;border-radius:12px;color:#fff;font-family:var(--font-ar);font-size:1.1rem;font-weight:700;cursor:pointer;letter-spacing:1px;}
 
 
 
@@ -220,16 +314,10 @@ body.light-mode .cell.dark{background:#b58863;}
   box-shadow: 0 30px 80px rgba(239,68,68,0.2), inset 0 1px 0 rgba(255,255,255,0.04);
 }
 .spy-card-back {
-  background: linear-gradient(145deg, #050f09 0%, #081a10 40%, #0b2014 100%);
-  border: 1px solid rgba(74,222,128,0.2);
-  box-shadow: 0 30px 80px rgba(74,222,128,0.15), inset 0 1px 0 rgba(255,255,255,0.04);
-  transform: rotateY(180deg);
-}
-/* Spy role - red variant for imposter */
-.spy-card-back.is-spy {
   background: linear-gradient(145deg, #0f0505 0%, #1a0808 40%, #200b0b 100%);
-  border-color: rgba(239,68,68,0.25);
-  box-shadow: 0 30px 80px rgba(239,68,68,0.2), inset 0 1px 0 rgba(255,255,255,0.04);
+  border: 1px solid rgba(239,68,68,0.18);
+  box-shadow: 0 30px 80px rgba(239,68,68,0.18), inset 0 1px 0 rgba(255,255,255,0.04);
+  transform: rotateY(180deg);
 }
 
 /* Corner brackets */
@@ -348,12 +436,30 @@ body.light-mode .cell.dark{background:#b58863;}
 
 </style>
 
-<script data-cfasync="false" type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-    import { getDatabase, ref, set, get, onValue, push, update, remove, serverTimestamp, off }
-      from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
-    import { getAuth, signInWithPopup, GoogleAuthProvider, signInAnonymously, onAuthStateChanged, signOut }
-      from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+<script data-cfasync="false">
+// ══ FIREBASE LAZY LOADER ══
+// Firebase loads only when online features are needed
+// Local games work 100% offline without Firebase
+
+window.FB_READY = false;
+window.FB_LOADING = false;
+
+function loadFirebase() {
+  if(window.FB_READY || window.FB_LOADING) return;
+  if(!navigator.onLine) {
+    showToast('⚠️ لا يوجد اتصال بالإنترنت — اللعب المحلي متاح فقط');
+    return;
+  }
+  window.FB_LOADING = true;
+
+  // Dynamically import Firebase only when needed
+  import("https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js").then(({initializeApp}) =>
+  Promise.all([
+    import("https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js"),
+    import("https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js")
+  ]).then(([dbMod, authMod]) => {
+    const { getDatabase, ref, set, get, onValue, push, update, remove, serverTimestamp, off } = dbMod;
+    const { getAuth, signInWithPopup, GoogleAuthProvider, signInAnonymously, onAuthStateChanged, signOut } = authMod;
 
     const firebaseConfig = {
       apiKey: "AIzaSyC7CJS6PbZTNWiQ_gpLV9agWPWdQGIuYGc",
@@ -387,22 +493,38 @@ body.light-mode .cell.dark{background:#b58863;}
     window.FB_signOut = signOut;
 
     window.FB_READY = true;
+    window.FB_LOADING = false;
     document.dispatchEvent(new Event('fb-ready'));
     console.log('Firebase ready ✅');
-  
-// ══ FIX: Missing helper functions ══
 
-function showSpyResult() {
-  SFX.play('imposter_reveal');
-  endSpyRound();
+    // Restore session if user was logged in
+    const saved = localStorage.getItem('yssn_session');
+    if(saved) {
+      try {
+        onAuthStateChanged(auth, user => {
+          if(user && !user.isAnonymous) {
+            window.FB_USER = user;
+            currentUser = {uid:user.uid, name:user.displayName||user.email||'لاعب', username:user.email||user.uid, isAnon:false};
+            updateUserUI();
+          }
+        });
+      } catch(e) {}
+    }
+  })).catch(e => {
+    window.FB_LOADING = false;
+    console.warn('Firebase load failed:', e);
+    showToast('⚠️ تعذّر الاتصال بالإنترنت');
+  });
 }
 
-function openOnlineLobby() {
-  SFX.play('click');
-  showScreen('online-screen');
-}
-
-
+// Auto-load Firebase when going online
+window.addEventListener('online', () => {
+  showToast('✅ عاد الاتصال بالإنترنت');
+  if(!window.FB_READY) loadFirebase();
+});
+window.addEventListener('offline', () => {
+  showToast('📡 انقطع الاتصال — الألعاب المحلية تعمل بشكل طبيعي');
+});
 </script>
 
 </head>
@@ -417,14 +539,14 @@ function openOnlineLobby() {
   </div>
   <div style="position:relative;display:flex;flex-direction:column;align-items:center;gap:12px;">
     <div style="width:90px;height:90px;border-radius:24px;background:linear-gradient(135deg,#7c3aed,#a855f7);display:flex;align-items:center;justify-content:center;font-size:2.8rem;box-shadow:0 20px 60px rgba(124,58,237,0.5);animation:splashIconIn 0.8s cubic-bezier(0.175,0.885,0.32,1.275) both;">🎮</div>
-    <div style="font-family:'Bebas Neue',sans-serif;font-size:clamp(2.5rem,10vw,4rem);letter-spacing:8px;background:linear-gradient(135deg,#fff,rgba(255,255,255,0.7));-webkit-background-clip:text;-webkit-text-fill-color:transparent;animation:splashTitleIn 0.7s 0.3s ease both;opacity:0;">YASSINE GAMES</div>
+    <div style="font-family:var(--font-display);font-size:clamp(2.5rem,10vw,4rem);letter-spacing:8px;background:linear-gradient(135deg,#fff,rgba(255,255,255,0.7));-webkit-background-clip:text;-webkit-text-fill-color:transparent;animation:splashTitleIn 0.7s 0.3s ease both;opacity:0;">YASSINE GAMES</div>
     <div style="font-size:0.65rem;letter-spacing:6px;color:rgba(167,139,250,0.5);animation:splashTitleIn 0.7s 0.5s ease both;opacity:0;">العب · تحدّى · استمتع</div>
   </div>
   <div style="margin-top:50px;width:180px;height:2px;background:rgba(255,255,255,0.06);border-radius:2px;overflow:hidden;animation:splashTitleIn 0.5s 0.6s ease both;opacity:0;">
     <div id="splashBar" style="height:100%;width:0%;background:linear-gradient(90deg,#7c3aed,#a855f7,#06d6a0);border-radius:2px;transition:width 0.05s linear;"></div>
   </div>
-  <div id="splashPct" style="font-family:'Bebas Neue',sans-serif;font-size:0.8rem;letter-spacing:3px;color:rgba(255,255,255,0.2);margin-top:8px;animation:splashTitleIn 0.5s 0.7s ease both;opacity:0;">0%</div>
-  <div id="splashLabel" style="font-family:'Cairo',sans-serif;font-size:0.7rem;color:rgba(255,255,255,0.15);margin-top:4px;animation:splashTitleIn 0.5s 0.8s ease both;opacity:0;letter-spacing:1px;">جاري التحميل...</div>
+  <div id="splashPct" style="font-family:var(--font-display);font-size:0.8rem;letter-spacing:3px;color:rgba(255,255,255,0.2);margin-top:8px;animation:splashTitleIn 0.5s 0.7s ease both;opacity:0;">0%</div>
+  <div id="splashLabel" style="font-family:var(--font-ar);font-size:0.7rem;color:rgba(255,255,255,0.15);margin-top:4px;animation:splashTitleIn 0.5s 0.8s ease both;opacity:0;letter-spacing:1px;">جاري التحميل...</div>
 </div>
 <style>
 @keyframes splashIconIn{0%{transform:scale(0) rotate(-20deg);opacity:0;}100%{transform:scale(1) rotate(0deg);opacity:1;}}
@@ -434,21 +556,20 @@ function openOnlineLobby() {
 <!-- HOME -->
 <div class="screen active" id="home">
   <div class="topbar">
-    <!-- LEFT: Logo + Sound -->
-    <div style="display:flex;align-items:center;gap:8px;">
-      <div style="width:34px;height:34px;border-radius:10px;background:linear-gradient(135deg,var(--accent),var(--accentG));display:flex;align-items:center;justify-content:center;font-size:1.1rem;animation:logoFloat 3s ease-in-out infinite;">🎮</div>
-      <span style="font-family:'Bebas Neue',sans-serif;font-size:1rem;letter-spacing:3px;background:linear-gradient(135deg,var(--accent2),var(--accentG));-webkit-background-clip:text;-webkit-text-fill-color:transparent;">YSSN</span>
-      <button id="sfxToggleBtn" onclick="SFX.toggleMute()" title="كتم الصوت" style="background:var(--surface);border:1px solid var(--border2);border-radius:20px;padding:4px 10px;font-size:0.85rem;cursor:pointer;transition:all 0.2s;">🔊</button>
+    <!-- LEFT: Brand + Sound -->
+    <div class="topbar-left">
+      <div class="topbar-brand">
+        <div class="topbar-logo">🎮</div>
+        <span class="topbar-name">YSSN</span>
+      </div>
+      <button id="sfxToggleBtn" onclick="SFX.toggleMute()" title="كتم الصوت" class="tb-icon-btn" style="font-size:0.85rem;">🔊</button>
     </div>
-    <!-- RIGHT: Actions -->
-    <div class="topbar-btns">
-      <button class="topbar-btn" onclick="showScreen('leaderboard')" title="المتصدرون">🏆</button>
-      <button class="topbar-btn" onclick="showScreen('players-mgmt')" title="اللاعبون">👥</button>
-      <button id="installPwaBtn" onclick="installPWA()" title="تثبيت" style="display:none;background:linear-gradient(135deg,#06d6a0,#0ea5e9);border:none;border-radius:20px;padding:4px 10px;font-size:0.82rem;color:#fff;cursor:pointer;">📲</button>
-      <button id="fsBtn" onclick="toggleFullscreen()" title="ملء الشاشة" style="background:var(--surface);border:1px solid var(--border2);border-radius:20px;padding:4px 10px;font-size:0.85rem;cursor:pointer;transition:all 0.2s;">⛶</button>
+    <!-- RIGHT: Essential Actions Only -->
+    <div class="topbar-right">
+      <button onclick="showScreen('players-mgmt')" title="اللاعبون المسجلون" class="tb-icon-btn">👥</button>
       <button class="theme-btn" onclick="toggleTheme()" title="الوضع الليلي"></button>
-      <button id="navToggleBtn" onclick="toggleBottomNav()" title="القائمة" style="background:var(--surface);border:1px solid var(--border2);border-radius:20px;padding:4px 10px;font-size:0.85rem;cursor:pointer;transition:all 0.2s;">☰</button>
-      <button id="authTopBtn" onclick="handleAuthTopBtn()" title="الحساب" style="background:linear-gradient(135deg,#7c3aed,#a855f7);border:none;border-radius:20px;padding:5px 12px;font-size:0.8rem;font-family:'Cairo',sans-serif;font-weight:700;color:#fff;cursor:pointer;transition:all 0.2s;display:flex;align-items:center;gap:5px;">👤 دخول</button>
+      <button id="installPwaBtn" onclick="installPWA()" title="تثبيت" style="display:none;background:linear-gradient(135deg,#06d6a0,#0ea5e9);border:none;border-radius:20px;padding:6px 12px;font-size:0.8rem;color:#fff;cursor:pointer;font-family:var(--font-ar);font-weight:700;">📲 تثبيت</button>
+      <button id="authTopBtn" onclick="handleAuthTopBtn()" class="tb-auth-btn">👤 دخول</button>
     </div>
   </div>
 
@@ -457,8 +578,8 @@ function openOnlineLobby() {
     <div class="logo-title">YASSINE GAMES</div>
     <div class="logo-sub">اختر لعبتك وابدأ</div>
     <div style="display:flex;gap:10px;margin-top:14px;justify-content:center;flex-wrap:wrap;">
-      <button onclick="openOnlineLobby()" style="display:flex;align-items:center;gap:7px;padding:10px 20px;background:linear-gradient(135deg,rgba(6,214,160,0.12),rgba(14,165,233,0.08));border:1px solid rgba(6,214,160,0.25);border-radius:30px;color:rgba(6,214,160,0.85);font-family:'Cairo',sans-serif;font-size:0.85rem;font-weight:700;cursor:pointer;transition:all 0.2s;" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform=''">🌐 العب أونلاين</button>
-      <button onclick="launchRandomGame()" style="display:flex;align-items:center;gap:7px;padding:10px 20px;background:linear-gradient(135deg,rgba(251,191,36,0.12),rgba(245,158,11,0.08));border:1px solid rgba(251,191,36,0.25);border-radius:30px;color:rgba(251,191,36,0.85);font-family:'Cairo',sans-serif;font-size:0.85rem;font-weight:700;cursor:pointer;transition:all 0.2s;" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform=''">🎲 اختر لعبة تلقائياً</button>
+      <button onclick="openOnlineLobby()" style="display:flex;align-items:center;gap:7px;padding:10px 20px;background:linear-gradient(135deg,rgba(6,214,160,0.12),rgba(14,165,233,0.08));border:1px solid rgba(6,214,160,0.25);border-radius:30px;color:rgba(6,214,160,0.85);font-family:var(--font-ar);font-size:0.85rem;font-weight:700;cursor:pointer;transition:all 0.2s;" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform=''">🌐 العب أونلاين</button>
+      <button onclick="launchRandomGame()" style="display:flex;align-items:center;gap:7px;padding:10px 20px;background:linear-gradient(135deg,rgba(251,191,36,0.12),rgba(245,158,11,0.08));border:1px solid rgba(251,191,36,0.25);border-radius:30px;color:rgba(251,191,36,0.85);font-family:var(--font-ar);font-size:0.85rem;font-weight:700;cursor:pointer;transition:all 0.2s;" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform=''">🎲 اختر لعبة تلقائياً</button>
     </div>
   </div>
 
@@ -504,11 +625,71 @@ function openOnlineLobby() {
     </div>
   </div>
 </div>
+<!-- ══ GAMES SCREEN ══ -->
+<div class="screen" id="games-screen">
+  <button class="back-btn" onclick="goHome()">← رجوع</button>
+  <div style="display:flex;flex-direction:column;align-items:center;min-height:100vh;padding:80px 20px 60px;position:relative;overflow:hidden;">
+    <div style="position:absolute;inset:0;background:radial-gradient(circle at 50% 20%,rgba(124,58,237,0.07),transparent 60%);pointer-events:none;"></div>
+    <div style="font-family:var(--font-display);font-size:clamp(2.5rem,9vw,4rem);letter-spacing:6px;background:linear-gradient(135deg,#a855f7,#7c3aed);-webkit-background-clip:text;-webkit-text-fill-color:transparent;line-height:1;margin-bottom:4px;">الألعاب</div>
+    <div style="font-size:0.62rem;letter-spacing:5px;color:rgba(167,139,250,0.3);margin-bottom:28px;">اختر لعبتك</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;width:min(440px,95vw);">
+      <!-- DAMA -->
+      <div onclick="SFX.play('click');goHome();setTimeout(()=>openDama(),50);" style="cursor:pointer;background:linear-gradient(145deg,rgba(14,165,233,0.08),rgba(14,165,233,0.03));border:1px solid rgba(14,165,233,0.18);border-radius:20px;padding:24px 16px;display:flex;flex-direction:column;align-items:center;gap:10px;transition:all 0.25s;position:relative;overflow:hidden;" onmouseover="this.style.borderColor='rgba(14,165,233,0.4)';this.style.transform='translateY(-3px)'" onmouseout="this.style.borderColor='rgba(14,165,233,0.18)';this.style.transform=''">
+        <div style="position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,#0ea5e9,transparent);"></div>
+        <div style="font-size:3rem;filter:drop-shadow(0 0 12px rgba(14,165,233,0.5));">🔵</div>
+        <div style="font-family:var(--font-display);font-size:1.6rem;letter-spacing:3px;color:#0ea5e9;">DAMA</div>
+        <div style="font-size:0.72rem;color:rgba(240,240,240,0.35);text-align:center;">الداما الكلاسيكية</div>
+        <div style="padding:5px 12px;background:rgba(14,165,233,0.1);border:1px solid rgba(14,165,233,0.2);border-radius:20px;font-size:0.65rem;color:rgba(14,165,233,0.7);">استراتيجية</div>
+      </div>
+      <!-- CHESS -->
+      <div onclick="SFX.play('click');goHome();setTimeout(()=>openChess(),50);" style="cursor:pointer;background:linear-gradient(145deg,rgba(251,191,36,0.08),rgba(251,191,36,0.03));border:1px solid rgba(251,191,36,0.18);border-radius:20px;padding:24px 16px;display:flex;flex-direction:column;align-items:center;gap:10px;transition:all 0.25s;position:relative;overflow:hidden;" onmouseover="this.style.borderColor='rgba(251,191,36,0.4)';this.style.transform='translateY(-3px)'" onmouseout="this.style.borderColor='rgba(251,191,36,0.18)';this.style.transform=''">
+        <div style="position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,#fbbf24,transparent);"></div>
+        <div style="font-size:3rem;filter:drop-shadow(0 0 12px rgba(251,191,36,0.5));">♟️</div>
+        <div style="font-family:var(--font-display);font-size:1.6rem;letter-spacing:3px;color:#fbbf24;">CHESS</div>
+        <div style="font-size:0.72rem;color:rgba(240,240,240,0.35);text-align:center;">الشطرنج الكلاسيكي</div>
+        <div style="padding:5px 12px;background:rgba(251,191,36,0.1);border:1px solid rgba(251,191,36,0.2);border-radius:20px;font-size:0.65rem;color:rgba(251,191,36,0.7);">كلاسيكي</div>
+      </div>
+      <!-- LOUP GAROU -->
+      <div onclick="SFX.play('click');showScreen('loup');" style="cursor:pointer;background:linear-gradient(145deg,rgba(124,58,237,0.08),rgba(124,58,237,0.03));border:1px solid rgba(124,58,237,0.18);border-radius:20px;padding:24px 16px;display:flex;flex-direction:column;align-items:center;gap:10px;transition:all 0.25s;position:relative;overflow:hidden;" onmouseover="this.style.borderColor='rgba(124,58,237,0.4)';this.style.transform='translateY(-3px)'" onmouseout="this.style.borderColor='rgba(124,58,237,0.18)';this.style.transform=''">
+        <div style="position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,#a855f7,transparent);"></div>
+        <div style="font-size:3rem;filter:drop-shadow(0 0 12px rgba(124,58,237,0.5));">🐺</div>
+        <div style="font-family:var(--font-display);font-size:1.6rem;letter-spacing:3px;color:#a855f7;">LOUP</div>
+        <div style="font-size:0.72rem;color:rgba(240,240,240,0.35);text-align:center;">من الذئب المختبئ؟</div>
+        <div style="padding:5px 12px;background:rgba(124,58,237,0.1);border:1px solid rgba(124,58,237,0.2);border-radius:20px;font-size:0.65rem;color:rgba(167,139,250,0.7);">جماعي</div>
+      </div>
+      <!-- IMPOSTER -->
+      <div onclick="SFX.play('click');openSpy();" style="cursor:pointer;background:linear-gradient(145deg,rgba(239,68,68,0.08),rgba(239,68,68,0.03));border:1px solid rgba(239,68,68,0.18);border-radius:20px;padding:24px 16px;display:flex;flex-direction:column;align-items:center;gap:10px;transition:all 0.25s;position:relative;overflow:hidden;" onmouseover="this.style.borderColor='rgba(239,68,68,0.4)';this.style.transform='translateY(-3px)'" onmouseout="this.style.borderColor='rgba(239,68,68,0.18)';this.style.transform=''">
+        <div style="position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,#ef4444,transparent);"></div>
+        <div style="font-size:3rem;filter:drop-shadow(0 0 12px rgba(239,68,68,0.5));">🕵️</div>
+        <div style="font-family:var(--font-display);font-size:1.6rem;letter-spacing:3px;color:#ef4444;">IMPOSTER</div>
+        <div style="font-size:0.72rem;color:rgba(240,240,240,0.35);text-align:center;">من المتسلل بينكم؟</div>
+        <div style="padding:5px 12px;background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.2);border-radius:20px;font-size:0.65rem;color:rgba(239,68,68,0.7);">جماعي</div>
+      </div>
+    </div>
+    <!-- Online button -->
+    <button onclick="openOnlineLobby()" style="margin-top:20px;display:flex;align-items:center;gap:8px;padding:13px 28px;background:linear-gradient(135deg,rgba(6,214,160,0.12),rgba(14,165,233,0.08));border:1px solid rgba(6,214,160,0.25);border-radius:30px;color:rgba(6,214,160,0.9);font-family:var(--font-ar);font-size:0.9rem;font-weight:700;cursor:pointer;transition:all 0.2s;" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform=''">🌐 العب أونلاين</button>
+  </div>
+</div>
 <!-- TRANSITION SCREEN -->
-<div id="transitionScreen" style="display:none;position:fixed;inset:0;z-index:500;background:#0a0a0f;flex-direction:column;align-items:center;justify-content:center;gap:16px;">
-  <div class="transition-msg">دور اللاعب</div>
-  <div class="transition-name" id="transitionName"></div>
-  <button class="transition-btn" onclick="confirmTransition()">أنا جاهز 👁️</button>
+<div id="transitionScreen" style="display:none;position:fixed;inset:0;z-index:9000;background:#0a0a0f;flex-direction:column;align-items:center;justify-content:center;gap:0;text-align:center;padding:20px;overflow:hidden;">
+  <div style="position:absolute;inset:0;pointer-events:none;overflow:hidden;">
+    <div style="position:absolute;width:300px;height:300px;border-radius:50%;background:radial-gradient(circle,rgba(239,68,68,0.1),transparent 70%);top:-80px;left:50%;transform:translateX(-50%);filter:blur(40px);"></div>
+    <div style="position:absolute;inset:0;background-image:linear-gradient(rgba(239,68,68,0.025) 1px,transparent 1px),linear-gradient(90deg,rgba(239,68,68,0.025) 1px,transparent 1px);background-size:40px 40px;"></div>
+  </div>
+  <div style="position:relative;z-index:2;display:flex;flex-direction:column;align-items:center;gap:24px;width:min(300px,82vw);">
+    <div style="font-size:0.55rem;letter-spacing:8px;color:rgba(239,68,68,0.35);text-transform:uppercase;">دور اللاعب</div>
+    <div style="width:100%;background:linear-gradient(145deg,#0f0505,#1a0808,#200b0b);border:1px solid rgba(239,68,68,0.18);border-radius:28px;padding:36px 24px;display:flex;flex-direction:column;align-items:center;gap:20px;box-shadow:0 30px 80px rgba(239,68,68,0.18);position:relative;overflow:hidden;">
+      <div style="position:absolute;top:14px;right:14px;width:18px;height:18px;border-top:2px solid rgba(239,68,68,0.35);border-right:2px solid rgba(239,68,68,0.35);border-radius:0 4px 0 0;"></div>
+      <div style="position:absolute;top:14px;left:14px;width:18px;height:18px;border-top:2px solid rgba(239,68,68,0.35);border-left:2px solid rgba(239,68,68,0.35);border-radius:4px 0 0 0;"></div>
+      <div style="position:absolute;bottom:14px;right:14px;width:18px;height:18px;border-bottom:2px solid rgba(239,68,68,0.35);border-right:2px solid rgba(239,68,68,0.35);border-radius:0 0 4px 0;"></div>
+      <div style="position:absolute;bottom:14px;left:14px;width:18px;height:18px;border-bottom:2px solid rgba(239,68,68,0.35);border-left:2px solid rgba(239,68,68,0.35);border-radius:0 0 0 4px;"></div>
+      <div style="font-size:2.8rem;filter:drop-shadow(0 0 20px rgba(239,68,68,0.4));animation:spyLockFloat 3s ease-in-out infinite;">👁️</div>
+      <div id="transitionName" style="font-family:var(--font-display);font-size:clamp(2rem,9vw,3.2rem);color:#fff;letter-spacing:5px;text-align:center;max-width:100%;word-break:break-word;line-height:1;text-shadow:0 0 30px rgba(239,68,68,0.4);"></div>
+      <div style="width:50px;height:1px;background:linear-gradient(90deg,transparent,rgba(239,68,68,0.5),transparent);"></div>
+      <div style="font-size:0.68rem;letter-spacing:3px;color:rgba(240,240,240,0.25);">تأكد أنك وحدك تنظر</div>
+    </div>
+    <button onclick="confirmTransition()" style="width:100%;padding:15px;background:linear-gradient(135deg,#ef4444,#dc2626);border:none;border-radius:16px;color:#fff;font-family:var(--font-ar);font-size:1rem;font-weight:700;cursor:pointer;box-shadow:0 8px 28px rgba(239,68,68,0.35);letter-spacing:1px;">أنا جاهز ✓</button>
+  </div>
 </div>
 
 <!-- ══ ONLINE LOBBY ══ -->
@@ -520,7 +701,7 @@ function openOnlineLobby() {
       <div style="position:absolute;width:600px;height:600px;border-radius:50%;background:radial-gradient(circle,rgba(6,214,160,0.07),transparent 70%);top:50%;left:50%;transform:translate(-50%,-50%);animation:pulse 4s ease-in-out infinite;"></div>
     </div>
 
-    <div style="font-family:'Bebas Neue',sans-serif;font-size:clamp(2rem,9vw,3.5rem);letter-spacing:5px;background:linear-gradient(135deg,#06d6a0,#0ea5e9);-webkit-background-clip:text;-webkit-text-fill-color:transparent;animation:fadeDown 0.5s ease both;line-height:1;margin-bottom:4px;">اللعب أونلاين</div>
+    <div style="font-family:var(--font-display);font-size:clamp(2rem,9vw,3.5rem);letter-spacing:5px;background:linear-gradient(135deg,#06d6a0,#0ea5e9);-webkit-background-clip:text;-webkit-text-fill-color:transparent;animation:fadeDown 0.5s ease both;line-height:1;margin-bottom:4px;">اللعب أونلاين</div>
     <div style="font-size:0.62rem;letter-spacing:5px;color:rgba(6,214,160,0.3);margin-bottom:30px;animation:fadeDown 0.5s 0.1s ease both;opacity:0;" id="onlineUserLabel">مرحباً!</div>
 
     <!-- Auth status -->
@@ -530,10 +711,10 @@ function openOnlineLobby() {
     <div style="width:min(420px,95vw);margin-bottom:20px;animation:slideUp 0.5s 0.15s ease both;opacity:0;">
       <div style="font-size:0.62rem;letter-spacing:4px;color:rgba(240,240,240,0.25);margin-bottom:10px;">اختر اللعبة</div>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
-        <button onclick="selectOnlineGame('dama')" id="og_dama" class="og-btn" style="padding:14px 10px;background:rgba(14,165,233,0.06);border:1px solid rgba(14,165,233,0.15);border-radius:14px;color:rgba(14,165,233,0.7);font-family:'Cairo',sans-serif;font-size:0.9rem;font-weight:600;cursor:pointer;transition:all 0.2s;">🔵 داما</button>
-        <button onclick="selectOnlineGame('chess')" id="og_chess" class="og-btn" style="padding:14px 10px;background:rgba(245,158,11,0.06);border:1px solid rgba(245,158,11,0.15);border-radius:14px;color:rgba(245,158,11,0.7);font-family:'Cairo',sans-serif;font-size:0.9rem;font-weight:600;cursor:pointer;transition:all 0.2s;">♟️ شطرنج</button>
-        <button onclick="selectOnlineGame('loup')" id="og_loup" class="og-btn" style="padding:14px 10px;background:rgba(124,58,237,0.06);border:1px solid rgba(124,58,237,0.15);border-radius:14px;color:rgba(124,58,237,0.7);font-family:'Cairo',sans-serif;font-size:0.9rem;font-weight:600;cursor:pointer;transition:all 0.2s;">🐺 لوغارو</button>
-        <button onclick="selectOnlineGame('imposter')" id="og_imp" class="og-btn" style="padding:14px 10px;background:rgba(239,68,68,0.06);border:1px solid rgba(239,68,68,0.15);border-radius:14px;color:rgba(239,68,68,0.7);font-family:'Cairo',sans-serif;font-size:0.9rem;font-weight:600;cursor:pointer;transition:all 0.2s;">🕵️ إمبوستر</button>
+        <button onclick="selectOnlineGame('dama')" id="og_dama" class="og-btn" style="padding:14px 10px;background:rgba(14,165,233,0.06);border:1px solid rgba(14,165,233,0.15);border-radius:14px;color:rgba(14,165,233,0.7);font-family:var(--font-ar);font-size:0.9rem;font-weight:600;cursor:pointer;transition:all 0.2s;">🔵 داما</button>
+        <button onclick="selectOnlineGame('chess')" id="og_chess" class="og-btn" style="padding:14px 10px;background:rgba(245,158,11,0.06);border:1px solid rgba(245,158,11,0.15);border-radius:14px;color:rgba(245,158,11,0.7);font-family:var(--font-ar);font-size:0.9rem;font-weight:600;cursor:pointer;transition:all 0.2s;">♟️ شطرنج</button>
+        <button onclick="selectOnlineGame('loup')" id="og_loup" class="og-btn" style="padding:14px 10px;background:rgba(124,58,237,0.06);border:1px solid rgba(124,58,237,0.15);border-radius:14px;color:rgba(124,58,237,0.7);font-family:var(--font-ar);font-size:0.9rem;font-weight:600;cursor:pointer;transition:all 0.2s;">🐺 لوغارو</button>
+        <button onclick="selectOnlineGame('imposter')" id="og_imp" class="og-btn" style="padding:14px 10px;background:rgba(239,68,68,0.06);border:1px solid rgba(239,68,68,0.15);border-radius:14px;color:rgba(239,68,68,0.7);font-family:var(--font-ar);font-size:0.9rem;font-weight:600;cursor:pointer;transition:all 0.2s;">🕵️ إمبوستر</button>
       </div>
     </div>
 
@@ -548,7 +729,7 @@ function openOnlineLobby() {
             <div style="font-size:0.73rem;color:rgba(240,240,240,0.3);">نجد لك خصم تلقائياً</div>
           </div>
         </div>
-        <button onclick="joinRandomMatch()" id="randomMatchBtn" style="width:100%;padding:13px;background:linear-gradient(135deg,rgba(6,214,160,0.15),rgba(14,165,233,0.1));border:1px solid rgba(6,214,160,0.25);border-radius:12px;color:rgba(6,214,160,0.9);font-family:'Cairo',sans-serif;font-size:0.95rem;font-weight:700;cursor:pointer;transition:all 0.2s;" onmouseover="this.style.background='linear-gradient(135deg,rgba(6,214,160,0.25),rgba(14,165,233,0.18))'" onmouseout="this.style.background='linear-gradient(135deg,rgba(6,214,160,0.15),rgba(14,165,233,0.1))'">🔍 ابحث عن خصم</button>
+        <button onclick="joinRandomMatch()" id="randomMatchBtn" style="width:100%;padding:13px;background:linear-gradient(135deg,rgba(6,214,160,0.15),rgba(14,165,233,0.1));border:1px solid rgba(6,214,160,0.25);border-radius:12px;color:rgba(6,214,160,0.9);font-family:var(--font-ar);font-size:0.95rem;font-weight:700;cursor:pointer;transition:all 0.2s;" onmouseover="this.style.background='linear-gradient(135deg,rgba(6,214,160,0.25),rgba(14,165,233,0.18))'" onmouseout="this.style.background='linear-gradient(135deg,rgba(6,214,160,0.15),rgba(14,165,233,0.1))'">🔍 ابحث عن خصم</button>
       </div>
 
       <!-- Create room -->
@@ -560,7 +741,7 @@ function openOnlineLobby() {
             <div style="font-size:0.73rem;color:rgba(240,240,240,0.3);">شارك الكود مع صديقك</div>
           </div>
         </div>
-        <button onclick="createOnlineRoom()" style="width:100%;padding:13px;background:linear-gradient(135deg,rgba(124,58,237,0.15),rgba(168,85,247,0.1));border:1px solid rgba(124,58,237,0.25);border-radius:12px;color:rgba(167,139,250,0.9);font-family:'Cairo',sans-serif;font-size:0.95rem;font-weight:700;cursor:pointer;transition:all 0.2s;">🔑 إنشاء غرفة جديدة</button>
+        <button onclick="createOnlineRoom()" style="width:100%;padding:13px;background:linear-gradient(135deg,rgba(124,58,237,0.15),rgba(168,85,247,0.1));border:1px solid rgba(124,58,237,0.25);border-radius:12px;color:rgba(167,139,250,0.9);font-family:var(--font-ar);font-size:0.95rem;font-weight:700;cursor:pointer;transition:all 0.2s;">🔑 إنشاء غرفة جديدة</button>
       </div>
 
       <!-- Join room -->
@@ -573,8 +754,8 @@ function openOnlineLobby() {
           </div>
         </div>
         <div style="display:flex;gap:8px;">
-          <input id="joinRoomCode" type="text" placeholder="أدخل الكود..." maxlength="6" style="flex:1;padding:12px 14px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:12px;color:#fff;font-family:'Bebas Neue',sans-serif;font-size:1.1rem;letter-spacing:4px;outline:none;text-transform:uppercase;text-align:center;" onfocus="this.style.borderColor='rgba(251,191,36,0.4)'" onblur="this.style.borderColor='rgba(255,255,255,0.1)'" onkeydown="if(event.key==='Enter')joinRoomByCode()"/>
-          <button onclick="joinRoomByCode()" style="padding:12px 18px;background:linear-gradient(135deg,rgba(251,191,36,0.15),rgba(245,158,11,0.1));border:1px solid rgba(251,191,36,0.25);border-radius:12px;color:rgba(251,191,36,0.9);font-family:'Cairo',sans-serif;font-size:0.9rem;font-weight:700;cursor:pointer;white-space:nowrap;">دخول</button>
+          <input id="joinRoomCode" type="text" placeholder="أدخل الكود..." maxlength="6" style="flex:1;padding:12px 14px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:12px;color:#fff;font-family:var(--font-display);font-size:1.1rem;letter-spacing:4px;outline:none;text-transform:uppercase;text-align:center;" onfocus="this.style.borderColor='rgba(251,191,36,0.4)'" onblur="this.style.borderColor='rgba(255,255,255,0.1)'" onkeydown="if(event.key==='Enter')joinRoomByCode()"/>
+          <button onclick="joinRoomByCode()" style="padding:12px 18px;background:linear-gradient(135deg,rgba(251,191,36,0.15),rgba(245,158,11,0.1));border:1px solid rgba(251,191,36,0.25);border-radius:12px;color:rgba(251,191,36,0.9);font-family:var(--font-ar);font-size:0.9rem;font-weight:700;cursor:pointer;white-space:nowrap;">دخول</button>
         </div>
       </div>
     </div>
@@ -591,9 +772,9 @@ function openOnlineLobby() {
 
       <!-- Room header -->
       <div style="display:flex;align-items:center;justify-content:space-between;padding:12px 0;border-bottom:1px solid rgba(255,255,255,0.06);margin-bottom:16px;">
-        <button onclick="leaveRoom()" style="padding:7px 14px;background:rgba(239,68,68,0.08);border:1px solid rgba(239,68,68,0.15);border-radius:10px;color:rgba(239,68,68,0.6);font-family:'Cairo',sans-serif;font-size:0.8rem;cursor:pointer;">🚪 خروج</button>
+        <button onclick="leaveRoom()" style="padding:7px 14px;background:rgba(239,68,68,0.08);border:1px solid rgba(239,68,68,0.15);border-radius:10px;color:rgba(239,68,68,0.6);font-family:var(--font-ar);font-size:0.8rem;cursor:pointer;">🚪 خروج</button>
         <div style="text-align:center;">
-          <div style="font-family:'Bebas Neue',sans-serif;font-size:1.1rem;letter-spacing:3px;color:rgba(240,240,240,0.6);" id="roomGameLabel">ONLINE</div>
+          <div style="font-family:var(--font-display);font-size:1.1rem;letter-spacing:3px;color:rgba(240,240,240,0.6);" id="roomGameLabel">ONLINE</div>
           <div style="font-size:0.6rem;letter-spacing:3px;color:rgba(240,240,240,0.2);" id="roomCodeLabel">----</div>
         </div>
         <div id="roomStatusDot" style="display:flex;align-items:center;gap:6px;font-size:0.72rem;color:rgba(240,240,240,0.3);">
@@ -609,7 +790,7 @@ function openOnlineLobby() {
           <div style="font-size:0.75rem;font-weight:700;color:rgba(6,214,160,0.8);margin-top:4px;" id="roomP1Name">-</div>
           <div style="font-size:0.6rem;color:rgba(240,240,240,0.25);">لاعب ١</div>
         </div>
-        <div style="font-family:'Bebas Neue',sans-serif;font-size:1.5rem;color:rgba(240,240,240,0.2);">VS</div>
+        <div style="font-family:var(--font-display);font-size:1.5rem;color:rgba(240,240,240,0.2);">VS</div>
         <div id="roomP2Card" style="padding:12px;background:rgba(239,68,68,0.06);border:1px solid rgba(239,68,68,0.15);border-radius:14px;text-align:center;">
           <div style="font-size:1.5rem;" id="roomP2Icon">⌛</div>
           <div style="font-size:0.75rem;font-weight:700;color:rgba(239,68,68,0.6);margin-top:4px;" id="roomP2Name">ينتظر...</div>
@@ -621,7 +802,7 @@ function openOnlineLobby() {
       <div id="roomInviteBox" style="padding:14px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.07);border-radius:14px;margin-bottom:14px;display:none;">
         <div style="font-size:0.62rem;letter-spacing:3px;color:rgba(240,240,240,0.2);margin-bottom:8px;">شارك الكود مع صديقك</div>
         <div style="display:flex;gap:8px;align-items:center;">
-          <div id="roomCodeDisplay" style="flex:1;font-family:'Bebas Neue',sans-serif;font-size:2.2rem;letter-spacing:10px;color:#fff;text-align:center;padding:10px;background:rgba(124,58,237,0.08);border-radius:10px;border:1px solid rgba(124,58,237,0.15);"></div>
+          <div id="roomCodeDisplay" style="flex:1;font-family:var(--font-display);font-size:2.2rem;letter-spacing:10px;color:#fff;text-align:center;padding:10px;background:rgba(124,58,237,0.08);border-radius:10px;border:1px solid rgba(124,58,237,0.15);"></div>
           <div style="display:flex;flex-direction:column;gap:6px;">
             <button onclick="copyRoomLink()" style="padding:8px 12px;background:rgba(124,58,237,0.15);border:1px solid rgba(124,58,237,0.25);border-radius:10px;color:rgba(167,139,250,0.8);font-size:0.8rem;cursor:pointer;" title="نسخ الرابط">🔗</button>
             <button onclick="shareOnWhatsApp()" style="padding:8px 12px;background:rgba(37,211,102,0.1);border:1px solid rgba(37,211,102,0.2);border-radius:10px;color:rgba(37,211,102,0.8);font-size:0.8rem;cursor:pointer;" title="واتساب">💬</button>
@@ -639,7 +820,7 @@ function openOnlineLobby() {
       <div style="margin-top:12px;border-top:1px solid rgba(255,255,255,0.05);padding-top:12px;">
         <div id="onlineChat" style="height:100px;overflow-y:auto;display:flex;flex-direction:column;gap:4px;margin-bottom:8px;scrollbar-width:none;"></div>
         <div style="display:flex;gap:8px;">
-          <input id="chatInput" type="text" placeholder="رسالة..." maxlength="60" style="flex:1;padding:9px 12px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:10px;color:#fff;font-family:'Cairo',sans-serif;font-size:0.85rem;outline:none;" onkeydown="if(event.key==='Enter')sendChatMsg()" onfocus="this.style.borderColor='rgba(124,58,237,0.4)'" onblur="this.style.borderColor='rgba(255,255,255,0.08)'"/>
+          <input id="chatInput" type="text" placeholder="رسالة..." maxlength="60" style="flex:1;padding:9px 12px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:10px;color:#fff;font-family:var(--font-ar);font-size:0.85rem;outline:none;" onkeydown="if(event.key==='Enter')sendChatMsg()" onfocus="this.style.borderColor='rgba(124,58,237,0.4)'" onblur="this.style.borderColor='rgba(255,255,255,0.08)'"/>
           <button onclick="sendChatMsg()" style="padding:9px 14px;background:rgba(124,58,237,0.15);border:1px solid rgba(124,58,237,0.25);border-radius:10px;color:rgba(167,139,250,0.8);font-size:0.9rem;cursor:pointer;">إرسال</button>
         </div>
       </div>
@@ -659,7 +840,7 @@ function openOnlineLobby() {
     <!-- Header -->
     <div style="text-align:center;margin-bottom:28px;position:relative;">
       <div style="font-size:3rem;margin-bottom:6px;filter:drop-shadow(0 0 20px rgba(239,68,68,0.6));">🕵️</div>
-      <div style="font-family:'Bebas Neue',sans-serif;font-size:clamp(2.8rem,10vw,4.5rem);letter-spacing:6px;background:linear-gradient(135deg,#ef4444,#f97316);-webkit-background-clip:text;-webkit-text-fill-color:transparent;line-height:1;">IMPOSTER</div>
+      <div style="font-family:var(--font-display);font-size:clamp(2.8rem,10vw,4.5rem);letter-spacing:6px;background:linear-gradient(135deg,#ef4444,#f97316);-webkit-background-clip:text;-webkit-text-fill-color:transparent;line-height:1;">IMPOSTER</div>
       <div style="font-size:0.62rem;letter-spacing:5px;color:rgba(239,68,68,0.35);margin-top:4px;">اكتشف المتسلل</div>
     </div>
 
@@ -675,8 +856,8 @@ function openOnlineLobby() {
           <div class="player-row"><input class="player-input" placeholder="اللاعب 3..." maxlength="12"/><button class="rm-btn" onclick="removeSpyPlayer(this)">✕</button></div>
         </div>
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
-          <button onclick="addSpyPlayer()" style="padding:10px;background:rgba(239,68,68,0.07);border:1px dashed rgba(239,68,68,0.25);border-radius:12px;color:rgba(239,68,68,0.6);font-family:'Cairo',sans-serif;font-size:0.85rem;cursor:pointer;transition:all 0.2s;" onmouseover="this.style.background='rgba(239,68,68,0.14)'" onmouseout="this.style.background='rgba(239,68,68,0.07)'">+ لاعب</button>
-          <button onclick="fillSavedPlayers('spyPlayersList','player-input')" style="padding:10px;background:rgba(255,255,255,0.03);border:1px dashed rgba(255,255,255,0.1);border-radius:12px;color:rgba(255,255,255,0.25);font-family:'Cairo',sans-serif;font-size:0.85rem;cursor:pointer;transition:all 0.2s;" onmouseover="this.style.background='rgba(255,255,255,0.07)'" onmouseout="this.style.background='rgba(255,255,255,0.03)'">💾 محفوظون</button>
+          <button onclick="addSpyPlayer()" style="padding:10px;background:rgba(239,68,68,0.07);border:1px dashed rgba(239,68,68,0.25);border-radius:12px;color:rgba(239,68,68,0.6);font-family:var(--font-ar);font-size:0.85rem;cursor:pointer;transition:all 0.2s;" onmouseover="this.style.background='rgba(239,68,68,0.14)'" onmouseout="this.style.background='rgba(239,68,68,0.07)'">+ لاعب</button>
+          <button onclick="fillSavedPlayers('spyPlayersList','player-input')" style="padding:10px;background:rgba(255,255,255,0.03);border:1px dashed rgba(255,255,255,0.1);border-radius:12px;color:rgba(255,255,255,0.25);font-family:var(--font-ar);font-size:0.85rem;cursor:pointer;transition:all 0.2s;" onmouseover="this.style.background='rgba(255,255,255,0.07)'" onmouseout="this.style.background='rgba(255,255,255,0.03)'">💾 محفوظون</button>
         </div>
       </div>
 
@@ -697,12 +878,12 @@ function openOnlineLobby() {
       </div>
 
       <!-- Start button -->
-      <button onclick="startSpyGame()" style="width:100%;padding:15px;background:linear-gradient(135deg,#ef4444,#dc2626);border:none;border-radius:14px;color:#fff;font-family:'Cairo',sans-serif;font-size:1.05rem;font-weight:700;cursor:pointer;box-shadow:0 8px 24px rgba(239,68,68,0.3);transition:all 0.2s;letter-spacing:1px;" onmouseover="this.style.transform='translateY(-2px)';this.style.boxShadow='0 12px 32px rgba(239,68,68,0.45)'" onmouseout="this.style.transform='';this.style.boxShadow='0 8px 24px rgba(239,68,68,0.3)'">🕵️ ابدأ اللعبة</button>
+      <button onclick="startSpyGame()" style="width:100%;padding:15px;background:linear-gradient(135deg,#ef4444,#dc2626);border:none;border-radius:14px;color:#fff;font-family:var(--font-ar);font-size:1.05rem;font-weight:700;cursor:pointer;box-shadow:0 8px 24px rgba(239,68,68,0.3);transition:all 0.2s;letter-spacing:1px;" onmouseover="this.style.transform='translateY(-2px)';this.style.boxShadow='0 12px 32px rgba(239,68,68,0.45)'" onmouseout="this.style.transform='';this.style.boxShadow='0 8px 24px rgba(239,68,68,0.3)'">🕵️ ابدأ اللعبة</button>
     </div>
   </div>
 
   <!-- ══ CARD REVEAL ══ -->
-  <div id="spy-reveal-view" style="display:none;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;padding:0;position:relative;overflow:hidden;">
+  <div id="spy-reveal-view" style="display:none;flex-direction:column;align-items:center;justify-content:center;position:fixed;inset:0;z-index:300;overflow:hidden;background:#0a0a0f;">
 
     <!-- Animated BG -->
     <div style="position:absolute;inset:0;pointer-events:none;overflow:hidden;">
@@ -718,7 +899,7 @@ function openOnlineLobby() {
     <!-- Top label -->
     <div style="position:relative;text-align:center;margin-bottom:20px;z-index:2;">
       <div style="font-size:0.55rem;letter-spacing:8px;color:rgba(239,68,68,0.35);text-transform:uppercase;">كشف الأدوار</div>
-      <div id="revealPlayerName" style="font-family:'Bebas Neue',sans-serif;font-size:clamp(1.8rem,7vw,2.6rem);letter-spacing:6px;color:#fff;margin-top:4px;text-shadow:0 0 30px rgba(239,68,68,0.5);">-</div>
+      <div id="revealPlayerName" style="font-family:var(--font-display);font-size:clamp(1.8rem,7vw,2.6rem);letter-spacing:6px;color:#fff;margin-top:4px;text-shadow:0 0 30px rgba(239,68,68,0.5);">-</div>
       <div style="width:60px;height:2px;background:linear-gradient(90deg,transparent,#ef4444,transparent);margin:8px auto 0;"></div>
     </div>
 
@@ -746,8 +927,8 @@ function openOnlineLobby() {
                 </svg>
               </div>
               <div style="display:flex;flex-direction:column;align-items:center;gap:6px;">
-                <div style="font-family:'Bebas Neue',sans-serif;font-size:0.75rem;letter-spacing:8px;color:rgba(239,68,68,0.4);">اضغط للكشف</div>
-                <div style="font-family:'Bebas Neue',sans-serif;font-size:1.5rem;letter-spacing:6px;background:linear-gradient(135deg,rgba(239,68,68,0.7),rgba(249,115,22,0.4));-webkit-background-clip:text;-webkit-text-fill-color:transparent;">IMPOSTER</div>
+                <div style="font-family:var(--font-display);font-size:0.75rem;letter-spacing:8px;color:rgba(239,68,68,0.4);">اضغط للكشف</div>
+                <div style="font-family:var(--font-display);font-size:1.5rem;letter-spacing:6px;background:linear-gradient(135deg,rgba(239,68,68,0.7),rgba(249,115,22,0.4));-webkit-background-clip:text;-webkit-text-fill-color:transparent;">IMPOSTER</div>
               </div>
               <div class="spy-tap-pulse"></div>
             </div>
@@ -756,14 +937,14 @@ function openOnlineLobby() {
           <!-- ── BACK FACE ── -->
           <div class="spy-card-face spy-card-back">
             <!-- Corner accents -->
-            <div class="spy-corner spy-corner-tl" style="border-color:rgba(74,222,128,0.4);"></div>
-            <div class="spy-corner spy-corner-tr" style="border-color:rgba(74,222,128,0.4);"></div>
-            <div class="spy-corner spy-corner-bl" style="border-color:rgba(74,222,128,0.4);"></div>
-            <div class="spy-corner spy-corner-br" style="border-color:rgba(74,222,128,0.4);"></div>
+            <div class="spy-corner spy-corner-tl"></div>
+            <div class="spy-corner spy-corner-tr"></div>
+            <div class="spy-corner spy-corner-bl"></div>
+            <div class="spy-corner spy-corner-br"></div>
             <div id="spyCardRole" style="font-size:0.7rem;letter-spacing:4px;position:relative;z-index:1;text-align:center;"></div>
             <div style="position:relative;z-index:1;text-align:center;">
               <div style="font-size:0.55rem;letter-spacing:4px;color:rgba(255,255,255,0.2);margin-bottom:6px;text-transform:uppercase;">الكلمة السرية</div>
-              <div id="spyCardWord" style="font-family:'Bebas Neue',sans-serif;font-size:clamp(2.2rem,9vw,3rem);letter-spacing:4px;color:#fff;text-align:center;line-height:1;text-shadow:0 0 40px rgba(255,255,255,0.15);">???</div>
+              <div id="spyCardWord" style="font-family:var(--font-display);font-size:clamp(2.2rem,9vw,3rem);letter-spacing:4px;color:#fff;text-align:center;line-height:1;text-shadow:0 0 40px rgba(255,255,255,0.15);">???</div>
             </div>
             <div id="spyCardHint" style="display:none;position:relative;z-index:1;padding:10px 18px;border-radius:24px;font-size:0.72rem;letter-spacing:2px;text-align:center;line-height:1.6;max-width:220px;"></div>
           </div>
@@ -778,58 +959,58 @@ function openOnlineLobby() {
     <div style="margin-top:24px;font-size:0.65rem;letter-spacing:3px;color:rgba(240,240,240,0.15);text-align:center;position:relative;z-index:2;">مرّر الهاتف للشخص التالي</div>
 
     <!-- Next button -->
-    <button id="spyPassBtn" onclick="nextSpyReveal()" style="display:none;margin-top:20px;padding:14px 44px;background:linear-gradient(135deg,#ef4444,#dc2626);border:none;border-radius:50px;color:#fff;font-family:'Cairo',sans-serif;font-size:1rem;font-weight:700;cursor:pointer;box-shadow:0 8px 32px rgba(239,68,68,0.35),0 0 0 1px rgba(239,68,68,0.2);transition:all 0.25s;letter-spacing:1px;position:relative;z-index:2;opacity:0;" onmouseover="this.style.transform='translateY(-2px)';this.style.boxShadow='0 12px 40px rgba(239,68,68,0.5),0 0 0 1px rgba(239,68,68,0.3)'" onmouseout="this.style.transform='';this.style.boxShadow='0 8px 32px rgba(239,68,68,0.35),0 0 0 1px rgba(239,68,68,0.2)'">التالي ←</button>
+    <button id="spyPassBtn" onclick="nextSpyReveal()" style="display:none;margin-top:20px;padding:14px 44px;background:linear-gradient(135deg,#ef4444,#dc2626);border:none;border-radius:50px;color:#fff;font-family:var(--font-ar);font-size:1rem;font-weight:700;cursor:pointer;box-shadow:0 8px 32px rgba(239,68,68,0.35),0 0 0 1px rgba(239,68,68,0.2);transition:all 0.25s;letter-spacing:1px;position:relative;z-index:2;opacity:0;" onmouseover="this.style.transform='translateY(-2px)';this.style.boxShadow='0 12px 40px rgba(239,68,68,0.5),0 0 0 1px rgba(239,68,68,0.3)'" onmouseout="this.style.transform='';this.style.boxShadow='0 8px 32px rgba(239,68,68,0.35),0 0 0 1px rgba(239,68,68,0.2)'">التالي ←</button>
   </div>
   <!-- ══ TIMER ══ -->
   <div id="spy-timer-view" style="display:none;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;padding:40px 20px;text-align:center;">
     <div style="font-size:0.62rem;letter-spacing:5px;color:rgba(239,68,68,0.3);margin-bottom:16px;">وقت النقاش</div>
-    <div style="font-family:'Bebas Neue',sans-serif;font-size:5rem;color:#ef4444;margin-bottom:24px;">🕵️</div>
+    <div style="font-family:var(--font-display);font-size:5rem;color:#ef4444;margin-bottom:24px;">🕵️</div>
     <div style="font-size:0.9rem;color:rgba(240,240,240,0.4);line-height:1.8;max-width:320px;margin-bottom:32px;">
       الآن اسألوا بعضكم! المتسلل يحاول اكتشاف الكلمة السرية بينما يحاول الآخرون كشفه.
     </div>
-    <button onclick="showSpyView('spy-vote-view')" style="padding:14px 36px;background:linear-gradient(135deg,#ef4444,#dc2626);border:none;border-radius:14px;color:#fff;font-family:'Cairo',sans-serif;font-size:1rem;font-weight:700;cursor:pointer;box-shadow:0 8px 24px rgba(239,68,68,0.3);">🗳️ انتقل للتصويت</button>
+    <button onclick="showSpyView('spy-vote-view')" style="padding:14px 36px;background:linear-gradient(135deg,#ef4444,#dc2626);border:none;border-radius:14px;color:#fff;font-family:var(--font-ar);font-size:1rem;font-weight:700;cursor:pointer;box-shadow:0 8px 24px rgba(239,68,68,0.3);">🗳️ انتقل للتصويت</button>
   </div>
 
 
   <!-- ══ VOTE ══ -->
   <div id="spy-vote-view" style="display:none;flex-direction:column;align-items:center;padding:70px 20px 120px;position:relative;">
     <div style="position:absolute;inset:0;background:radial-gradient(circle at 50% 10%,rgba(239,68,68,0.07),transparent 55%);pointer-events:none;"></div>
-    <div style="font-family:'Bebas Neue',sans-serif;font-size:2rem;letter-spacing:5px;background:linear-gradient(135deg,#ef4444,#f97316);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:4px;">التصويت</div>
+    <div style="font-family:var(--font-display);font-size:2rem;letter-spacing:5px;background:linear-gradient(135deg,#ef4444,#f97316);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:4px;">التصويت</div>
     <div style="font-size:0.62rem;letter-spacing:4px;color:rgba(239,68,68,0.3);margin-bottom:24px;">من هو المتسلل؟</div>
-    <div id="spy-vote-list" style="width:min(420px,95vw);display:flex;flex-direction:column;gap:8px;margin-bottom:20px;"></div>
-    <button onclick="showSpyResult()" style="padding:13px 36px;background:linear-gradient(135deg,#ef4444,#dc2626);border:none;border-radius:14px;color:#fff;font-family:'Cairo',sans-serif;font-size:0.95rem;font-weight:700;cursor:pointer;box-shadow:0 6px 20px rgba(239,68,68,0.3);transition:all 0.2s;">🗳️ كشف النتيجة</button>
+    <div id="spy-vote-list" style="width:min(420px,95vw);display:flex;flex-direction:column;gap:8px;"></div>
+    <button onclick="showSpyResult()" style="padding:13px 36px;background:linear-gradient(135deg,#ef4444,#dc2626);border:none;border-radius:14px;color:#fff;font-family:var(--font-ar);font-size:0.95rem;font-weight:700;cursor:pointer;box-shadow:0 6px 20px rgba(239,68,68,0.3);transition:all 0.2s;">🗳️ كشف النتيجة</button>
   </div>
 
   <!-- ══ RESULT ══ -->
   <div id="spy-result-view" style="display:none;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;padding:40px 20px;text-align:center;">
     <div id="spy-result-content">
-      <div style="font-family:'Bebas Neue',sans-serif;font-size:2.5rem;letter-spacing:4px;color:#ef4444;margin-bottom:16px;">النتيجة!</div>
+      <div style="font-family:var(--font-display);font-size:2.5rem;letter-spacing:4px;color:#ef4444;margin-bottom:16px;">النتيجة!</div>
       <div style="font-size:0.85rem;color:rgba(240,240,240,0.4);margin-bottom:8px;">المتسللون:</div>
       <div id="spyResultSpies" style="font-size:1.3rem;font-weight:700;color:#ef4444;margin-bottom:16px;"></div>
       <div style="font-size:0.85rem;color:rgba(240,240,240,0.4);margin-bottom:8px;">الكلمة السرية:</div>
       <div id="spyResultWord" style="font-size:1.8rem;font-weight:900;color:#fff;margin-bottom:24px;"></div>
     </div>
-    <button onclick="resetSpyGame()" style="margin-top:8px;padding:13px 36px;background:linear-gradient(135deg,#ef4444,#dc2626);border:none;border-radius:14px;color:#fff;font-family:'Cairo',sans-serif;font-size:0.95rem;font-weight:700;cursor:pointer;box-shadow:0 6px 20px rgba(239,68,68,0.3);transition:all 0.2s;">🔄 لعبة جديدة</button>
+    <button onclick="resetSpyGame()" style="margin-top:8px;padding:13px 36px;background:linear-gradient(135deg,#ef4444,#dc2626);border:none;border-radius:14px;color:#fff;font-family:var(--font-ar);font-size:0.95rem;font-weight:700;cursor:pointer;box-shadow:0 6px 20px rgba(239,68,68,0.3);transition:all 0.2s;">🔄 لعبة جديدة</button>
   </div>
-</div>>
+</div>
 
 <div class="screen" id="dama-mode">
   <button class="back-btn" onclick="goHome()">← رجوع</button>
   <div style="min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;padding:70px 20px 40px;">
-    <div style="font-family:'Bebas Neue',sans-serif;font-size:clamp(2.5rem,9vw,4rem);color:var(--white);">♟️ الداما</div>
+    <div style="font-family:var(--font-display);font-size:clamp(2.5rem,9vw,4rem);color:var(--white);">♟️ الداما</div>
     <p style="font-size:0.8rem;letter-spacing:3px;color:rgba(240,240,240,0.2);">اختر وضع اللعب</p>
     <div style="width:min(400px,95vw);display:flex;flex-direction:column;gap:10px;margin-top:8px;">
-      <button onclick="startDama(false)" style="padding:16px;background:var(--surface);border:1px solid var(--border2);border-radius:var(--radius2);color:var(--white);font-family:'Cairo',sans-serif;font-size:1rem;font-weight:700;cursor:pointer;transition:all 0.2s;" >
+      <button onclick="startDama(false)" style="padding:16px;background:var(--surface);border:1px solid var(--border2);border-radius:var(--radius2);color:var(--white);font-family:var(--font-ar);font-size:1rem;font-weight:700;cursor:pointer;transition:all 0.2s;" >
         👥 لاعبَين — ضد صديق
       </button>
       <div style="font-size:0.75rem;letter-spacing:2px;color:rgba(240,240,240,0.2);text-align:center;margin-top:4px;">🤖 ضد الروبوت</div>
-      <button onclick="startDama(true,0)" style="padding:14px;background:var(--dark2);border:1.5px solid rgba(0,255,135,0.15);border-radius:8px;color:rgba(0,255,135,0.8);font-family:'Cairo',sans-serif;font-size:0.95rem;cursor:pointer;transition:all 0.2s;" onmouseover="this.style.borderColor='rgba(0,255,135,0.4)'" onmouseout="this.style.borderColor='rgba(0,255,135,0.15)'">🟢 سهل جداً</button>
-      <button onclick="startDama(true,1)" style="padding:14px;background:var(--dark2);border:1.5px solid rgba(100,220,100,0.15);border-radius:8px;color:rgba(100,220,100,0.8);font-family:'Cairo',sans-serif;font-size:0.95rem;cursor:pointer;transition:all 0.2s;" onmouseover="this.style.borderColor='rgba(100,220,100,0.4)'" onmouseout="this.style.borderColor='rgba(100,220,100,0.15)'">🟡 سهل</button>
-      <button onclick="startDama(true,2)" style="padding:14px;background:var(--dark2);border:1.5px solid rgba(255,215,0,0.15);border-radius:8px;color:rgba(255,215,0,0.8);font-family:'Cairo',sans-serif;font-size:0.95rem;cursor:pointer;transition:all 0.2s;" >🟠 متوسط</button>
-      <button onclick="startDama(true,3)" style="padding:14px;background:var(--dark2);border:1.5px solid rgba(255,150,50,0.15);border-radius:8px;color:rgba(255,150,50,0.8);font-family:'Cairo',sans-serif;font-size:0.95rem;cursor:pointer;transition:all 0.2s;" onmouseover="this.style.borderColor='rgba(255,150,50,0.4)'" onmouseout="this.style.borderColor='rgba(255,150,50,0.15)'">🔴 صعب</button>
-      <button onclick="startDama(true,4)" style="padding:14px;background:var(--dark2);border:1.5px solid rgba(255,60,110,0.15);border-radius:8px;color:rgba(255,60,110,0.8);font-family:'Cairo',sans-serif;font-size:0.95rem;cursor:pointer;transition:all 0.2s;" onmouseover="this.style.borderColor='rgba(255,60,110,0.4)'" onmouseout="this.style.borderColor='rgba(255,60,110,0.15)'">🔥 محترف</button>
+      <button onclick="startDama(true,0)" style="padding:14px;background:var(--dark2);border:1.5px solid rgba(0,255,135,0.15);border-radius:8px;color:rgba(0,255,135,0.8);font-family:var(--font-ar);font-size:0.95rem;cursor:pointer;transition:all 0.2s;" onmouseover="this.style.borderColor='rgba(0,255,135,0.4)'" onmouseout="this.style.borderColor='rgba(0,255,135,0.15)'">🟢 سهل جداً</button>
+      <button onclick="startDama(true,1)" style="padding:14px;background:var(--dark2);border:1.5px solid rgba(100,220,100,0.15);border-radius:8px;color:rgba(100,220,100,0.8);font-family:var(--font-ar);font-size:0.95rem;cursor:pointer;transition:all 0.2s;" onmouseover="this.style.borderColor='rgba(100,220,100,0.4)'" onmouseout="this.style.borderColor='rgba(100,220,100,0.15)'">🟡 سهل</button>
+      <button onclick="startDama(true,2)" style="padding:14px;background:var(--dark2);border:1.5px solid rgba(255,215,0,0.15);border-radius:8px;color:rgba(255,215,0,0.8);font-family:var(--font-ar);font-size:0.95rem;cursor:pointer;transition:all 0.2s;" >🟠 متوسط</button>
+      <button onclick="startDama(true,3)" style="padding:14px;background:var(--dark2);border:1.5px solid rgba(255,150,50,0.15);border-radius:8px;color:rgba(255,150,50,0.8);font-family:var(--font-ar);font-size:0.95rem;cursor:pointer;transition:all 0.2s;" onmouseover="this.style.borderColor='rgba(255,150,50,0.4)'" onmouseout="this.style.borderColor='rgba(255,150,50,0.15)'">🔴 صعب</button>
+      <button onclick="startDama(true,4)" style="padding:14px;background:var(--dark2);border:1.5px solid rgba(255,60,110,0.15);border-radius:8px;color:rgba(255,60,110,0.8);font-family:var(--font-ar);font-size:0.95rem;cursor:pointer;transition:all 0.2s;" onmouseover="this.style.borderColor='rgba(255,60,110,0.4)'" onmouseout="this.style.borderColor='rgba(255,60,110,0.15)'">🔥 محترف</button>
 
-      <button onclick="startDama(true,6)" style="padding:14px;background:linear-gradient(135deg,rgba(20,0,40,0.8),rgba(40,0,20,0.8));border:1.5px solid rgba(255,0,80,0.3);border-radius:8px;color:rgba(255,80,80,1);font-family:'Cairo',sans-serif;font-size:0.95rem;font-weight:900;cursor:pointer;transition:all 0.2s;" onmouseover="this.style.borderColor='rgba(255,0,80,0.7)'" onmouseout="this.style.borderColor='rgba(255,0,80,0.3)'">💀 صعب جداً</button>
+      <button onclick="startDama(true,6)" style="padding:14px;background:linear-gradient(135deg,rgba(20,0,40,0.8),rgba(40,0,20,0.8));border:1.5px solid rgba(255,0,80,0.3);border-radius:8px;color:rgba(255,80,80,1);font-family:var(--font-ar);font-size:0.95rem;font-weight:900;cursor:pointer;transition:all 0.2s;" onmouseover="this.style.borderColor='rgba(255,0,80,0.7)'" onmouseout="this.style.borderColor='rgba(255,0,80,0.3)'">💀 صعب جداً</button>
     </div>
   </div>
 </div>
@@ -855,14 +1036,14 @@ function openOnlineLobby() {
 <div class="screen" id="chess-mode">
   <button class="back-btn" onclick="goHome()">← رجوع</button>
   <div style="min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;padding:70px 20px 40px;">
-    <div style="font-family:'Bebas Neue',sans-serif;font-size:clamp(2.5rem,9vw,4rem);color:var(--gold);">♟️ CHESS</div>
+    <div style="font-family:var(--font-display);font-size:clamp(2.5rem,9vw,4rem);color:var(--gold);">♟️ CHESS</div>
     <p style="font-size:0.8rem;letter-spacing:3px;color:rgba(240,240,240,0.2);">اختر وضع اللعب</p>
     <div style="width:min(400px,95vw);display:flex;flex-direction:column;gap:10px;margin-top:8px;">
-      <button onclick="startChess(false)" style="padding:16px;background:var(--dark2);border:1.5px solid rgba(255,215,0,0.15);border-radius:8px;color:var(--white);font-family:'Cairo',sans-serif;font-size:1rem;font-weight:700;cursor:pointer;transition:all 0.2s;" >👥 لاعبَين — ضد صديق</button>
+      <button onclick="startChess(false)" style="padding:16px;background:var(--dark2);border:1.5px solid rgba(255,215,0,0.15);border-radius:8px;color:var(--white);font-family:var(--font-ar);font-size:1rem;font-weight:700;cursor:pointer;transition:all 0.2s;" >👥 لاعبَين — ضد صديق</button>
       <div style="font-size:0.75rem;letter-spacing:2px;color:rgba(240,240,240,0.2);text-align:center;margin-top:4px;">🤖 ضد الروبوت</div>
-      <button onclick="startChess(true,0)" style="padding:14px;background:var(--dark2);border:1.5px solid rgba(0,255,135,0.15);border-radius:8px;color:rgba(0,255,135,0.8);font-family:'Cairo',sans-serif;font-size:0.95rem;cursor:pointer;transition:all 0.2s;" onmouseover="this.style.borderColor='rgba(0,255,135,0.4)'" onmouseout="this.style.borderColor='rgba(0,255,135,0.15)'">🟢 سهل</button>
-      <button onclick="startChess(true,1)" style="padding:14px;background:var(--dark2);border:1.5px solid rgba(255,215,0,0.15);border-radius:8px;color:rgba(255,215,0,0.8);font-family:'Cairo',sans-serif;font-size:0.95rem;cursor:pointer;transition:all 0.2s;" >🟠 متوسط</button>
-      <button onclick="startChess(true,2)" style="padding:14px;background:var(--dark2);border:1.5px solid rgba(255,60,110,0.15);border-radius:8px;color:rgba(255,60,110,0.8);font-family:'Cairo',sans-serif;font-size:0.95rem;cursor:pointer;transition:all 0.2s;" onmouseover="this.style.borderColor='rgba(255,60,110,0.4)'" onmouseout="this.style.borderColor='rgba(255,60,110,0.15)'">🔴 صعب</button>
+      <button onclick="startChess(true,0)" style="padding:14px;background:var(--dark2);border:1.5px solid rgba(0,255,135,0.15);border-radius:8px;color:rgba(0,255,135,0.8);font-family:var(--font-ar);font-size:0.95rem;cursor:pointer;transition:all 0.2s;" onmouseover="this.style.borderColor='rgba(0,255,135,0.4)'" onmouseout="this.style.borderColor='rgba(0,255,135,0.15)'">🟢 سهل</button>
+      <button onclick="startChess(true,1)" style="padding:14px;background:var(--dark2);border:1.5px solid rgba(255,215,0,0.15);border-radius:8px;color:rgba(255,215,0,0.8);font-family:var(--font-ar);font-size:0.95rem;cursor:pointer;transition:all 0.2s;" >🟠 متوسط</button>
+      <button onclick="startChess(true,2)" style="padding:14px;background:var(--dark2);border:1.5px solid rgba(255,60,110,0.15);border-radius:8px;color:rgba(255,60,110,0.8);font-family:var(--font-ar);font-size:0.95rem;cursor:pointer;transition:all 0.2s;" onmouseover="this.style.borderColor='rgba(255,60,110,0.4)'" onmouseout="this.style.borderColor='rgba(255,60,110,0.15)'">🔴 صعب</button>
 
     </div>
   </div>
@@ -872,13 +1053,13 @@ function openOnlineLobby() {
 <div class="screen" id="chess">
   <button class="back-btn" onclick="showScreen('chess-mode')">← رجوع</button>
   <div style="display:flex;flex-direction:column;align-items:center;padding-top:50px;gap:8px;min-height:100vh;">
-    <div style="font-family:'Bebas Neue',sans-serif;font-size:1.8rem;color:var(--gold);">♟️ CHESS</div>
+    <div style="font-family:var(--font-display);font-size:1.8rem;color:var(--gold);">♟️ CHESS</div>
     <div id="chessModeLabel" style="font-size:0.7rem;letter-spacing:2px;color:rgba(240,240,240,0.2);"></div>
     <div id="chessStatus" style="font-size:0.9rem;color:rgba(240,240,240,0.6);letter-spacing:1px;margin-bottom:4px;">⬜ دور الأبيض</div>
     <div id="chessBoard" style="display:grid;grid-template-columns:repeat(8,40px);grid-template-rows:repeat(8,40px);width:320px;height:320px;border:2px solid rgba(180,130,60,0.3);border-radius:4px;overflow:hidden;"></div>
     <div style="display:flex;gap:10px;margin-top:8px;">
-      <button onclick="resetChess()" style="padding:9px 18px;background:var(--dark2);border:1px solid rgba(255,255,255,0.08);border-radius:6px;color:rgba(240,240,240,0.5);font-family:'Cairo',sans-serif;font-size:0.85rem;cursor:pointer;">إعادة اللعب</button>
-      <button onclick="undoChess()" id="chessUndoBtn" style="padding:9px 18px;background:var(--dark2);border:1px solid rgba(255,255,255,0.08);border-radius:6px;color:rgba(240,240,240,0.3);font-family:'Cairo',sans-serif;font-size:0.85rem;cursor:pointer;">تراجع</button>
+      <button onclick="resetChess()" style="padding:9px 18px;background:var(--dark2);border:1px solid rgba(255,255,255,0.08);border-radius:6px;color:rgba(240,240,240,0.5);font-family:var(--font-ar);font-size:0.85rem;cursor:pointer;">إعادة اللعب</button>
+      <button onclick="undoChess()" id="chessUndoBtn" style="padding:9px 18px;background:var(--dark2);border:1px solid rgba(255,255,255,0.08);border-radius:6px;color:rgba(240,240,240,0.3);font-family:var(--font-ar);font-size:0.85rem;cursor:pointer;">تراجع</button>
     </div>
     <div id="chessCapturedW" style="font-size:1.1rem;min-height:24px;color:rgba(240,240,240,0.4);"></div>
     <div id="chessCapturedB" style="font-size:1.1rem;min-height:24px;color:rgba(240,240,240,0.4);"></div>
@@ -892,9 +1073,9 @@ function openOnlineLobby() {
 <div class="screen" id="leaderboard">
   <button class="back-btn" onclick="showScreen('home')">← رجوع</button>
   <div style="min-height:100vh;display:flex;flex-direction:column;align-items:center;gap:16px;padding:70px 20px 40px;">
-    <div style="font-family:'Bebas Neue',sans-serif;font-size:clamp(2.5rem,8vw,4rem);color:var(--gold);text-shadow:0 0 20px rgba(255,215,0,0.3);">🏆 الترتيب</div>
+    <div style="font-family:var(--font-display);font-size:clamp(2.5rem,8vw,4rem);color:var(--gold);text-shadow:0 0 20px rgba(255,215,0,0.3);">🏆 الترتيب</div>
     <div id="lbList" style="width:min(440px,95vw);display:flex;flex-direction:column;gap:8px;"></div>
-    <button onclick="resetLeaderboard()" style="padding:10px 20px;background:transparent;border:1px solid rgba(255,60,110,0.2);border-radius:6px;color:rgba(255,60,110,0.4);font-family:'Cairo',sans-serif;font-size:0.85rem;cursor:pointer;margin-top:16px;">🗑️ مسح الترتيب</button>
+    <button onclick="resetLeaderboard()" style="padding:10px 20px;background:transparent;border:1px solid rgba(255,60,110,0.2);border-radius:6px;color:rgba(255,60,110,0.4);font-family:var(--font-ar);font-size:0.85rem;cursor:pointer;margin-top:16px;">🗑️ مسح الترتيب</button>
   </div>
 </div>
 
@@ -902,12 +1083,12 @@ function openOnlineLobby() {
 <div class="screen" id="players-mgmt">
   <button class="back-btn" onclick="showScreen('home')">← رجوع</button>
   <div style="min-height:100vh;display:flex;flex-direction:column;align-items:center;gap:14px;padding:70px 20px 40px;">
-    <div style="font-family:'Bebas Neue',sans-serif;font-size:clamp(2rem,7vw,3rem);color:var(--white);text-align:center;">👥 اللاعبون المسجلون</div>
+    <div style="font-family:var(--font-display);font-size:clamp(2rem,7vw,3rem);color:var(--white);text-align:center;">👥 اللاعبون المسجلون</div>
     <p style="font-size:0.8rem;letter-spacing:2px;color:rgba(240,240,240,0.2);text-align:center;">سيظهر هؤلاء اللاعبون تلقائياً في الألعاب</p>
     <div id="savedPlayersList" style="width:min(440px,95vw);display:flex;flex-direction:column;gap:8px;"></div>
     <div style="width:min(440px,95vw);display:flex;gap:8px;">
       <input id="newPlayerInput" class="player-input" placeholder="أضف اسم اللاعب..." maxlength="12" style="flex:1;" onkeydown="if(event.key==='Enter')addSavedPlayer()"/>
-      <button onclick="addSavedPlayer()" style="padding:10px 16px;background:var(--accent);border:none;border-radius:6px;color:#fff;font-family:'Cairo',sans-serif;font-size:0.9rem;cursor:pointer;">+</button>
+      <button onclick="addSavedPlayer()" style="padding:10px 16px;background:var(--accent);border:none;border-radius:6px;color:#fff;font-family:var(--font-ar);font-size:0.9rem;cursor:pointer;">+</button>
     </div>
   </div>
 </div>
@@ -923,7 +1104,7 @@ function openOnlineLobby() {
     <!-- Header -->
     <div style="text-align:center;margin-bottom:28px;position:relative;">
       <div style="font-size:3rem;margin-bottom:6px;filter:drop-shadow(0 0 20px rgba(160,80,255,0.7));">🐺</div>
-      <div style="font-family:'Bebas Neue',sans-serif;font-size:clamp(2.8rem,10vw,4.5rem);letter-spacing:6px;background:linear-gradient(135deg,#a050ff,#7c3aed);-webkit-background-clip:text;-webkit-text-fill-color:transparent;line-height:1;">LOUP GAROU</div>
+      <div style="font-family:var(--font-display);font-size:clamp(2.8rem,10vw,4.5rem);letter-spacing:6px;background:linear-gradient(135deg,#a050ff,#7c3aed);-webkit-background-clip:text;-webkit-text-fill-color:transparent;line-height:1;">LOUP GAROU</div>
       <div style="font-size:0.62rem;letter-spacing:5px;color:rgba(160,80,255,0.35);margin-top:4px;">من الذئب المختبئ؟</div>
     </div>
 
@@ -941,8 +1122,8 @@ function openOnlineLobby() {
           <div class="player-row"><input class="player-input" placeholder="اللاعب 5..." maxlength="12" style="border-color:rgba(160,80,255,0.2);"/><button class="rm-btn" onclick="removeLgPlayer(this)">✕</button></div>
         </div>
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
-          <button onclick="addLgPlayer()" style="padding:10px;background:rgba(160,80,255,0.07);border:1px dashed rgba(160,80,255,0.25);border-radius:12px;color:rgba(160,80,255,0.6);font-family:'Cairo',sans-serif;font-size:0.85rem;cursor:pointer;transition:all 0.2s;" onmouseover="this.style.background='rgba(160,80,255,0.14)'" onmouseout="this.style.background='rgba(160,80,255,0.07)'">+ لاعب</button>
-          <button onclick="fillSavedPlayers('lgPlayersList','player-input')" style="padding:10px;background:rgba(255,255,255,0.03);border:1px dashed rgba(255,255,255,0.1);border-radius:12px;color:rgba(255,255,255,0.25);font-family:'Cairo',sans-serif;font-size:0.85rem;cursor:pointer;transition:all 0.2s;" onmouseover="this.style.background='rgba(255,255,255,0.07)'" onmouseout="this.style.background='rgba(255,255,255,0.03)'">💾 محفوظون</button>
+          <button onclick="addLgPlayer()" style="padding:10px;background:rgba(160,80,255,0.07);border:1px dashed rgba(160,80,255,0.25);border-radius:12px;color:rgba(160,80,255,0.6);font-family:var(--font-ar);font-size:0.85rem;cursor:pointer;transition:all 0.2s;" onmouseover="this.style.background='rgba(160,80,255,0.14)'" onmouseout="this.style.background='rgba(160,80,255,0.07)'">+ لاعب</button>
+          <button onclick="fillSavedPlayers('lgPlayersList','player-input')" style="padding:10px;background:rgba(255,255,255,0.03);border:1px dashed rgba(255,255,255,0.1);border-radius:12px;color:rgba(255,255,255,0.25);font-family:var(--font-ar);font-size:0.85rem;cursor:pointer;transition:all 0.2s;" onmouseover="this.style.background='rgba(255,255,255,0.07)'" onmouseout="this.style.background='rgba(255,255,255,0.03)'">💾 محفوظون</button>
         </div>
       </div>
 
@@ -966,13 +1147,13 @@ function openOnlineLobby() {
       <div>
         <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
           <div style="font-size:0.65rem;letter-spacing:3px;color:rgba(160,80,255,0.4);">الأدوار</div>
-          <button onclick="toggleLgRoles()" id="lgRolesToggle" style="padding:5px 12px;background:rgba(160,80,255,0.1);border:1px solid rgba(160,80,255,0.2);border-radius:20px;color:rgba(160,80,255,0.6);font-family:'Cairo',sans-serif;font-size:0.75rem;cursor:pointer;transition:all 0.2s;">▼ عرض الأدوار</button>
+          <button onclick="toggleLgRoles()" id="lgRolesToggle" style="padding:5px 12px;background:rgba(160,80,255,0.1);border:1px solid rgba(160,80,255,0.2);border-radius:20px;color:rgba(160,80,255,0.6);font-family:var(--font-ar);font-size:0.75rem;cursor:pointer;transition:all 0.2s;">▼ عرض الأدوار</button>
         </div>
         <div id="lgRolesPanel" style="display:none;flex-wrap:wrap;gap:6px;"></div>
       </div>
 
       <!-- Start -->
-      <button onclick="startLgGame()" style="width:100%;padding:15px;background:linear-gradient(135deg,#a050ff,#7c3aed);border:none;border-radius:14px;color:#fff;font-family:'Cairo',sans-serif;font-size:1.05rem;font-weight:700;cursor:pointer;box-shadow:0 8px 24px rgba(160,80,255,0.3);transition:all 0.2s;letter-spacing:1px;" onmouseover="this.style.transform='translateY(-2px)';this.style.boxShadow='0 12px 32px rgba(160,80,255,0.45)'" onmouseout="this.style.transform='';this.style.boxShadow='0 8px 24px rgba(160,80,255,0.3)'">🐺 ابدأ اللعبة</button>
+      <button onclick="startLgGame()" style="width:100%;padding:15px;background:linear-gradient(135deg,#a050ff,#7c3aed);border:none;border-radius:14px;color:#fff;font-family:var(--font-ar);font-size:1.05rem;font-weight:700;cursor:pointer;box-shadow:0 8px 24px rgba(160,80,255,0.3);transition:all 0.2s;letter-spacing:1px;" onmouseover="this.style.transform='translateY(-2px)';this.style.boxShadow='0 12px 32px rgba(160,80,255,0.45)'" onmouseout="this.style.transform='';this.style.boxShadow='0 8px 24px rgba(160,80,255,0.3)'">🐺 ابدأ اللعبة</button>
     </div>
   </div>
 
@@ -989,25 +1170,25 @@ function openOnlineLobby() {
             <div id="tapHint2" style="display:flex;flex-direction:column;align-items:center;gap:12px;">
               <div style="font-size:3rem;opacity:0.4;">🔒</div>
               <div style="font-size:0.8rem;letter-spacing:3px;color:rgba(160,80,255,0.4);">اضغط للكشف</div>
-              <div style="font-family:'Bebas Neue',sans-serif;font-size:1.2rem;letter-spacing:4px;color:rgba(160,80,255,0.25);">LOUP GAROU</div>
+              <div style="font-family:var(--font-display);font-size:1.2rem;letter-spacing:4px;color:rgba(160,80,255,0.25);">LOUP GAROU</div>
             </div>
           </div>
           <!-- Back -->
           <div style="position:absolute;inset:0;backface-visibility:hidden;transform:rotateY(180deg);border-radius:24px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;padding:24px;box-shadow:0 20px 60px rgba(160,80,255,0.25);background:linear-gradient(135deg,#0d0a1a,#1a0d2e);border:1px solid rgba(160,80,255,0.3);">
             <div id="lgCardIcon" style="font-size:4rem;filter:drop-shadow(0 0 20px rgba(160,80,255,0.6));">🐺</div>
-            <div id="lgCardRole" style="font-family:'Bebas Neue',sans-serif;font-size:1.6rem;letter-spacing:4px;color:#fff;">المستذئب</div>
+            <div id="lgCardRole" style="font-family:var(--font-display);font-size:1.6rem;letter-spacing:4px;color:#fff;">المستذئب</div>
             <div id="lgCardDesc" style="font-size:0.8rem;color:rgba(240,240,240,0.4);text-align:center;line-height:1.7;"></div>
           </div>
         </div>
       </div>
     </div>
     <div style="font-size:0.75rem;color:rgba(240,240,240,0.2);margin-bottom:20px;">مرر الهاتف للشخص التالي</div>
-    <button id="lgPassBtn" onclick="nextLgReveal()" style="padding:13px 36px;background:linear-gradient(135deg,#a050ff,#7c3aed);border:none;border-radius:14px;color:#fff;font-family:'Cairo',sans-serif;font-size:0.95rem;font-weight:700;cursor:pointer;box-shadow:0 6px 20px rgba(160,80,255,0.3);transition:all 0.2s;display:none;">التالي →</button>
+    <button id="lgPassBtn" onclick="nextLgReveal()" style="padding:13px 36px;background:linear-gradient(135deg,#a050ff,#7c3aed);border:none;border-radius:14px;color:#fff;font-family:var(--font-ar);font-size:0.95rem;font-weight:700;cursor:pointer;box-shadow:0 6px 20px rgba(160,80,255,0.3);transition:all 0.2s;display:none;">التالي →</button>
   </div>
   <!-- ══ NIGHT PHASE ══ -->
   <div id="lg-night" style="display:none;flex-direction:column;align-items:center;padding:70px 20px 120px;position:relative;">
     <div style="position:absolute;inset:0;background:radial-gradient(circle at 50% 0%,rgba(160,80,255,0.08),transparent 50%);pointer-events:none;"></div>
-    <div id="lgNightTitle" style="font-family:'Bebas Neue',sans-serif;font-size:2.5rem;letter-spacing:5px;color:#fff;margin-bottom:8px;">🌙 الليلة 1</div>
+    <div id="lgNightTitle" style="font-family:var(--font-display);font-size:2.5rem;letter-spacing:5px;color:#fff;margin-bottom:8px;">🌙 الليلة 1</div>
     <!-- Village Map -->
     <div style="width:min(420px,95vw);margin-bottom:16px;">
       <div style="font-size:0.62rem;letter-spacing:4px;color:rgba(160,80,255,0.3);margin-bottom:8px;">خريطة القرية</div>
@@ -1024,7 +1205,7 @@ function openOnlineLobby() {
 
   <!-- ══ DAY PHASE ══ -->
   <div id="lg-day" style="display:none;flex-direction:column;align-items:center;padding:70px 20px 120px;position:relative;">
-    <div id="lgDayTitle" style="font-family:'Bebas Neue',sans-serif;font-size:2.5rem;letter-spacing:5px;background:linear-gradient(135deg,#fbbf24,#f59e0b);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:8px;">☀️ النهار 1</div>
+    <div id="lgDayTitle" style="font-family:var(--font-display);font-size:2.5rem;letter-spacing:5px;background:linear-gradient(135deg,#fbbf24,#f59e0b);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:8px;">☀️ النهار 1</div>
     <!-- Narrator -->
     <div style="width:min(420px,95vw);padding:12px 16px;background:rgba(251,191,36,0.05);border:1px solid rgba(251,191,36,0.1);border-radius:12px;margin-bottom:14px;">
       <div style="font-size:0.6rem;letter-spacing:3px;color:rgba(251,191,36,0.3);margin-bottom:4px;">الراوي</div>
@@ -1040,12 +1221,12 @@ function openOnlineLobby() {
       <div id="lgDeathMsg" style="font-size:0.9rem;color:rgba(240,240,240,0.6);line-height:1.8;"></div>
     </div>
     <!-- Vote section -->
-    <div style="font-family:'Bebas Neue',sans-serif;font-size:1.5rem;letter-spacing:4px;color:#fff;margin-bottom:8px;">🗳️ التصويت</div>
+    <div style="font-family:var(--font-display);font-size:1.5rem;letter-spacing:4px;color:#fff;margin-bottom:8px;">🗳️ التصويت</div>
     <div style="font-size:0.62rem;letter-spacing:4px;color:rgba(160,80,255,0.3);margin-bottom:14px;">من تريد إعدامه؟</div>
     <div id="lgVoteList" style="width:min(420px,95vw);display:flex;flex-direction:column;gap:8px;margin-bottom:16px;"></div>
     <div style="display:flex;gap:10px;">
-      <button onclick="eliminateLgVote()" style="padding:13px 28px;background:linear-gradient(135deg,#ef4444,#dc2626);border:none;border-radius:14px;color:#fff;font-family:'Cairo',sans-serif;font-size:0.95rem;font-weight:700;cursor:pointer;box-shadow:0 6px 20px rgba(239,68,68,0.3);">⚖️ تأكيد الإعدام</button>
-      <button onclick="skipLgVote()" style="padding:13px 20px;background:var(--surface);border:1px solid var(--border2);border-radius:14px;color:var(--text2);font-family:'Cairo',sans-serif;font-size:0.9rem;cursor:pointer;">تخطّ</button>
+      <button onclick="eliminateLgVote()" style="padding:13px 28px;background:linear-gradient(135deg,#ef4444,#dc2626);border:none;border-radius:14px;color:#fff;font-family:var(--font-ar);font-size:0.95rem;font-weight:700;cursor:pointer;box-shadow:0 6px 20px rgba(239,68,68,0.3);">⚖️ تأكيد الإعدام</button>
+      <button onclick="skipLgVote()" style="padding:13px 20px;background:var(--surface);border:1px solid var(--border2);border-radius:14px;color:var(--text2);font-family:var(--font-ar);font-size:0.9rem;cursor:pointer;">تخطّ</button>
     </div>
     <!-- History log -->
     <div style="width:min(420px,95vw);margin-top:20px;">
@@ -1057,24 +1238,24 @@ function openOnlineLobby() {
   <!-- ══ GAME OVER ══ -->
   <div id="lg-over" style="display:none;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;padding:40px 20px;text-align:center;">
     <div id="lgOverIcon" style="font-size:5rem;animation:pop 0.5s cubic-bezier(0.175,0.885,0.32,1.275) both;">🎉</div>
-    <div id="lgOverTitle" style="font-family:'Bebas Neue',sans-serif;font-size:clamp(2rem,9vw,3.5rem);letter-spacing:4px;margin-top:16px;color:#00ff87;"></div>
+    <div id="lgOverTitle" style="font-family:var(--font-display);font-size:clamp(2rem,9vw,3.5rem);letter-spacing:4px;margin-top:16px;color:#00ff87;"></div>
     <div id="lgOverMsg" style="font-size:0.9rem;color:rgba(240,240,240,0.45);margin-top:12px;line-height:1.8;max-width:340px;"></div>
     <!-- Narrator summary -->
     <div style="margin-top:20px;width:min(420px,95vw);">
       <div style="font-size:0.6rem;letter-spacing:4px;color:rgba(240,240,240,0.2);margin-bottom:10px;">ملخص الأدوار</div>
       <div id="narratorSummaryListPreview" style="display:flex;flex-direction:column;gap:6px;"></div>
     </div>
-    <button onclick="showNarratorSummary()" style="margin-top:16px;padding:10px 24px;background:rgba(160,80,255,0.12);border:1px solid rgba(160,80,255,0.25);border-radius:12px;color:rgba(167,139,250,0.8);font-family:'Cairo',sans-serif;font-size:0.85rem;cursor:pointer;">📋 ملخص الأدوار</button>
-    <button onclick="resetLgGame()" style="margin-top:10px;padding:13px 36px;background:linear-gradient(135deg,#a050ff,#7c3aed);border:none;border-radius:14px;color:#fff;font-family:'Cairo',sans-serif;font-size:0.95rem;font-weight:700;cursor:pointer;box-shadow:0 6px 20px rgba(160,80,255,0.3);">🔄 جولة جديدة</button>
+    <button onclick="showNarratorSummary()" style="margin-top:16px;padding:10px 24px;background:rgba(160,80,255,0.12);border:1px solid rgba(160,80,255,0.25);border-radius:12px;color:rgba(167,139,250,0.8);font-family:var(--font-ar);font-size:0.85rem;cursor:pointer;">📋 ملخص الأدوار</button>
+    <button onclick="resetLgGame()" style="margin-top:10px;padding:13px 36px;background:linear-gradient(135deg,#a050ff,#7c3aed);border:none;border-radius:14px;color:#fff;font-family:var(--font-ar);font-size:0.95rem;font-weight:700;cursor:pointer;box-shadow:0 6px 20px rgba(160,80,255,0.3);">🔄 جولة جديدة</button>
   </div>
 
   <!-- ══ NARRATOR SUMMARY ══ -->
   <div id="lg-narrator-summary" style="display:none;flex-direction:column;align-items:center;padding:70px 20px 120px;">
-    <div style="font-family:'Bebas Neue',sans-serif;font-size:2rem;letter-spacing:4px;color:#fff;margin-bottom:20px;">📋 ملخص الأدوار</div>
+    <div style="font-family:var(--font-display);font-size:2rem;letter-spacing:4px;color:#fff;margin-bottom:20px;">📋 ملخص الأدوار</div>
     <div id="narratorSummaryList" style="width:min(420px,95vw);display:flex;flex-direction:column;gap:8px;"></div>
-    <button onclick="showLgView('lg-over')" style="margin-top:20px;padding:12px 28px;background:rgba(160,80,255,0.15);border:1px solid rgba(160,80,255,0.3);border-radius:12px;color:rgba(167,139,250,0.8);font-family:'Cairo',sans-serif;font-size:0.9rem;cursor:pointer;">← رجوع</button>
+    <button onclick="showLgView('lg-over')" style="margin-top:20px;padding:12px 28px;background:rgba(160,80,255,0.15);border:1px solid rgba(160,80,255,0.3);border-radius:12px;color:rgba(167,139,250,0.8);font-family:var(--font-ar);font-size:0.9rem;cursor:pointer;">← رجوع</button>
   </div>
-</div>>
+</div>
 
 
 
@@ -1087,12 +1268,12 @@ function openOnlineLobby() {
     </div>
     <div style="position:relative;display:flex;flex-direction:column;align-items:center;gap:8px;margin-bottom:24px;">
       <div style="width:72px;height:72px;border-radius:20px;background:linear-gradient(135deg,#7c3aed,#a855f7);display:flex;align-items:center;justify-content:center;font-size:2.2rem;box-shadow:0 16px 48px rgba(124,58,237,0.45);">🎮</div>
-      <div style="font-family:'Bebas Neue',sans-serif;font-size:2rem;letter-spacing:6px;background:linear-gradient(135deg,#fff,rgba(255,255,255,0.6));-webkit-background-clip:text;-webkit-text-fill-color:transparent;">YASSINE GAMES</div>
+      <div style="font-family:var(--font-display);font-size:2rem;letter-spacing:6px;background:linear-gradient(135deg,#fff,rgba(255,255,255,0.6));-webkit-background-clip:text;-webkit-text-fill-color:transparent;">YASSINE GAMES</div>
       <div style="font-size:0.6rem;letter-spacing:4px;color:rgba(167,139,250,0.4);">سجّل دخولك للمتابعة</div>
     </div>
     <div style="width:min(400px,95vw);background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);border-radius:20px;padding:24px;">
       <!-- Google -->
-      <button onclick="signInGoogle()" style="width:100%;display:flex;align-items:center;justify-content:center;gap:12px;padding:14px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.14);border-radius:14px;color:rgba(240,240,240,0.85);font-family:'Cairo',sans-serif;font-size:0.95rem;font-weight:600;cursor:pointer;transition:all 0.2s;margin-bottom:16px;" onmouseover="this.style.background='rgba(255,255,255,0.1)'" onmouseout="this.style.background='rgba(255,255,255,0.06)'">
+      <button onclick="signInGoogle(this)" id="googleSignInBtn" style="width:100%;display:flex;align-items:center;justify-content:center;gap:12px;padding:14px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.14);border-radius:14px;color:rgba(240,240,240,0.85);font-family:var(--font-ar);font-size:0.95rem;font-weight:600;cursor:pointer;transition:all 0.2s;margin-bottom:16px;" onmouseover="this.style.background='rgba(255,255,255,0.12)';this.style.borderColor='rgba(255,255,255,0.25)'" onmouseout="this.style.background='rgba(255,255,255,0.06)';this.style.borderColor='rgba(255,255,255,0.14)'">
         <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" style="width:22px;height:22px;"/>
         تسجيل الدخول بـ Google
       </button>
@@ -1104,26 +1285,26 @@ function openOnlineLobby() {
       </div>
       <!-- Tabs -->
       <div style="display:flex;background:rgba(255,255,255,0.04);border-radius:12px;padding:3px;gap:3px;margin-bottom:16px;">
-        <button onclick="switchAuthTab('login')" id="tabLogin" style="flex:1;padding:9px;border-radius:9px;border:none;background:linear-gradient(135deg,#7c3aed,#a855f7);color:#fff;font-family:'Cairo',sans-serif;font-size:0.88rem;font-weight:700;cursor:pointer;transition:all 0.2s;">دخول</button>
-        <button onclick="switchAuthTab('register')" id="tabRegister" style="flex:1;padding:9px;border-radius:9px;border:none;background:transparent;color:rgba(240,240,240,0.4);font-family:'Cairo',sans-serif;font-size:0.88rem;cursor:pointer;transition:all 0.2s;">حساب جديد</button>
+        <button onclick="switchAuthTab('login')" id="tabLogin" style="flex:1;padding:9px;border-radius:9px;border:none;background:linear-gradient(135deg,#7c3aed,#a855f7);color:#fff;font-family:var(--font-ar);font-size:0.88rem;font-weight:700;cursor:pointer;transition:all 0.2s;">دخول</button>
+        <button onclick="switchAuthTab('register')" id="tabRegister" style="flex:1;padding:9px;border-radius:9px;border:none;background:transparent;color:rgba(240,240,240,0.4);font-family:var(--font-ar);font-size:0.88rem;cursor:pointer;transition:all 0.2s;">حساب جديد</button>
       </div>
       <!-- Login -->
       <div id="loginForm" style="display:flex;flex-direction:column;gap:9px;">
-        <input id="loginUsername" type="text" placeholder="اسم المستخدم..." maxlength="20" style="width:100%;padding:12px 14px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:12px;color:#fff;font-family:'Cairo',sans-serif;font-size:0.9rem;outline:none;box-sizing:border-box;" onfocus="this.style.borderColor='rgba(124,58,237,0.5)'" onblur="this.style.borderColor='rgba(255,255,255,0.1)'"/>
-        <input id="loginPassword" type="password" placeholder="كلمة السر..." maxlength="30" style="width:100%;padding:12px 14px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:12px;color:#fff;font-family:'Cairo',sans-serif;font-size:0.9rem;outline:none;box-sizing:border-box;" onfocus="this.style.borderColor='rgba(124,58,237,0.5)'" onblur="this.style.borderColor='rgba(255,255,255,0.1)'" onkeydown="if(event.key==='Enter')doLogin()"/>
+        <input id="loginUsername" type="text" placeholder="اسم المستخدم..." maxlength="20" style="width:100%;padding:12px 14px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:12px;color:#fff;font-family:var(--font-ar);font-size:0.9rem;outline:none;box-sizing:border-box;" onfocus="this.style.borderColor='rgba(124,58,237,0.5)'" onblur="this.style.borderColor='rgba(255,255,255,0.1)'"/>
+        <input id="loginPassword" type="password" placeholder="كلمة السر..." maxlength="30" style="width:100%;padding:12px 14px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:12px;color:#fff;font-family:var(--font-ar);font-size:0.9rem;outline:none;box-sizing:border-box;" onfocus="this.style.borderColor='rgba(124,58,237,0.5)'" onblur="this.style.borderColor='rgba(255,255,255,0.1)'" onkeydown="if(event.key==='Enter')doLogin()"/>
         <div id="loginError" style="display:none;padding:9px 14px;background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.2);border-radius:10px;font-size:0.8rem;color:rgba(239,68,68,0.8);text-align:center;"></div>
-        <button onclick="doLogin()" style="padding:13px;background:linear-gradient(135deg,#7c3aed,#a855f7);border:none;border-radius:12px;color:#fff;font-family:'Cairo',sans-serif;font-size:0.95rem;font-weight:700;cursor:pointer;box-shadow:0 4px 16px rgba(124,58,237,0.3);transition:all 0.2s;" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform=''">دخول 🚀</button>
+        <button onclick="doLogin()" style="padding:13px;background:linear-gradient(135deg,#7c3aed,#a855f7);border:none;border-radius:12px;color:#fff;font-family:var(--font-ar);font-size:0.95rem;font-weight:700;cursor:pointer;box-shadow:0 4px 16px rgba(124,58,237,0.3);transition:all 0.2s;" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform=''">دخول 🚀</button>
       </div>
       <!-- Register -->
       <div id="registerForm" style="display:none;flex-direction:column;gap:9px;">
-        <input id="regName" type="text" placeholder="اسمك الكامل..." maxlength="20" style="width:100%;padding:12px 14px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:12px;color:#fff;font-family:'Cairo',sans-serif;font-size:0.9rem;outline:none;box-sizing:border-box;" onfocus="this.style.borderColor='rgba(124,58,237,0.5)'" onblur="this.style.borderColor='rgba(255,255,255,0.1)'"/>
-        <input id="regUsername" type="text" placeholder="اسم المستخدم..." maxlength="20" style="width:100%;padding:12px 14px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:12px;color:#fff;font-family:'Cairo',sans-serif;font-size:0.9rem;outline:none;box-sizing:border-box;" onfocus="this.style.borderColor='rgba(124,58,237,0.5)'" onblur="this.style.borderColor='rgba(255,255,255,0.1)'"/>
-        <input id="regPassword" type="password" placeholder="كلمة السر..." maxlength="30" style="width:100%;padding:12px 14px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:12px;color:#fff;font-family:'Cairo',sans-serif;font-size:0.9rem;outline:none;box-sizing:border-box;" onfocus="this.style.borderColor='rgba(124,58,237,0.5)'" onblur="this.style.borderColor='rgba(255,255,255,0.1)'"/>
+        <input id="regName" type="text" placeholder="اسمك الكامل..." maxlength="20" style="width:100%;padding:12px 14px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:12px;color:#fff;font-family:var(--font-ar);font-size:0.9rem;outline:none;box-sizing:border-box;" onfocus="this.style.borderColor='rgba(124,58,237,0.5)'" onblur="this.style.borderColor='rgba(255,255,255,0.1)'"/>
+        <input id="regUsername" type="text" placeholder="اسم المستخدم..." maxlength="20" style="width:100%;padding:12px 14px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:12px;color:#fff;font-family:var(--font-ar);font-size:0.9rem;outline:none;box-sizing:border-box;" onfocus="this.style.borderColor='rgba(124,58,237,0.5)'" onblur="this.style.borderColor='rgba(255,255,255,0.1)'"/>
+        <input id="regPassword" type="password" placeholder="كلمة السر..." maxlength="30" style="width:100%;padding:12px 14px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:12px;color:#fff;font-family:var(--font-ar);font-size:0.9rem;outline:none;box-sizing:border-box;" onfocus="this.style.borderColor='rgba(124,58,237,0.5)'" onblur="this.style.borderColor='rgba(255,255,255,0.1)'"/>
         <div id="regError" style="display:none;padding:9px 14px;background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.2);border-radius:10px;font-size:0.8rem;color:rgba(239,68,68,0.8);text-align:center;"></div>
-        <button onclick="doRegister()" style="padding:13px;background:linear-gradient(135deg,#7c3aed,#a855f7);border:none;border-radius:12px;color:#fff;font-family:'Cairo',sans-serif;font-size:0.95rem;font-weight:700;cursor:pointer;box-shadow:0 4px 16px rgba(124,58,237,0.3);transition:all 0.2s;" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform=''">إنشاء الحساب ✨</button>
+        <button onclick="doRegister()" style="padding:13px;background:linear-gradient(135deg,#7c3aed,#a855f7);border:none;border-radius:12px;color:#fff;font-family:var(--font-ar);font-size:0.95rem;font-weight:700;cursor:pointer;box-shadow:0 4px 16px rgba(124,58,237,0.3);transition:all 0.2s;" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform=''">إنشاء الحساب ✨</button>
       </div>
       <!-- Guest -->
-      <button onclick="guestLogin()" style="width:100%;padding:11px;background:transparent;border:1px solid rgba(255,255,255,0.07);border-radius:12px;color:rgba(240,240,240,0.3);font-family:'Cairo',sans-serif;font-size:0.85rem;cursor:pointer;transition:all 0.2s;margin-top:10px;" onmouseover="this.style.borderColor='rgba(255,255,255,0.18)';this.style.color='rgba(240,240,240,0.55)'" onmouseout="this.style.borderColor='rgba(255,255,255,0.07)';this.style.color='rgba(240,240,240,0.3)'">👤 الدخول كضيف</button>
+      <button onclick="guestLogin()" style="width:100%;padding:11px;background:transparent;border:1px solid rgba(255,255,255,0.07);border-radius:12px;color:rgba(240,240,240,0.3);font-family:var(--font-ar);font-size:0.85rem;cursor:pointer;transition:all 0.2s;margin-top:10px;" onmouseover="this.style.borderColor='rgba(255,255,255,0.18)';this.style.color='rgba(240,240,240,0.55)'" onmouseout="this.style.borderColor='rgba(255,255,255,0.07)';this.style.color='rgba(240,240,240,0.3)'">👤 الدخول كضيف</button>
     </div>
   </div>
 </div>
@@ -1133,25 +1314,25 @@ function openOnlineLobby() {
   <button class="back-btn" onclick="goHome()">← رجوع</button>
   <div style="display:flex;flex-direction:column;align-items:center;min-height:100vh;padding:80px 20px 120px;position:relative;overflow:hidden;">
     <div style="position:absolute;inset:0;background:radial-gradient(circle at 50% 20%,rgba(6,214,160,0.06),transparent 60%);pointer-events:none;"></div>
-    <div style="font-family:'Bebas Neue',sans-serif;font-size:clamp(2.2rem,9vw,3.5rem);letter-spacing:5px;background:linear-gradient(135deg,#06d6a0,#0ea5e9);-webkit-background-clip:text;-webkit-text-fill-color:transparent;line-height:1;margin-bottom:4px;">تواصل معنا</div>
+    <div style="font-family:var(--font-display);font-size:clamp(2.2rem,9vw,3.5rem);letter-spacing:5px;background:linear-gradient(135deg,#06d6a0,#0ea5e9);-webkit-background-clip:text;-webkit-text-fill-color:transparent;line-height:1;margin-bottom:4px;">تواصل معنا</div>
     <div style="font-size:0.62rem;letter-spacing:5px;color:rgba(6,214,160,0.3);margin-bottom:24px;">نحن هنا دائماً</div>
     <div style="width:min(420px,95vw);display:flex;flex-direction:column;gap:10px;">
       <!-- Instagram -->
       <a href="https://www.instagram.com/yssn5.5/" target="_blank" style="text-decoration:none;display:flex;align-items:center;gap:14px;padding:16px 18px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.07);border-radius:16px;transition:all 0.2s;" onmouseover="this.style.borderColor='rgba(225,48,108,0.45)';this.style.background='rgba(225,48,108,0.06)'" onmouseout="this.style.borderColor='rgba(255,255,255,0.07)';this.style.background='rgba(255,255,255,0.03)'">
         <div style="width:46px;height:46px;border-radius:12px;background:linear-gradient(135deg,#f09433,#e6683c,#dc2743,#cc2366,#bc1888);display:flex;align-items:center;justify-content:center;font-size:1.5rem;flex-shrink:0;">📸</div>
-        <div style="flex:1;"><div style="font-size:0.92rem;font-weight:700;color:rgba(240,240,240,0.85);">Instagram</div><div style="font-size:0.75rem;color:rgba(240,240,240,0.3);">@yassine.games</div></div>
+        <div style="flex:1;"><div style="font-size:0.92rem;font-weight:700;color:rgba(240,240,240,0.85);">Instagram</div><div style="font-size:0.75rem;color:rgba(240,240,240,0.3);">@yssn5.5</div></div>
         <span style="color:rgba(255,255,255,0.15);">↗</span>
       </a>
-      <!-- TikTok -->
-      <a href="https://tiktok.com/@yassine.games" target="_blank" style="text-decoration:none;display:flex;align-items:center;gap:14px;padding:16px 18px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.07);border-radius:16px;transition:all 0.2s;" onmouseover="this.style.borderColor='rgba(255,255,255,0.25)';this.style.background='rgba(255,255,255,0.06)'" onmouseout="this.style.borderColor='rgba(255,255,255,0.07)';this.style.background='rgba(255,255,255,0.03)'">
-        <div style="width:46px;height:46px;border-radius:12px;background:linear-gradient(135deg,#010101,#222);display:flex;align-items:center;justify-content:center;font-size:1.5rem;flex-shrink:0;">🎵</div>
-        <div style="flex:1;"><div style="font-size:0.92rem;font-weight:700;color:rgba(240,240,240,0.85);">TikTok</div><div style="font-size:0.75rem;color:rgba(240,240,240,0.3);">@yassine.games</div></div>
+      <!-- WhatsApp -->
+      <a href="https://wa.me/213794324821" target="_blank" style="text-decoration:none;display:flex;align-items:center;gap:14px;padding:16px 18px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.07);border-radius:16px;transition:all 0.2s;" onmouseover="this.style.borderColor='rgba(37,211,102,0.45)';this.style.background='rgba(37,211,102,0.06)'" onmouseout="this.style.borderColor='rgba(255,255,255,0.07)';this.style.background='rgba(255,255,255,0.03)'">
+        <div style="width:46px;height:46px;border-radius:12px;background:linear-gradient(135deg,#25d366,#128c7e);display:flex;align-items:center;justify-content:center;font-size:1.5rem;flex-shrink:0;">💬</div>
+        <div style="flex:1;"><div style="font-size:0.92rem;font-weight:700;color:rgba(240,240,240,0.85);">WhatsApp</div><div style="font-size:0.75rem;color:rgba(240,240,240,0.3);">0794324821</div></div>
         <span style="color:rgba(255,255,255,0.15);">↗</span>
       </a>
       <!-- Email -->
-      <a href="/cdn-cgi/l/email-protection#74171b1a00151700340d1507071d1a1113151911075a171b19" style="text-decoration:none;display:flex;align-items:center;gap:14px;padding:16px 18px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.07);border-radius:16px;transition:all 0.2s;" onmouseover="this.style.borderColor='rgba(14,165,233,0.45)';this.style.background='rgba(14,165,233,0.06)'" onmouseout="this.style.borderColor='rgba(255,255,255,0.07)';this.style.background='rgba(255,255,255,0.03)'">
+      <a href="/cdn-cgi/l/email-protection#d3b1bca6a1b2b0bbb6b7baaab2a0a0babdb693b4beb2babffdb0bcbe" style="text-decoration:none;display:flex;align-items:center;gap:14px;padding:16px 18px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.07);border-radius:16px;transition:all 0.2s;" onmouseover="this.style.borderColor='rgba(14,165,233,0.45)';this.style.background='rgba(14,165,233,0.06)'" onmouseout="this.style.borderColor='rgba(255,255,255,0.07)';this.style.background='rgba(255,255,255,0.03)'">
         <div style="width:46px;height:46px;border-radius:12px;background:linear-gradient(135deg,#0ea5e9,#0284c7);display:flex;align-items:center;justify-content:center;font-size:1.5rem;flex-shrink:0;">✉️</div>
-        <div style="flex:1;"><div style="font-size:0.92rem;font-weight:700;color:rgba(240,240,240,0.85);">البريد الإلكتروني</div><div style="font-size:0.75rem;color:rgba(240,240,240,0.3);"><span class="__cf_email__" data-cfemail="cba9a4beb9aaa8a3aeafa2b2aab8b8a2a5ae8baca6aaa2a7e5a8a4a6">[email&#160;protected]</span></div></div>
+        <div style="flex:1;"><div style="font-size:0.92rem;font-weight:700;color:rgba(240,240,240,0.85);">البريد الإلكتروني</div><div style="font-size:0.75rem;color:rgba(240,240,240,0.3);"><span class="__cf_email__" data-cfemail="4d2f22383f2c2e25282924342c3e3e2423280d2a202c2421632e2220">[email&#160;protected]</span></div></div>
         <span style="color:rgba(255,255,255,0.15);">↗</span>
       </a>
 
@@ -1163,15 +1344,15 @@ function openOnlineLobby() {
         </div>
         <!-- Type buttons -->
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:12px;">
-          <button onclick="selectReportType(this,'🐛 تقرير خطأ')" style="padding:9px 6px;background:rgba(239,68,68,0.07);border:1px solid rgba(239,68,68,0.15);border-radius:10px;color:rgba(239,68,68,0.7);font-family:'Cairo',sans-serif;font-size:0.78rem;cursor:pointer;transition:all 0.2s;" id="rtype_0">🐛 تقرير خطأ</button>
-          <button onclick="selectReportType(this,'💡 اقتراح')" style="padding:9px 6px;background:rgba(6,214,160,0.07);border:1px solid rgba(6,214,160,0.15);border-radius:10px;color:rgba(6,214,160,0.7);font-family:'Cairo',sans-serif;font-size:0.78rem;cursor:pointer;transition:all 0.2s;" id="rtype_1">💡 اقتراح</button>
-          <button onclick="selectReportType(this,'🚩 إبلاغ عن إساءة')" style="padding:9px 6px;background:rgba(245,158,11,0.07);border:1px solid rgba(245,158,11,0.15);border-radius:10px;color:rgba(245,158,11,0.7);font-family:'Cairo',sans-serif;font-size:0.78rem;cursor:pointer;transition:all 0.2s;" id="rtype_2">🚩 إبلاغ عن إساءة</button>
-          <button onclick="selectReportType(this,'💬 أخرى')" style="padding:9px 6px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:10px;color:rgba(240,240,240,0.4);font-family:'Cairo',sans-serif;font-size:0.78rem;cursor:pointer;transition:all 0.2s;" id="rtype_3">💬 أخرى</button>
+          <button onclick="selectReportType(this,'🐛 تقرير خطأ')" style="padding:9px 6px;background:rgba(239,68,68,0.07);border:1px solid rgba(239,68,68,0.15);border-radius:10px;color:rgba(239,68,68,0.7);font-family:var(--font-ar);font-size:0.78rem;cursor:pointer;transition:all 0.2s;" id="rtype_0">🐛 تقرير خطأ</button>
+          <button onclick="selectReportType(this,'💡 اقتراح')" style="padding:9px 6px;background:rgba(6,214,160,0.07);border:1px solid rgba(6,214,160,0.15);border-radius:10px;color:rgba(6,214,160,0.7);font-family:var(--font-ar);font-size:0.78rem;cursor:pointer;transition:all 0.2s;" id="rtype_1">💡 اقتراح</button>
+          <button onclick="selectReportType(this,'🚩 إبلاغ عن إساءة')" style="padding:9px 6px;background:rgba(245,158,11,0.07);border:1px solid rgba(245,158,11,0.15);border-radius:10px;color:rgba(245,158,11,0.7);font-family:var(--font-ar);font-size:0.78rem;cursor:pointer;transition:all 0.2s;" id="rtype_2">🚩 إبلاغ عن إساءة</button>
+          <button onclick="selectReportType(this,'💬 أخرى')" style="padding:9px 6px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:10px;color:rgba(240,240,240,0.4);font-family:var(--font-ar);font-size:0.78rem;cursor:pointer;transition:all 0.2s;" id="rtype_3">💬 أخرى</button>
         </div>
-        <input id="reportName" type="text" placeholder="اسمك (اختياري)..." maxlength="30" style="width:100%;padding:11px 14px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:11px;color:#fff;font-family:'Cairo',sans-serif;font-size:0.87rem;outline:none;margin-bottom:8px;box-sizing:border-box;" onfocus="this.style.borderColor='rgba(124,58,237,0.4)'" onblur="this.style.borderColor='rgba(255,255,255,0.08)'"/>
-        <textarea id="reportMsg" placeholder="اكتب رسالتك هنا..." maxlength="500" rows="4" style="width:100%;padding:11px 14px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:11px;color:#fff;font-family:'Cairo',sans-serif;font-size:0.87rem;outline:none;resize:none;margin-bottom:10px;box-sizing:border-box;line-height:1.6;" onfocus="this.style.borderColor='rgba(124,58,237,0.4)'" onblur="this.style.borderColor='rgba(255,255,255,0.08)'"></textarea>
+        <input id="reportName" type="text" placeholder="اسمك (اختياري)..." maxlength="30" style="width:100%;padding:11px 14px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:11px;color:#fff;font-family:var(--font-ar);font-size:0.87rem;outline:none;margin-bottom:8px;box-sizing:border-box;" onfocus="this.style.borderColor='rgba(124,58,237,0.4)'" onblur="this.style.borderColor='rgba(255,255,255,0.08)'"/>
+        <textarea id="reportMsg" placeholder="اكتب رسالتك هنا..." maxlength="500" rows="4" style="width:100%;padding:11px 14px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:11px;color:#fff;font-family:var(--font-ar);font-size:0.87rem;outline:none;resize:none;margin-bottom:10px;box-sizing:border-box;line-height:1.6;" onfocus="this.style.borderColor='rgba(124,58,237,0.4)'" onblur="this.style.borderColor='rgba(255,255,255,0.08)'"></textarea>
         <div id="reportStatus" style="display:none;padding:9px 14px;border-radius:10px;font-size:0.8rem;text-align:center;margin-bottom:8px;"></div>
-        <button onclick="submitReport()" style="width:100%;padding:13px;background:linear-gradient(135deg,#7c3aed,#a855f7);border:none;border-radius:12px;color:#fff;font-family:'Cairo',sans-serif;font-size:0.95rem;font-weight:700;cursor:pointer;box-shadow:0 4px 16px rgba(124,58,237,0.3);transition:all 0.2s;" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform=''">إرسال 📤</button>
+        <button onclick="submitReport()" style="width:100%;padding:13px;background:linear-gradient(135deg,#7c3aed,#a855f7);border:none;border-radius:12px;color:#fff;font-family:var(--font-ar);font-size:0.95rem;font-weight:700;cursor:pointer;box-shadow:0 4px 16px rgba(124,58,237,0.3);transition:all 0.2s;" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform=''">إرسال 📤</button>
       </div>
       <!-- About -->
       <div style="padding:16px;background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.05);border-radius:14px;">
@@ -1182,7 +1363,15 @@ function openOnlineLobby() {
   </div>
 </div>
 
-<script data-cfasync="false">
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script data-cfasync="false">
+// ══ GLOBAL HELPERS ══
+function openOnlineLobby(){ 
+  SFX.play('click'); 
+  loadFirebase();
+  showScreen('online-screen'); 
+}
+function showSpyResult(){ SFX.play('imposter_reveal'); endSpyRound(); }
+
 // ══ REPORT/SUPPORT SYSTEM ══
 let selectedReportType = 'تقرير خطأ';
 function selectReportType(btn, type) {
@@ -1198,82 +1387,138 @@ function submitReport() {
   const msg = (document.getElementById('reportMsg')?.value||'').trim();
   const name = (document.getElementById('reportName')?.value||'ضيف').trim();
   const status = document.getElementById('reportStatus');
+
   if(!msg) {
     if(status){ status.style.display='block'; status.style.background='rgba(239,68,68,0.1)'; status.style.color='rgba(239,68,68,0.8)'; status.style.border='1px solid rgba(239,68,68,0.2)'; status.textContent='يرجى كتابة رسالة أولاً'; }
     return;
   }
-  // Build mailto link
-  const subject = encodeURIComponent('YSSN Games | ' + selectedReportType);
-  const body = encodeURIComponent(
-    'النوع: ' + selectedReportType + '\n' +
+
+  const type = (typeof selectedReportType !== 'undefined' && selectedReportType) ? selectedReportType : 'رسالة';
+  const em = 'bourachediyassine@gmail.com';
+  const subject = 'YSSN Games | ' + type;
+  const body = 
+    'النوع: ' + type + '\n' +
     'الاسم: ' + name + '\n' +
-    'المستخدم: ' + (currentUser?.username||'غير مسجل') + '\n\n' +
-    'الرسالة:\n' + msg
-  );
-  const em = ['bourachediyassine','gmail.com'].join('@');
-  window.location.href = 'mailto:' + em + '?subject=' + subject + '&body=' + body;
+    'المستخدم: ' + (currentUser?.username || currentUser?.name || 'غير مسجل') + '\n\n' +
+    'الرسالة:\n' + msg;
+
+  const mailtoLink = 'mailto:' + em + '?subject=' + encodeURIComponent(subject) + '&body=' + encodeURIComponent(body);
+  
+  // Try opening mail client
+  const mailWin = window.open(mailtoLink, '_blank');
+  
+  // Show success + fallback copy button
   if(status){ 
     status.style.display='block'; 
     status.style.background='rgba(6,214,160,0.1)'; 
     status.style.color='rgba(6,214,160,0.8)'; 
     status.style.border='1px solid rgba(6,214,160,0.2)'; 
-    status.textContent='✅ تم فتح البريد الإلكتروني!'; 
+    status.innerHTML = '✅ تم فتح تطبيق البريد!<br><span style="font-size:0.75rem;color:rgba(240,240,240,0.4);">إذا لم يفتح، أرسل مباشرة إلى: <b style="color:rgba(14,165,233,0.8);cursor:pointer;" onclick="navigator.clipboard.writeText(\''+em+'\');showToast(\'تم نسخ البريد ✅\')">'+ em +'</b></span>';
   }
   SFX.play('success');
   document.getElementById('reportMsg').value='';
+  document.getElementById('reportName').value='';
+}
+
+// ══ TOAST NOTIFICATION ══
+function showToast(msg, duration=3000) {
+  const existing = document.getElementById('yssn-toast');
+  if(existing) existing.remove();
+  const toast = document.createElement('div');
+  toast.id = 'yssn-toast';
+  toast.style.cssText = `
+    position:fixed;bottom:90px;left:50%;transform:translateX(-50%) translateY(20px);
+    background:rgba(20,20,30,0.96);border:1px solid rgba(124,58,237,0.3);
+    border-radius:14px;padding:12px 20px;
+    font-family:var(--font-ar);font-size:0.88rem;color:rgba(240,240,240,0.9);
+    z-index:99999;backdrop-filter:blur(12px);
+    box-shadow:0 8px 32px rgba(0,0,0,0.4);
+    transition:all 0.3s cubic-bezier(0.4,0,0.2,1);
+    white-space:nowrap;text-align:center;
+  `;
+  toast.textContent = msg;
+  document.body.appendChild(toast);
+  requestAnimationFrame(()=>{ toast.style.transform='translateX(-50%) translateY(0)'; toast.style.opacity='1'; });
+  setTimeout(()=>{ toast.style.opacity='0'; toast.style.transform='translateX(-50%) translateY(10px)'; setTimeout(()=>toast.remove(),300); }, duration);
 }
 
 // ══ FIX AUTH: signInGoogle ══
-function signInGoogle() {
+function signInGoogle(triggerBtn) {
+  // Accept button either as param or from event
+  const btn = triggerBtn || (typeof event !== 'undefined' && event?.target?.closest('button')) || document.getElementById('googleSignInBtn');
+  
   if(!window.FB_AUTH || !window.FB_GoogleProvider) {
-    // Firebase not ready yet
-    const btn = event?.target?.closest('button');
-    if(btn) { btn.textContent = '⏳ جاري الاتصال...'; }
-    document.addEventListener('fb-ready', ()=>signInGoogle(), {once:true});
+    if(btn) { btn.textContent = '⏳ جاري الاتصال...'; btn.disabled = true; }
+    document.addEventListener('fb-ready', () => {
+      if(btn) { btn.textContent = ''; btn.disabled = false; }
+      signInGoogle(btn);
+    }, {once:true});
     return;
   }
+
+  // Show loading state
+  const originalHTML = btn ? btn.innerHTML : '';
+  if(btn) { 
+    btn.innerHTML = '<span style="display:inline-block;width:16px;height:16px;border:2px solid rgba(255,255,255,0.3);border-top-color:#fff;border-radius:50%;animation:spin 0.6s linear infinite;vertical-align:middle;margin-left:6px;"></span> جاري الدخول...';
+    btn.disabled = true;
+  }
+
+  const showAuthError = (msg) => {
+    // Try login screen error div
+    const err = document.getElementById('loginError');
+    if(err) { err.style.display='block'; err.textContent = msg; }
+    // Also try profile status
+    const ps = document.getElementById('profileStatus');
+    if(ps) { ps.style.display='block'; ps.style.background='rgba(239,68,68,0.1)'; ps.style.color='rgba(239,68,68,0.8)'; ps.style.border='1px solid rgba(239,68,68,0.2)'; ps.textContent = msg; }
+    // Always show toast
+    showToast('❌ ' + msg, 4000);
+  };
+
   const provider = new window.FB_GoogleProvider();
+  provider.setCustomParameters({ prompt: 'select_account' });
+  
   window.FB_signInWithPopup(window.FB_AUTH, provider)
     .then(result => {
       const user = result.user;
-      currentUser = {uid:user.uid, name:user.displayName||user.email, username:user.email, isAnon:false};
+      currentUser = {uid: user.uid, name: user.displayName || user.email, username: user.email, isAnon: false};
+      localStorage.setItem('yssn_session', JSON.stringify(currentUser));
+      localStorage.setItem('yssn_visited', '1');
       updateUserUI();
       SFX.play('success');
+      // Close any open modals
+      const modal = document.getElementById('profileModal');
+      if(modal) modal.remove();
       goHome();
+      showToast('✅ مرحباً ' + (currentUser.name||'') + '! تم الدخول بنجاح');
     })
     .catch(e => {
-      console.error(e);
-      const err = document.getElementById('loginError');
-      if(err) { err.style.display='block'; err.textContent = 'فشل تسجيل الدخول: ' + (e.code||e.message); }
+      console.error('Google auth error:', e);
+      if(btn) { btn.innerHTML = originalHTML || '<img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" style="width:20px;height:20px;vertical-align:middle;margin-left:8px;"/> تسجيل الدخول بـ Google'; btn.disabled = false; }
+      let msg;
+      if(e.code === 'auth/popup-blocked') msg = 'تم حجب النافذة — اسمح بالنوافذ المنبثقة في المتصفح';
+      else if(e.code === 'auth/popup-closed-by-user') msg = 'تم إغلاق نافذة الدخول';
+      else if(e.code === 'auth/network-request-failed') msg = 'تحقق من الاتصال بالإنترنت';
+      else if(e.code === 'auth/unauthorized-domain') msg = 'هذا النطاق غير مصرّح به في Firebase — أضفه في Authentication > Authorized domains';
+      else msg = 'خطأ في الدخول: ' + (e.code || e.message || 'غير معروف');
+      showAuthError(msg);
     });
 }
 
 // ══ FIX initAuth ══
 function initAuth() {
-  document.addEventListener('fb-ready', () => {
-    if(window.FB_onAuthStateChanged && window.FB_AUTH) {
-      window.FB_onAuthStateChanged(window.FB_AUTH, user => {
-        window.FB_USER = user;
-        if(user && !user.isAnonymous) {
-          currentUser = {uid:user.uid, name:user.displayName||user.email||'لاعب', username:user.email||user.uid, isAnon:false};
-          updateUserUI();
-          const ls = document.getElementById('login-screen');
-          if(ls && ls.classList.contains('active')) goHome();
-        } else {
-          const visited = localStorage.getItem('yssn_visited');
-          if(!visited) showScreen('login-screen');
-        }
-      });
-    }
-  }, {once:true});
-  // If already on login screen from localStorage
+  // Restore session from localStorage first (works offline)
   const saved = localStorage.getItem('yssn_session');
   const visited = localStorage.getItem('yssn_visited');
   if(saved) { 
     try { currentUser = JSON.parse(saved); updateUserUI(); }
     catch(e) { localStorage.removeItem('yssn_session'); }
   } else if(!visited) {
-    setTimeout(()=>showScreen('login-screen'), 1800); // after splash
+    setTimeout(()=>showScreen('login-screen'), 1800);
+  }
+
+  // Load Firebase only if online
+  if(navigator.onLine) {
+    loadFirebase();
   }
 }
 
@@ -1322,35 +1567,48 @@ let onlineListeners = [];
 })();
 
 // ══ BOTTOM NAV ══
+function toggleBottomNav() {
+  const nav = document.getElementById('bottomNav');
+  if(!nav) return;
+  nav.style.display = nav.style.display === 'none' ? 'flex' : 'none';
+}
+
 function bottomNavGo(tab) {
   SFX.play('click');
   if(tab === 'home') {
     goHome();
-    resetNavHighlight('bnHome');
+    setNavActive('bnHome');
   } else if(tab === 'games') {
     showScreen('games-screen');
-    resetNavHighlight('bnGames');
+    setNavActive('bnGames');
   } else if(tab === 'contact') {
     showScreen('contact-screen');
-    resetNavHighlight('bnContact');
+    setNavActive('bnContact');
   } else if(tab === 'share') {
     showShareOverlay();
-    resetNavHighlight('bnShare');
+    setNavActive('bnShare');
   }
 }
 
-// Reset nav highlight when going home
-function resetNavHighlight(active) {
-  ['bnHome','bnGames','bnShare','bnContact'].forEach(id=>{
+function setNavActive(activeId) {
+  ['bnHome','bnGames','bnShare','bnContact'].forEach(id => {
     const btn = document.getElementById(id);
     if(!btn) return;
-    const span = btn.querySelectorAll('span')[1];
-    if(span) span.style.color = id===active ? 'var(--accent2)' : 'rgba(240,240,240,0.3)';
+    const isActive = id === activeId;
+    btn.style.color = isActive ? 'rgba(167,139,250,0.95)' : 'rgba(240,240,240,0.35)';
+    btn.style.background = isActive ? 'rgba(124,58,237,0.15)' : 'none';
+    btn.style.borderColor = isActive ? 'rgba(124,58,237,0.3)' : 'rgba(255,255,255,0.06)';
   });
+}
+
+// Reset nav highlight when going home (legacy compat)
+function resetNavHighlight(active) {
+  setNavActive(active);
 }
 
 // ══ SHARE OVERLAY ══
 function showShareOverlay() {
+  SFX.play('click');
   const url = window.location.href;
   const text = 'جرّب YSSN Games — أفضل منصة ألعاب عربية! 🎮';
   const ov = document.createElement('div');
@@ -1360,34 +1618,35 @@ function showShareOverlay() {
     <div style="width:min(400px,95vw);display:flex;flex-direction:column;gap:0;">
       <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;">
         <div>
-          <div style="font-family:'Bebas Neue',sans-serif;font-size:2rem;letter-spacing:4px;color:#fff;">شارك اللعبة</div>
-          <div style="font-size:0.62rem;letter-spacing:4px;color:rgba(240,240,240,0.25);">أخبر أصدقاءك</div>
+          <div style="font-family:var(--font-display);font-size:2rem;letter-spacing:4px;color:#fff;">شارك اللعبة</div>
+          <div style="font-size:0.62rem;letter-spacing:4px;color:rgba(240,240,240,0.25);">أخبر أصدقاءك 🎮</div>
         </div>
         <button onclick="this.closest('[style]').remove()" style="width:36px;height:36px;border-radius:50%;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);color:rgba(240,240,240,0.5);font-size:1.1rem;cursor:pointer;">✕</button>
       </div>
-
-      <!-- Referral note -->
-      <div style="padding:10px 14px;background:rgba(251,191,36,0.06);border:1px solid rgba(251,191,36,0.15);border-radius:12px;margin-bottom:14px;display:flex;align-items:center;gap:10px;">
-        <span style="font-size:1.2rem;">🎁</span>
-        <div style="font-size:0.78rem;color:rgba(251,191,36,0.7);">شارك مع أصدقائك وادعُهم للعب معك!</div>
-      </div>
       <!-- URL box -->
       <div style="display:flex;gap:8px;margin-bottom:14px;">
-        <div style="flex:1;padding:12px 14px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:12px;font-size:0.75rem;color:rgba(240,240,240,0.35);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-family:monospace;">\${url}</div>
-        <button onclick="navigator.clipboard.writeText('\${url}');this.textContent='✅';setTimeout(()=>this.textContent='📋',1500);" style="padding:12px 14px;background:rgba(124,58,237,0.15);border:1px solid rgba(124,58,237,0.25);border-radius:12px;color:rgba(167,139,250,0.8);font-size:1rem;cursor:pointer;transition:all 0.2s;white-space:nowrap;">📋</button>
+        <div style="flex:1;padding:12px 14px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:12px;font-size:0.75rem;color:rgba(240,240,240,0.35);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-family:monospace;">${url}</div>
+        <button onclick="navigator.clipboard.writeText('${url}');this.textContent='✅';setTimeout(()=>this.textContent='📋',1500);" style="padding:12px 14px;background:rgba(124,58,237,0.15);border:1px solid rgba(124,58,237,0.25);border-radius:12px;color:rgba(167,139,250,0.8);font-size:1rem;cursor:pointer;white-space:nowrap;">📋</button>
       </div>
-
       <!-- Share buttons -->
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
-        <button onclick="window.open('https://wa.me/?text=${encodeURIComponent(text+' '+url)}','_blank')" style="display:flex;align-items:center;gap:10px;padding:14px 16px;background:rgba(37,211,102,0.08);border:1px solid rgba(37,211,102,0.18);border-radius:14px;color:rgba(37,211,102,0.8);font-family:'Cairo',sans-serif;font-size:0.9rem;font-weight:600;cursor:pointer;transition:all 0.2s;" onmouseover="this.style.background='rgba(37,211,102,0.15)'" onmouseout="this.style.background='rgba(37,211,102,0.08)'">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px;">
+        <button onclick="window.open('https://wa.me/?text=${encodeURIComponent(text+' '+url)}','_blank')" style="display:flex;align-items:center;gap:10px;padding:14px 12px;background:rgba(37,211,102,0.08);border:1px solid rgba(37,211,102,0.18);border-radius:14px;color:rgba(37,211,102,0.85);font-family:var(--font-ar);font-size:0.88rem;font-weight:600;cursor:pointer;transition:all 0.2s;" onmouseover="this.style.background='rgba(37,211,102,0.15)'" onmouseout="this.style.background='rgba(37,211,102,0.08)'">
           <span style="font-size:1.3rem;">💬</span> واتساب
         </button>
-        <button onclick="window.open('https://t.me/share/url?url=${encodeURIComponent(url)}&text=${encodeURIComponent(text)}','_blank')" style="display:flex;align-items:center;gap:10px;padding:14px 16px;background:rgba(0,136,204,0.08);border:1px solid rgba(0,136,204,0.18);border-radius:14px;color:rgba(0,136,204,0.8);font-family:'Cairo',sans-serif;font-size:0.9rem;font-weight:600;cursor:pointer;transition:all 0.2s;" onmouseover="this.style.background='rgba(0,136,204,0.15)'" onmouseout="this.style.background='rgba(0,136,204,0.08)'">
+        <button onclick="window.open('https://t.me/share/url?url=${encodeURIComponent(url)}&text=${encodeURIComponent(text)}','_blank')" style="display:flex;align-items:center;gap:10px;padding:14px 12px;background:rgba(0,136,204,0.08);border:1px solid rgba(0,136,204,0.18);border-radius:14px;color:rgba(0,136,204,0.85);font-family:var(--font-ar);font-size:0.88rem;font-weight:600;cursor:pointer;transition:all 0.2s;" onmouseover="this.style.background='rgba(0,136,204,0.15)'" onmouseout="this.style.background='rgba(0,136,204,0.08)'">
           <span style="font-size:1.3rem;">✈️</span> تيليغرام
         </button>
-        <button onclick="if(navigator.share){navigator.share({title:'YSSN Games',text:'${text}',url:'${url}'});}else{navigator.clipboard.writeText(url);}" style="grid-column:span 2;display:flex;align-items:center;justify-content:center;gap:10px;padding:14px 16px;background:linear-gradient(135deg,rgba(124,58,237,0.15),rgba(168,85,247,0.1));border:1px solid rgba(124,58,237,0.25);border-radius:14px;color:rgba(167,139,250,0.9);font-family:'Cairo',sans-serif;font-size:0.95rem;font-weight:700;cursor:pointer;transition:all 0.2s;" onmouseover="this.style.background='linear-gradient(135deg,rgba(124,58,237,0.25),rgba(168,85,247,0.18))'" onmouseout="this.style.background='linear-gradient(135deg,rgba(124,58,237,0.15),rgba(168,85,247,0.1))'">
-          <span style="font-size:1.3rem;">🔗</span> مشاركة سريعة
+        <button onclick="window.open('https://www.instagram.com/yssn5.5/','_blank')" style="display:flex;align-items:center;gap:10px;padding:14px 12px;background:rgba(225,48,108,0.08);border:1px solid rgba(225,48,108,0.18);border-radius:14px;color:rgba(225,48,108,0.85);font-family:var(--font-ar);font-size:0.88rem;font-weight:600;cursor:pointer;transition:all 0.2s;" onmouseover="this.style.background='rgba(225,48,108,0.15)'" onmouseout="this.style.background='rgba(225,48,108,0.08)'">
+          <span style="font-size:1.3rem;">📸</span> انستغرام
         </button>
+        <button onclick="if(navigator.share){navigator.share({title:'YSSN Games',text:'${text}',url:'${url}'});}else{navigator.clipboard.writeText('${url}');showToast('تم نسخ الرابط ✅');}" style="display:flex;align-items:center;gap:10px;padding:14px 12px;background:rgba(124,58,237,0.08);border:1px solid rgba(124,58,237,0.18);border-radius:14px;color:rgba(167,139,250,0.85);font-family:var(--font-ar);font-size:0.88rem;font-weight:600;cursor:pointer;transition:all 0.2s;" onmouseover="this.style.background='rgba(124,58,237,0.15)'" onmouseout="this.style.background='rgba(124,58,237,0.08)'">
+          <span style="font-size:1.3rem;">🔗</span> مشاركة
+        </button>
+      </div>
+      <!-- Invite note -->
+      <div style="padding:12px 16px;background:rgba(251,191,36,0.05);border:1px solid rgba(251,191,36,0.12);border-radius:12px;display:flex;align-items:center;gap:10px;">
+        <span style="font-size:1.2rem;">🎁</span>
+        <div style="font-size:0.78rem;color:rgba(251,191,36,0.65);">شارك مع أصدقائك وادعُهم للعب معك!</div>
       </div>
     </div>`;
   document.body.appendChild(ov);
@@ -1416,7 +1675,7 @@ function launchRandomGame(){
   ov.innerHTML = `
     <div style="font-size:0.65rem;letter-spacing:5px;color:rgba(251,191,36,0.5);">🎲 اختيار عشوائي</div>
     <div id="randIcon" style="font-size:5rem;animation:pop 0.3s ease;"></div>
-    <div id="randName" style="font-family:'Bebas Neue',sans-serif;font-size:2.5rem;letter-spacing:4px;color:#fff;min-height:50px;"></div>
+    <div id="randName" style="font-family:var(--font-display);font-size:2.5rem;letter-spacing:4px;color:#fff;min-height:50px;"></div>
   `;
   document.body.appendChild(ov);
   // Slot machine effect
@@ -1530,41 +1789,35 @@ function logoutUser(){
   showScreen('login-screen');
 }
 
-function updateUserUI(){ updateAuthTopBtn();
-  // Update topbar with user avatar
-  const existing = document.getElementById('userAvatarBtn');
-  if(existing) existing.remove();
-  if(!currentUser) return;
-  const topbarBtns = document.querySelector('.topbar-btns');
-  if(!topbarBtns) return;
-  const initials = currentUser.name.slice(0,2).toUpperCase();
-  const btn = document.createElement('button');
-  btn.id = 'userAvatarBtn';
-  btn.onclick = showUserMenu;
-  btn.style.cssText = 'width:30px;height:30px;border-radius:50%;background:linear-gradient(135deg,#7c3aed,#a855f7);border:none;color:#fff;font-family:"Cairo",sans-serif;font-size:0.7rem;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;';
-  btn.textContent = initials;
-  topbarBtns.insertBefore(btn, topbarBtns.firstChild);
+function updateUserUI(){ 
+  updateAuthTopBtn();
+  // Update saved session
+  if(currentUser && !currentUser.isAnon) {
+    localStorage.setItem('yssn_session', JSON.stringify(currentUser));
+  }
 }
 
 function showUserMenu(){
   SFX.play('click');
+  if(!currentUser || !currentUser.name) { showScreen('login-screen'); return; }
   const ov = document.createElement('div');
   ov.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:9999;display:flex;align-items:flex-end;justify-content:center;animation:fadeIn 0.2s ease;';
   ov.onclick = (e)=>{ if(e.target===ov) ov.remove(); };
   ov.innerHTML = `
     <div style="width:min(420px,100%);background:#111118;border-top:1px solid rgba(255,255,255,0.08);border-radius:20px 20px 0 0;padding:24px 20px 40px;animation:slideUp 0.3s ease;">
       <div style="display:flex;align-items:center;gap:14px;margin-bottom:20px;padding-bottom:16px;border-bottom:1px solid rgba(255,255,255,0.06);">
-        <div style="width:52px;height:52px;border-radius:50%;background:linear-gradient(135deg,#7c3aed,#a855f7);display:flex;align-items:center;justify-content:center;font-family:'Cairo',sans-serif;font-size:1.2rem;font-weight:700;color:#fff;">${currentUser.name.slice(0,2).toUpperCase()}</div>
-        <div>
+        <div id="menuAvatar" style="width:52px;height:52px;border-radius:50%;background:linear-gradient(135deg,#7c3aed,#a855f7);display:flex;align-items:center;justify-content:center;font-family:var(--font-ar);font-size:1.2rem;font-weight:700;color:#fff;overflow:hidden;cursor:pointer;" onclick="this.closest('[style]').remove();showProfileModal();">${currentUser.avatar ? '<img src="'+currentUser.avatar+'" style="width:100%;height:100%;object-fit:cover;border-radius:50%;"/>' : currentUser.name.slice(0,2).toUpperCase()}</div>
+        <div style="flex:1;">
           <div style="font-size:1rem;font-weight:700;color:#fff;">${currentUser.name}</div>
           <div style="font-size:0.75rem;color:rgba(240,240,240,0.3);">@${currentUser.username}</div>
         </div>
+        <button onclick="this.closest('[style]').remove();showProfileModal();" style="padding:7px 14px;background:rgba(124,58,237,0.1);border:1px solid rgba(124,58,237,0.2);border-radius:10px;color:rgba(167,139,250,0.7);font-family:var(--font-ar);font-size:0.78rem;cursor:pointer;">✏️ تعديل</button>
       </div>
       <div style="display:flex;flex-direction:column;gap:8px;">
-        <button onclick="this.closest('[style]').remove();goHome();" style="padding:13px 16px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.07);border-radius:12px;color:rgba(240,240,240,0.6);font-family:'Cairo',sans-serif;font-size:0.9rem;cursor:pointer;text-align:right;">🏠 الصفحة الرئيسية</button>
-        <button onclick="this.closest('[style]').remove();showScreen('leaderboard');" style="padding:13px 16px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.07);border-radius:12px;color:rgba(240,240,240,0.6);font-family:'Cairo',sans-serif;font-size:0.9rem;cursor:pointer;text-align:right;">🏆 لوحة المتصدرين</button>
-        <button onclick="this.closest('[style]').remove();showShareOverlay();" style="padding:13px 16px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.07);border-radius:12px;color:rgba(240,240,240,0.6);font-family:'Cairo',sans-serif;font-size:0.9rem;cursor:pointer;text-align:right;">🔗 دعوة صديق</button>
-        <button onclick="this.closest('[style]').remove();logoutUser();" style="padding:13px 16px;background:rgba(239,68,68,0.06);border:1px solid rgba(239,68,68,0.15);border-radius:12px;color:rgba(239,68,68,0.7);font-family:'Cairo',sans-serif;font-size:0.9rem;cursor:pointer;text-align:right;">🚪 تسجيل الخروج</button>
+        <button onclick="this.closest('[style]').remove();goHome();" style="padding:13px 16px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.07);border-radius:12px;color:rgba(240,240,240,0.6);font-family:var(--font-ar);font-size:0.9rem;cursor:pointer;text-align:right;">🏠 الصفحة الرئيسية</button>
+        <button onclick="this.closest('[style]').remove();showScreen('players-mgmt');" style="padding:13px 16px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.07);border-radius:12px;color:rgba(240,240,240,0.6);font-family:var(--font-ar);font-size:0.9rem;cursor:pointer;text-align:right;">👥 اللاعبون المسجلون</button>
+        <button onclick="this.closest('[style]').remove();showShareOverlay();" style="padding:13px 16px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.07);border-radius:12px;color:rgba(240,240,240,0.6);font-family:var(--font-ar);font-size:0.9rem;cursor:pointer;text-align:right;">🔗 دعوة صديق</button>
+        <button onclick="this.closest('[style]').remove();logoutUser();" style="padding:13px 16px;background:rgba(239,68,68,0.06);border:1px solid rgba(239,68,68,0.15);border-radius:12px;color:rgba(239,68,68,0.7);font-family:var(--font-ar);font-size:0.9rem;cursor:pointer;text-align:right;">🚪 تسجيل الخروج</button>
       </div>
     </div>`;
   document.body.appendChild(ov);
@@ -1764,14 +2017,14 @@ function showNextTransition(){
 function showTransition(name,onConfirm){
   const t=document.getElementById("transitionScreen");
   document.getElementById("transitionName").textContent=name.toUpperCase();
-  t.style.display="";
-  t.classList.add("show");
+  t.style.display="flex";
   t._cb=onConfirm;
 }
 
 function confirmTransition(){
-  document.getElementById("transitionScreen").classList.remove("show");
-  document.getElementById("transitionScreen")._cb&&document.getElementById("transitionScreen")._cb();
+  const t=document.getElementById("transitionScreen");
+  t.style.display="none";
+  t._cb&&t._cb();
 }
 
 function showSpyReveal(){
@@ -1812,18 +2065,22 @@ function showSpyReveal(){
   if(tapHintEl) tapHintEl.style.display="flex";
   const hintEl=document.getElementById("spyCardHint");
   const hintBtn=document.getElementById("spyCardHintBtn");
-  if(hintEl) hintEl.style.display="none";
   if(hintBtn) hintBtn.style.display="none";
+  // Hint: spy only, hidden until after flip
+  if(hintEl){
+    if(a.isSpy){ hintEl.textContent=a.hint; hintEl.style.cssText="display:none;padding:8px 20px;background:rgba(239,68,68,0.07);border:1px solid rgba(239,68,68,0.2);border-radius:50px;font-size:0.72rem;letter-spacing:3px;color:rgba(239,68,68,0.6);text-align:center;"; }
+    else { hintEl.textContent=""; hintEl.style.display="none"; }
+  }
   if(a.isSpy){
     document.getElementById("spyCardRole").innerHTML="<span style='display:inline-flex;align-items:center;gap:8px;padding:6px 16px;background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.25);border-radius:50px;'>🕵️ <span style=\'font-size:0.68rem;letter-spacing:4px;color:rgba(239,68,68,0.8);font-weight:700;\'>أنت المتسلل</span></span>";
-    document.getElementById("spyCardWord").textContent="???";
-    document.getElementById("spyCardWord").style.color="rgba(239,68,68,0.45)";
-    if(hintEl){ hintEl.textContent="تلميح: "+a.hint; hintEl.style.cssText="display:block;padding:10px 18px;background:rgba(239,68,68,0.07);border:1px solid rgba(239,68,68,0.2);border-radius:24px;font-size:0.72rem;letter-spacing:2px;color:rgba(239,68,68,0.65);text-align:center;line-height:1.6;"; }
+    document.getElementById("spyCardWord").textContent="🕵️";
+    document.getElementById("spyCardWord").style.color="rgba(239,68,68,0.7)";
+    document.getElementById("spyCardWord").style.fontSize="3rem";
   } else {
-    document.getElementById("spyCardRole").innerHTML="<span style='display:inline-flex;align-items:center;gap:8px;padding:6px 16px;background:rgba(74,222,128,0.08);border:1px solid rgba(74,222,128,0.2);border-radius:50px;'>✅ <span style=\'font-size:0.68rem;letter-spacing:4px;color:rgba(74,222,128,0.8);font-weight:700;\'>مواطن</span></span>";
+    document.getElementById("spyCardRole").innerHTML="<span style='display:inline-flex;align-items:center;gap:8px;padding:6px 16px;background:rgba(239,68,68,0.08);border:1px solid rgba(239,68,68,0.2);border-radius:50px;'>✅ <span style=\'font-size:0.68rem;letter-spacing:4px;color:rgba(239,68,68,0.7);font-weight:700;\'>مواطن</span></span>";
     document.getElementById("spyCardWord").textContent=a.word;
     document.getElementById("spyCardWord").style.color="#fff";
-    if(hintEl && a.desc){ hintEl.textContent=a.desc; hintEl.style.cssText="display:block;padding:10px 18px;background:rgba(74,222,128,0.06);border:1px solid rgba(74,222,128,0.18);border-radius:24px;font-size:0.72rem;letter-spacing:1.5px;color:rgba(74,222,128,0.7);text-align:center;line-height:1.6;"; }
+    document.getElementById("spyCardWord").style.fontSize="clamp(2.2rem,9vw,3rem)";
   }
 }
 
@@ -1848,6 +2105,9 @@ function flipSpyCard(){
       btn.style.transition="opacity 0.4s, transform 0.4s";
       requestAnimationFrame(()=>{ btn.style.opacity="1"; btn.style.transform="translateY(0)"; });
     }
+    // Show hint for spy after flip
+    const hintAfter=document.getElementById("spyCardHint");
+    if(hintAfter && hintAfter.textContent) hintAfter.style.display="block";
     // Flash the reveal background
     const rv=document.getElementById("spy-reveal-view");
     if(rv){ rv.style.animation="spyFlash 0.6s ease"; setTimeout(()=>{ rv.style.animation=""; },600); }
@@ -2297,7 +2557,7 @@ function buildNightSteps(){
 
   // END NIGHT
   const endBtn=document.createElement("button");
-  endBtn.style.cssText="width:100%;padding:14px;border:none;border-radius:6px;font-family:'Cairo',sans-serif;font-size:1rem;font-weight:900;letter-spacing:2px;cursor:pointer;background:linear-gradient(135deg,var(--gold),#cc9900);color:#000;margin-top:12px;";
+  endBtn.style.cssText="width:100%;padding:14px;border:none;border-radius:6px;font-family:var(--font-ar);font-size:1rem;font-weight:900;letter-spacing:2px;cursor:pointer;background:linear-gradient(135deg,var(--gold),#cc9900);color:#000;margin-top:12px;";
   endBtn.textContent="☀️ نهاية الليلة ←";
   endBtn.onclick=()=>startLgDay();
   steps.appendChild(endBtn);
@@ -2350,7 +2610,7 @@ function addNightStep(container,icon,title,desc,targets,onSelect,btnTxt,extra=nu
       body.appendChild(saveLabel);
 
       const saveSel=document.createElement("select");
-      saveSel.style.cssText="padding:8px;background:var(--dark3);border:1px solid rgba(0,255,135,0.3);border-radius:6px;color:var(--white);font-family:'Cairo',sans-serif;font-size:0.9rem;width:100%;";
+      saveSel.style.cssText="padding:8px;background:var(--dark3);border:1px solid rgba(0,255,135,0.3);border-radius:6px;color:var(--white);font-family:var(--font-ar);font-size:0.9rem;width:100%;";
       saveSel.innerHTML=`<option value="">لا تنقذ أحداً</option>`+
         lgPlayers.filter(p=>p.alive).map(p=>{
           const isVictim=lgNightKilled&&(Array.isArray(lgNightKilled)?lgNightKilled.some(v=>v.name===p.name):lgNightKilled.name===p.name);
@@ -2359,7 +2619,7 @@ function addNightStep(container,icon,title,desc,targets,onSelect,btnTxt,extra=nu
       body.appendChild(saveSel);
 
       const saveBtn=document.createElement("button");
-      saveBtn.style.cssText="padding:9px;background:rgba(0,255,135,0.08);border:1px solid rgba(0,255,135,0.25);border-radius:6px;color:#00ff87;font-family:'Cairo',sans-serif;font-size:0.9rem;cursor:pointer;margin-top:5px;width:100%;";
+      saveBtn.style.cssText="padding:9px;background:rgba(0,255,135,0.08);border:1px solid rgba(0,255,135,0.25);border-radius:6px;color:#00ff87;font-family:var(--font-ar);font-size:0.9rem;cursor:pointer;margin-top:5px;width:100%;";
       saveBtn.textContent="💊 تأكيد الإنقاذ";
       saveBtn.onclick=()=>{
         if(saveSel.value){
@@ -2395,13 +2655,13 @@ function addNightStep(container,icon,title,desc,targets,onSelect,btnTxt,extra=nu
       body.appendChild(killLabel);
 
       const killSel=document.createElement("select");
-      killSel.style.cssText="padding:8px;background:var(--dark3);border:1px solid rgba(255,60,110,0.3);border-radius:6px;color:var(--white);font-family:'Cairo',sans-serif;font-size:0.9rem;width:100%;";
+      killSel.style.cssText="padding:8px;background:var(--dark3);border:1px solid rgba(255,60,110,0.3);border-radius:6px;color:var(--white);font-family:var(--font-ar);font-size:0.9rem;width:100%;";
       killSel.innerHTML=`<option value="">لا تسمّم أحداً</option>`+
         lgPlayers.filter(p=>p.alive&&p.name!==sorc.name).map(p=>`<option value="${p.name}">${p.name}</option>`).join("");
       body.appendChild(killSel);
 
       const killBtn=document.createElement("button");
-      killBtn.style.cssText="padding:9px;background:rgba(255,60,110,0.08);border:1px solid rgba(255,60,110,0.25);border-radius:6px;color:var(--accent2);font-family:'Cairo',sans-serif;font-size:0.9rem;cursor:pointer;margin-top:5px;width:100%;";
+      killBtn.style.cssText="padding:9px;background:rgba(255,60,110,0.08);border:1px solid rgba(255,60,110,0.25);border-radius:6px;color:var(--accent2);font-family:var(--font-ar);font-size:0.9rem;cursor:pointer;margin-top:5px;width:100%;";
       killBtn.textContent="☠️ تأكيد التسميم";
       killBtn.onclick=()=>{
         if(killSel.value){
@@ -2431,10 +2691,10 @@ function addNightStep(container,icon,title,desc,targets,onSelect,btnTxt,extra=nu
   } else if(extra&&extra.isPetite){
     body.innerHTML=`<b>${extra.petite.name}</b> — يمكنكِ التجسس على الذئاب!<br><span style="color:var(--accent2);">⚠️ إن رآكِ ذئب (30%)، ستموتين!</span>`;
     const spyBtn=document.createElement("button");
-    spyBtn.style.cssText="padding:10px;background:rgba(255,215,0,0.08);border:1px solid rgba(255,215,0,0.2);border-radius:6px;color:var(--gold);font-family:'Cairo',sans-serif;font-size:0.9rem;cursor:pointer;margin-top:8px;width:100%;";
+    spyBtn.style.cssText="padding:10px;background:rgba(255,215,0,0.08);border:1px solid rgba(255,215,0,0.2);border-radius:6px;color:var(--gold);font-family:var(--font-ar);font-size:0.9rem;cursor:pointer;margin-top:8px;width:100%;";
     spyBtn.textContent="👁️ أتجسس (خطر الموت)";
     const noSpyBtn=document.createElement("button");
-    noSpyBtn.style.cssText="padding:8px;background:transparent;border:1px solid rgba(255,255,255,0.08);border-radius:6px;color:rgba(240,240,240,0.3);font-family:'Cairo',sans-serif;font-size:0.85rem;cursor:pointer;margin-top:5px;width:100%;";
+    noSpyBtn.style.cssText="padding:8px;background:transparent;border:1px solid rgba(255,255,255,0.08);border-radius:6px;color:rgba(240,240,240,0.3);font-family:var(--font-ar);font-size:0.85rem;cursor:pointer;margin-top:5px;width:100%;";
     noSpyBtn.textContent="لا أتجسس هذه الليلة";
     const doSpy=(spy)=>{
       if(spy){
@@ -2460,11 +2720,11 @@ function addNightStep(container,icon,title,desc,targets,onSelect,btnTxt,extra=nu
 
   } else if(targets&&targets.length>0&&onSelect){
     const sel=document.createElement("select");
-    sel.style.cssText="padding:8px;background:var(--dark3);border:1px solid rgba(160,80,255,0.2);border-radius:6px;color:var(--white);font-family:'Cairo',sans-serif;font-size:0.9rem;margin-top:8px;width:100%;";
+    sel.style.cssText="padding:8px;background:var(--dark3);border:1px solid rgba(160,80,255,0.2);border-radius:6px;color:var(--white);font-family:var(--font-ar);font-size:0.9rem;margin-top:8px;width:100%;";
     sel.innerHTML=targets.map(p=>`<option value="${p.name}">${p.name}</option>`).join("");
     body.appendChild(sel);
     const btn=document.createElement("button");
-    btn.style.cssText="padding:10px;background:rgba(160,80,255,0.1);border:1px solid rgba(160,80,255,0.3);border-radius:6px;color:#a050ff;font-family:'Cairo',sans-serif;font-size:0.9rem;cursor:pointer;margin-top:8px;width:100%;";
+    btn.style.cssText="padding:10px;background:rgba(160,80,255,0.1);border:1px solid rgba(160,80,255,0.3);border-radius:6px;color:#a050ff;font-family:var(--font-ar);font-size:0.9rem;cursor:pointer;margin-top:8px;width:100%;";
     btn.textContent=btnTxt;
     btn.onclick=()=>{
       const t=lgPlayers.find(p=>p.name===sel.value);
@@ -2487,9 +2747,9 @@ function showLgRevealRole(target,cb){
   overlay.style.cssText="position:fixed;inset:0;background:rgba(0,0,0,0.94);z-index:999;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;padding:30px;text-align:center;";
   overlay.innerHTML=`
     <span style="font-size:4rem;">${r.icon}</span>
-    <div style="font-family:'Bebas Neue',sans-serif;font-size:2rem;color:#a050ff;">${target.name}</div>
-    <div style="font-family:'Bebas Neue',sans-serif;font-size:1.4rem;color:var(--gold);">${r.name}</div>
-    <button onclick="this.parentElement.remove()" style="padding:10px 28px;background:rgba(160,80,255,0.15);border:1px solid rgba(160,80,255,0.3);border-radius:6px;color:#a050ff;font-family:'Cairo',sans-serif;font-size:0.9rem;cursor:pointer;margin-top:8px;">تأكيد</button>
+    <div style="font-family:var(--font-display);font-size:2rem;color:#a050ff;">${target.name}</div>
+    <div style="font-family:var(--font-display);font-size:1.4rem;color:var(--gold);">${r.name}</div>
+    <button onclick="this.parentElement.remove()" style="padding:10px 28px;background:rgba(160,80,255,0.15);border:1px solid rgba(160,80,255,0.3);border-radius:6px;color:#a050ff;font-family:var(--font-ar);font-size:0.9rem;cursor:pointer;margin-top:8px;">تأكيد</button>
   `;
   overlay.onclick=(e)=>{if(e.target===overlay){overlay.remove();cb();}};
   overlay.querySelector("button").onclick=()=>{overlay.remove();cb();};
@@ -2578,7 +2838,7 @@ function startLgDay(){
   const voteList=document.getElementById("lgVoteList"); voteList.innerHTML="";
   lgPlayers.filter(p=>p.alive).forEach(p=>{
     const btn=document.createElement("button");
-    btn.style.cssText="width:100%;padding:12px;background:var(--dark2);border:1.5px solid rgba(255,255,255,0.06);border-radius:6px;color:var(--white);font-family:'Cairo',sans-serif;font-size:0.95rem;cursor:pointer;transition:all 0.2s;text-align:left;";
+    btn.style.cssText="width:100%;padding:12px;background:var(--dark2);border:1.5px solid rgba(255,255,255,0.06);border-radius:6px;color:var(--white);font-family:var(--font-ar);font-size:0.95rem;cursor:pointer;transition:all 0.2s;text-align:left;";
     btn.innerHTML=`${p.name}${p.name===lgMaire?" 🧑‍⚖️×2":""}`;
     btn.dataset.name=p.name;
     btn.onclick=()=>{
@@ -2689,7 +2949,7 @@ function renderLeaderboard(){
   sorted.forEach(([name,score],i)=>{
     const row=document.createElement("div");
     row.style.cssText="display:flex;align-items:center;gap:12px;padding:12px 16px;background:var(--dark2);border:1px solid rgba(255,255,255,0.06);border-radius:8px;";
-    row.innerHTML=`<span style="font-size:1.4rem;min-width:28px;">${medals[i]||"#"+(i+1)}</span><span style="flex:1;font-size:1rem;font-weight:700;">${name}</span><span style="font-family:'Bebas Neue',sans-serif;font-size:1.5rem;color:var(--gold);">${score}</span>`;
+    row.innerHTML=`<span style="font-size:1.4rem;min-width:28px;">${medals[i]||"#"+(i+1)}</span><span style="flex:1;font-size:1rem;font-weight:700;">${name}</span><span style="font-family:var(--font-display);font-size:1.5rem;color:var(--gold);">${score}</span>`;
     el.appendChild(row);
   });
 }
@@ -2863,11 +3123,11 @@ function lgNarratorRevealRole(p){
   overlay.style.cssText="position:fixed;inset:0;background:rgba(0,0,0,0.92);z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;padding:30px;text-align:center;animation:fadeIn 0.2s ease;";
   overlay.innerHTML=`
     <div style="font-size:0.65rem;letter-spacing:5px;color:rgba(167,139,250,0.4);">دور اللاعب</div>
-    <div style="font-family:'Bebas Neue',sans-serif;font-size:2.5rem;color:#fff;letter-spacing:3px;">${p.name}</div>
+    <div style="font-family:var(--font-display);font-size:2.5rem;color:#fff;letter-spacing:3px;">${p.name}</div>
     <div style="font-size:4rem;filter:drop-shadow(0 4px 20px rgba(124,58,237,0.5));">${role.icon}</div>
-    <div style="font-family:'Bebas Neue',sans-serif;font-size:1.8rem;color:#a78bfa;letter-spacing:2px;">${role.name}</div>
+    <div style="font-family:var(--font-display);font-size:1.8rem;color:#a78bfa;letter-spacing:2px;">${role.name}</div>
     <div style="font-size:0.85rem;color:rgba(240,240,240,0.4);max-width:300px;line-height:1.7;">${role.desc}</div>
-    <button onclick="this.closest('[style]').remove()" style="margin-top:8px;padding:12px 32px;background:linear-gradient(135deg,#7c3aed,#a855f7);border:none;border-radius:12px;color:#fff;font-family:'Cairo',sans-serif;font-size:1rem;font-weight:700;cursor:pointer;box-shadow:0 6px 20px rgba(124,58,237,0.35);">حسناً ✓</button>
+    <button onclick="this.closest('[style]').remove()" style="margin-top:8px;padding:12px 32px;background:linear-gradient(135deg,#7c3aed,#a855f7);border:none;border-radius:12px;color:#fff;font-family:var(--font-ar);font-size:1rem;font-weight:700;cursor:pointer;box-shadow:0 6px 20px rgba(124,58,237,0.35);">حسناً ✓</button>
   `;
   document.body.appendChild(overlay);
 }
@@ -2878,17 +3138,17 @@ function showChasseurChoice(chasseur, cb){
   overlay.style.cssText="position:fixed;inset:0;background:rgba(0,0,0,0.85);z-index:999;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;padding:30px;text-align:center;";
   overlay.innerHTML=`
     <span style="font-size:3rem;">🔫</span>
-    <div style="font-family:'Bebas Neue',sans-serif;font-size:2rem;color:var(--accent);">${chasseur.name} — الصياد</div>
+    <div style="font-family:var(--font-display);font-size:2rem;color:var(--accent);">${chasseur.name} — الصياد</div>
     <p style="font-size:0.9rem;color:rgba(240,240,240,0.5);">اختر من تطلق عليه رصاصتك الأخيرة:</p>
     <div id="chasseurTargets" style="display:flex;flex-direction:column;gap:8px;width:min(360px,90vw);"></div>
-    <button id="chasseurSkip" style="padding:10px 20px;background:transparent;border:1px solid rgba(255,255,255,0.1);border-radius:6px;color:rgba(240,240,240,0.3);font-family:'Cairo',sans-serif;font-size:0.85rem;cursor:pointer;">لا أطلق النار</button>
+    <button id="chasseurSkip" style="padding:10px 20px;background:transparent;border:1px solid rgba(255,255,255,0.1);border-radius:6px;color:rgba(240,240,240,0.3);font-family:var(--font-ar);font-size:0.85rem;cursor:pointer;">لا أطلق النار</button>
   `;
   document.body.appendChild(overlay);
 
   const targetsEl=overlay.querySelector("#chasseurTargets");
   lgPlayers.filter(p=>p.alive&&p.name!==chasseur.name).forEach(p=>{
     const btn=document.createElement("button");
-    btn.style.cssText="padding:12px;background:rgba(255,107,53,0.08);border:1.5px solid rgba(255,107,53,0.2);border-radius:6px;color:var(--white);font-family:'Cairo',sans-serif;font-size:1rem;cursor:pointer;transition:all 0.2s;";
+    btn.style.cssText="padding:12px;background:rgba(255,107,53,0.08);border:1.5px solid rgba(255,107,53,0.2);border-radius:6px;color:var(--white);font-family:var(--font-ar);font-size:1rem;cursor:pointer;transition:all 0.2s;";
     btn.textContent=p.name;
     btn.onmouseover=()=>btn.style.background="rgba(255,107,53,0.2)";
     btn.onmouseout=()=>btn.style.background="rgba(255,107,53,0.08)";
@@ -2925,12 +3185,12 @@ function showRoleOverlay(player){
   overlay.style.cssText="position:fixed;inset:0;background:rgba(0,0,0,0.88);z-index:999;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;padding:30px;text-align:center;";
   overlay.innerHTML=`
     <span style="font-size:4rem;">${r.icon}</span>
-    <div style="font-family:'Bebas Neue',sans-serif;font-size:2.2rem;color:${player.alive?"#a050ff":"rgba(240,240,240,0.3)"};">${player.name}</div>
-    <div style="font-family:'Bebas Neue',sans-serif;font-size:1.5rem;color:var(--gold);">${r.name}</div>
+    <div style="font-family:var(--font-display);font-size:2.2rem;color:${player.alive?"#a050ff":"rgba(240,240,240,0.3)"};">${player.name}</div>
+    <div style="font-family:var(--font-display);font-size:1.5rem;color:var(--gold);">${r.name}</div>
     <div style="font-size:0.85rem;color:rgba(240,240,240,0.4);max-width:300px;line-height:1.6;">${r.desc}</div>
     ${lgLovers.includes(player.name)?`<div style="font-size:0.85rem;color:pink;">💘 عاشق مع: ${lgLovers.find(n=>n!==player.name)||""}</div>`:""}
     <div style="font-size:0.8rem;color:${player.alive?"rgba(0,255,135,0.5)":"rgba(255,60,110,0.4)"};">${player.alive?"💚 حي":"💀 ميت"}</div>
-    <button onclick="this.parentElement.remove()" style="padding:10px 28px;background:transparent;border:1px solid rgba(255,255,255,0.1);border-radius:6px;color:rgba(240,240,240,0.4);font-family:'Cairo',sans-serif;font-size:0.9rem;cursor:pointer;margin-top:8px;">إغلاق</button>
+    <button onclick="this.parentElement.remove()" style="padding:10px 28px;background:transparent;border:1px solid rgba(255,255,255,0.1);border-radius:6px;color:rgba(240,240,240,0.4);font-family:var(--font-ar);font-size:0.9rem;cursor:pointer;margin-top:8px;">إغلاق</button>
   `;
   overlay.onclick=(e)=>{if(e.target===overlay)overlay.remove();};
   document.body.appendChild(overlay);
@@ -3156,15 +3416,15 @@ function showDamaResult(winner, botWon){
   overlay.style.cssText="position:fixed;inset:0;background:rgba(0,0,0,0.92);z-index:999;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;padding:30px;text-align:center;";
   overlay.innerHTML=`
     <div style="font-size:5rem;animation:pop 0.5s cubic-bezier(0.175,0.885,0.32,1.275) both;">${emoji}</div>
-    <div style="font-family:'Bebas Neue',sans-serif;font-size:clamp(2.5rem,10vw,4rem);color:${color};text-shadow:0 0 30px ${color};animation:fadeDown 0.4s 0.1s ease both;opacity:0;">${title}</div>
+    <div style="font-family:var(--font-display);font-size:clamp(2.5rem,10vw,4rem);color:${color};text-shadow:0 0 30px ${color};animation:fadeDown 0.4s 0.1s ease both;opacity:0;">${title}</div>
     <div style="font-size:0.95rem;color:rgba(240,240,240,0.4);letter-spacing:2px;animation:fadeDown 0.4s 0.2s ease both;opacity:0;">${subtitle}</div>
     <div style="display:flex;gap:10px;margin-top:12px;animation:fadeDown 0.4s 0.3s ease both;opacity:0;">
       <button onclick="document.getElementById('damaResultOverlay').remove();resetDama();"
-        style="padding:12px 24px;background:linear-gradient(135deg,var(--gold),#cc9900);border:none;border-radius:8px;color:#000;font-family:'Cairo',sans-serif;font-size:1rem;font-weight:900;cursor:pointer;">
+        style="padding:12px 24px;background:linear-gradient(135deg,var(--gold),#cc9900);border:none;border-radius:8px;color:#000;font-family:var(--font-ar);font-size:1rem;font-weight:900;cursor:pointer;">
         🔄 العب مجدداً
       </button>
       <button onclick="document.getElementById('damaResultOverlay').remove();showScreen('dama-mode');"
-        style="padding:12px 24px;background:transparent;border:1.5px solid rgba(255,255,255,0.1);border-radius:8px;color:rgba(240,240,240,0.4);font-family:'Cairo',sans-serif;font-size:1rem;cursor:pointer;">
+        style="padding:12px 24px;background:transparent;border:1.5px solid rgba(255,255,255,0.1);border-radius:8px;color:rgba(240,240,240,0.4);font-family:var(--font-ar);font-size:1rem;cursor:pointer;">
         ← القائمة الرئيسية
       </button>
     </div>
@@ -3556,10 +3816,10 @@ function showChessResult(msg, isCheckmate){
   overlay.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,0.92);z-index:999;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;padding:30px;text-align:center;';
   overlay.innerHTML=`
     <div style="font-size:4.5rem;animation:pop 0.5s cubic-bezier(0.175,0.885,0.32,1.275) both;">${isCheckmate?'👑':'🤝'}</div>
-    <div style="font-family:'Bebas Neue',sans-serif;font-size:clamp(1.8rem,8vw,3rem);color:${isCheckmate?'var(--gold)':'rgba(240,240,240,0.6)'};animation:fadeDown 0.4s 0.1s ease both;opacity:0;">${msg}</div>
+    <div style="font-family:var(--font-display);font-size:clamp(1.8rem,8vw,3rem);color:${isCheckmate?'var(--gold)':'rgba(240,240,240,0.6)'};animation:fadeDown 0.4s 0.1s ease both;opacity:0;">${msg}</div>
     <div style="display:flex;gap:10px;margin-top:12px;animation:fadeDown 0.4s 0.3s ease both;opacity:0;">
-      <button onclick="this.closest('div[style]').remove();resetChess();" style="padding:12px 24px;background:linear-gradient(135deg,var(--gold),#cc9900);border:none;border-radius:8px;color:#000;font-family:'Cairo',sans-serif;font-size:1rem;font-weight:900;cursor:pointer;">🔄 العب مجدداً</button>
-      <button onclick="this.closest('div[style]').remove();showScreen('chess-mode');" style="padding:12px 24px;background:transparent;border:1.5px solid rgba(255,255,255,0.1);border-radius:8px;color:rgba(240,240,240,0.4);font-family:'Cairo',sans-serif;font-size:1rem;cursor:pointer;">← القائمة الرئيسية</button>
+      <button onclick="this.closest('div[style]').remove();resetChess();" style="padding:12px 24px;background:linear-gradient(135deg,var(--gold),#cc9900);border:none;border-radius:8px;color:#000;font-family:var(--font-ar);font-size:1rem;font-weight:900;cursor:pointer;">🔄 العب مجدداً</button>
+      <button onclick="this.closest('div[style]').remove();showScreen('chess-mode');" style="padding:12px 24px;background:transparent;border:1.5px solid rgba(255,255,255,0.1);border-radius:8px;color:rgba(240,240,240,0.4);font-family:var(--font-ar);font-size:1rem;cursor:pointer;">← القائمة الرئيسية</button>
     </div>
   `;
   if(isCheckmate){
@@ -3642,7 +3902,7 @@ function showGameHelp(game){
         <div style="display:flex;align-items:center;gap:12px;">
           <div style="width:48px;height:48px;border-radius:14px;background:${h.color}22;border:1px solid ${h.color}44;display:flex;align-items:center;justify-content:center;font-size:1.6rem;">${h.icon}</div>
           <div>
-            <div style="font-family:'Bebas Neue',sans-serif;font-size:1.8rem;letter-spacing:3px;color:#fff;">${h.title}</div>
+            <div style="font-family:var(--font-display);font-size:1.8rem;letter-spacing:3px;color:#fff;">${h.title}</div>
             <div style="font-size:0.62rem;letter-spacing:4px;color:rgba(240,240,240,0.25);">قوانين اللعبة</div>
           </div>
         </div>
@@ -3905,11 +4165,163 @@ function selectOnlineGame(g) {
 }
 
 // ── Random matchmaking ───────────────────────────────────
+// ══ MISSING HELPERS ══
+function genRoomCode() {
+  const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+  let code = '';
+  for(let i=0;i<6;i++) code += chars[Math.floor(Math.random()*chars.length)];
+  return code;
+}
+
+function getMyUID() {
+  if(window.FB_USER && window.FB_USER.uid) return window.FB_USER.uid;
+  if(currentUser && currentUser.uid) return currentUser.uid;
+  // Generate anonymous UID and save it
+  let anonId = localStorage.getItem('yssn_anon_uid');
+  if(!anonId) {
+    anonId = 'anon_' + Math.random().toString(36).substr(2,12) + '_' + Date.now().toString(36);
+    localStorage.setItem('yssn_anon_uid', anonId);
+  }
+  return anonId;
+}
+
+function getMyName() {
+  if(currentUser && currentUser.name) return currentUser.name;
+  let anonName = localStorage.getItem('yssn_anon_name');
+  if(!anonName) {
+    const adjectives = ['سريع','شجاع','ذكي','قوي','ماهر'];
+    const nouns = ['الأسد','الصقر','النمر','الذئب','العقاب'];
+    anonName = adjectives[Math.floor(Math.random()*adjectives.length)] + ' ' + nouns[Math.floor(Math.random()*nouns.length)];
+    localStorage.setItem('yssn_anon_name', anonName);
+  }
+  return anonName;
+}
+
+// ══ PROFILE MODAL ══
+function showProfileModal() {
+  SFX.play('click');
+  const user = currentUser || {};
+  const ov = document.createElement('div');
+  ov.id = 'profileModal';
+  ov.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.85);z-index:99999;display:flex;align-items:center;justify-content:center;padding:20px;animation:fadeIn 0.2s ease;';
+  ov.onclick = (e)=>{ if(e.target===ov) ov.remove(); };
+  const avatarHtml = user.avatar
+    ? `<img src="${user.avatar}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;"/>`
+    : `<span style="font-size:1.8rem;font-weight:700;">${(user.name||'؟').slice(0,2).toUpperCase()}</span>`;
+  ov.innerHTML = `
+    <div style="width:min(380px,95vw);background:#111118;border:1px solid rgba(124,58,237,0.2);border-radius:24px;padding:28px 24px;display:flex;flex-direction:column;gap:18px;position:relative;">
+      <button onclick="document.getElementById('profileModal').remove()" style="position:absolute;top:14px;left:16px;width:32px;height:32px;border-radius:50%;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);color:rgba(240,240,240,0.5);font-size:1rem;cursor:pointer;">✕</button>
+      <div style="text-align:center;">
+        <div style="font-family:var(--font-display);font-size:1.8rem;letter-spacing:4px;background:linear-gradient(135deg,#a855f7,#7c3aed);-webkit-background-clip:text;-webkit-text-fill-color:transparent;">الملف الشخصي</div>
+      </div>
+      
+      <!-- Avatar -->
+      <div style="display:flex;flex-direction:column;align-items:center;gap:10px;">
+        <div id="profileAvatarCircle" style="width:80px;height:80px;border-radius:50%;background:linear-gradient(135deg,#7c3aed,#a855f7);display:flex;align-items:center;justify-content:center;color:#fff;font-family:var(--font-ar);overflow:hidden;border:3px solid rgba(124,58,237,0.3);">
+          ${avatarHtml}
+        </div>
+        <label style="padding:8px 18px;background:rgba(124,58,237,0.1);border:1px solid rgba(124,58,237,0.25);border-radius:10px;color:rgba(167,139,250,0.8);font-family:var(--font-ar);font-size:0.82rem;cursor:pointer;">
+          📷 تغيير الصورة
+          <input type="file" accept="image/*" style="display:none;" onchange="handleAvatarChange(event)"/>
+        </label>
+      </div>
+
+      <!-- Name -->
+      <div>
+        <div style="font-size:0.65rem;letter-spacing:3px;color:rgba(240,240,240,0.25);margin-bottom:8px;">الاسم</div>
+        <div style="display:flex;gap:8px;">
+          <input id="profileNameInput" type="text" value="${user.name||''}" placeholder="أدخل اسمك..." maxlength="20" style="flex:1;padding:11px 14px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);border-radius:11px;color:#fff;font-family:var(--font-ar);font-size:0.9rem;outline:none;" onfocus="this.style.borderColor='rgba(124,58,237,0.4)'" onblur="this.style.borderColor='rgba(255,255,255,0.1)'"/>
+          <button onclick="saveProfileName()" style="padding:11px 16px;background:linear-gradient(135deg,#7c3aed,#a855f7);border:none;border-radius:11px;color:#fff;font-family:var(--font-ar);font-size:0.85rem;font-weight:700;cursor:pointer;">حفظ</button>
+        </div>
+      </div>
+
+      <!-- Account link -->
+      <div>
+        <div style="font-size:0.65rem;letter-spacing:3px;color:rgba(240,240,240,0.25);margin-bottom:8px;">ربط الحساب</div>
+        ${user.isAnon === false ? `
+          <div style="display:flex;align-items:center;gap:12px;padding:12px 14px;background:rgba(6,214,160,0.06);border:1px solid rgba(6,214,160,0.2);border-radius:11px;">
+            <span style="font-size:1.2rem;">✅</span>
+            <div>
+              <div style="font-size:0.85rem;color:rgba(6,214,160,0.85);font-weight:600;">حساب مرتبط بـ Google</div>
+              <div style="font-size:0.72rem;color:rgba(240,240,240,0.3);">${user.username||''}</div>
+            </div>
+          </div>
+        ` : `
+          <button id="profileGoogleBtn" onclick="signInGoogle(this);" style="width:100%;display:flex;align-items:center;justify-content:center;gap:12px;padding:13px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.12);border-radius:11px;color:rgba(240,240,240,0.8);font-family:var(--font-ar);font-size:0.9rem;font-weight:600;cursor:pointer;">
+            <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" style="width:20px;height:20px;"/>
+            ربط بحساب Google
+          </button>
+        `}
+      </div>
+
+      <!-- Status -->
+      <div id="profileStatus" style="display:none;padding:10px 14px;border-radius:10px;font-size:0.82rem;text-align:center;"></div>
+    </div>`;
+  document.body.appendChild(ov);
+}
+
+function saveProfileName() {
+  const input = document.getElementById('profileNameInput');
+  const name = (input?.value||'').trim();
+  if(!name) return;
+  currentUser = currentUser || {};
+  currentUser.name = name;
+  localStorage.setItem('yssn_session', JSON.stringify(currentUser));
+  localStorage.setItem('yssn_anon_name', name);
+  updateUserUI();
+  const st = document.getElementById('profileStatus');
+  if(st){ st.style.display='block'; st.style.background='rgba(6,214,160,0.1)'; st.style.color='rgba(6,214,160,0.85)'; st.style.border='1px solid rgba(6,214,160,0.2)'; st.textContent='✅ تم حفظ الاسم'; }
+  SFX.play('success');
+}
+
+function handleAvatarChange(e) {
+  const file = e.target.files[0];
+  if(!file) return;
+  const reader = new FileReader();
+  reader.onload = function(ev) {
+    const dataUrl = ev.target.result;
+    currentUser = currentUser || {};
+    currentUser.avatar = dataUrl;
+    localStorage.setItem('yssn_session', JSON.stringify(currentUser));
+    // Update circle preview
+    const circle = document.getElementById('profileAvatarCircle');
+    if(circle) circle.innerHTML = `<img src="${dataUrl}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;"/>`;
+    updateUserUI();
+    SFX.play('success');
+  };
+  reader.readAsDataURL(file);
+}
+
+function ensureOnlineAuth(callback) {
+  if(window.FB_USER) { callback(); return; }
+  if(window.FB_AUTH && window.FB_signInAnonymously) {
+    window.FB_signInAnonymously(window.FB_AUTH)
+      .then(result => {
+        window.FB_USER = result.user;
+        if(!currentUser) {
+          currentUser = { uid: result.user.uid, name: getMyName(), username: result.user.uid, isAnon: true };
+          updateUserUI();
+        }
+        callback();
+      })
+      .catch(e => { console.error('anon auth fail',e); callback(); });
+  } else {
+    // Firebase not ready yet, try after a moment
+    if(!window.FB_READY) {
+      document.addEventListener('fb-ready', ()=>{ ensureOnlineAuth(callback); }, {once:true});
+    } else {
+      callback();
+    }
+  }
+}
+
 function joinRandomMatch() {
-  if(!window.FB_DB) return alert('Firebase غير متصل');
+  if(!window.FB_DB) { showToast('⚠️ Firebase غير متصل — تحقق من الإنترنت'); return; }
   SFX.play('click');
   const btn = document.getElementById('randomMatchBtn');
   if(btn) { btn.textContent = '⏳ جاري البحث...'; btn.disabled = true; }
+
+  ensureOnlineAuth(() => {
 
   const uid = getMyUID();
   const queueRef = window.FB_ref(window.FB_DB, 'queue/' + onlineGame);
@@ -3951,24 +4363,27 @@ function joinRandomMatch() {
         if(btn) { btn.textContent='🔍 ابحث عن خصم'; btn.disabled=false; }
       });
     }
-  }).catch(e=>{ console.error(e); if(btn){btn.textContent='🔍 ابحث عن خصم';btn.disabled=false;} });
+  }).catch(e=>{ console.error(e); showToast('❌ خطأ في البحث: ' + (e.message||'')); if(btn){btn.textContent='🔍 ابحث عن خصم';btn.disabled=false;} });
+  }); // end ensureOnlineAuth
 }
 
 // ── Create private room ───────────────────────────────────
 function createOnlineRoom() {
-  if(!window.FB_DB) return alert('Firebase غير متصل');
+  if(!window.FB_DB) { showToast('⚠️ Firebase غير متصل — تحقق من الإنترنت'); return; }
   SFX.play('click');
-  const code = genRoomCode();
-  const uid = getMyUID();
-  window.FB_set(window.FB_ref(window.FB_DB, 'rooms/' + code), {
-    game: onlineGame, code, status: 'waiting',
-    hostUID: uid, hostName: getMyName(), createdAt: Date.now()
-  }).then(()=>{
-    onlineRoomId = code;
-    onlineRole = 'host';
-    showRoomScreen(code, true);
-    watchForOpponent(code);
-  }).catch(e=>alert('خطأ: '+e.message));
+  ensureOnlineAuth(() => {
+    const code = genRoomCode();
+    const uid = getMyUID();
+    window.FB_set(window.FB_ref(window.FB_DB, 'rooms/' + code), {
+      game: onlineGame, code, status: 'waiting',
+      hostUID: uid, hostName: getMyName(), createdAt: Date.now()
+    }).then(()=>{
+      onlineRoomId = code;
+      onlineRole = 'host';
+      showRoomScreen(code, true);
+      watchForOpponent(code);
+    }).catch(e=>showToast('❌ خطأ: ' + (e.message||e)));
+  });
 }
 
 // ── Join by code ─────────────────────────────────────────
@@ -4085,7 +4500,7 @@ function startOnlineGame(code, room) {
           الغرفة جاهزة!<br/>
           <span style="font-size:0.72rem;color:rgba(240,240,240,0.25);">اللعبة الجماعية تحتاج ${g==='loup'?'4-15':'3-10'} لاعبين<br/>شارك الكود مع أصدقائك</span>
         </div>
-        <div style="margin-top:16px;font-family:'Bebas Neue';font-size:2rem;letter-spacing:8px;color:rgba(124,58,237,0.6);">${code}</div>
+        <div style="margin-top:16px;font-family:var(--font-display);font-size:2rem;letter-spacing:8px;color:rgba(124,58,237,0.6);">${code}</div>
       </div>`;
   }
   watchChat(code);
@@ -4161,8 +4576,21 @@ if('serviceWorker' in navigator){
   if(!isPreview){
     window.addEventListener('load', ()=>{
       navigator.serviceWorker.register('./sw.js')
-        .then(()=>console.log('SW registered ✅'))
-        .catch(e=>{}); // silent fail
+        .then(reg => {
+          console.log('SW registered ✅');
+          // Check for updates every 60 seconds
+          setInterval(() => reg.update(), 60000);
+          reg.addEventListener('updatefound', () => {
+            const newWorker = reg.installing;
+            newWorker.addEventListener('statechange', () => {
+              if(newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                // New version available
+                newWorker.postMessage('skipWaiting');
+              }
+            });
+          });
+        })
+        .catch(e => console.warn('SW failed:', e));
     });
   }
 }
@@ -4193,8 +4621,9 @@ function installPWA(){
 
 
 function handleAuthTopBtn(){
-  if(currentUser && !currentUser.isAnon){
-    showUserMenu();
+  SFX.play('click');
+  if(currentUser && currentUser.name){
+    showProfileModal();
   } else {
     showScreen('login-screen');
   }
@@ -4203,12 +4632,19 @@ function handleAuthTopBtn(){
 function updateAuthTopBtn(){
   const btn = document.getElementById('authTopBtn');
   if(!btn) return;
-  if(currentUser && !currentUser.isAnon){
-    btn.innerHTML = '👤 ' + (currentUser.name||'أنت').split(' ')[0];
-    btn.style.background = 'linear-gradient(135deg,#06d6a0,#0ea5e9)';
+  if(currentUser && currentUser.name){
+    let avatarHtml;
+    if(currentUser.avatar) {
+      avatarHtml = `<span style="width:24px;height:24px;border-radius:50%;overflow:hidden;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;"><img src="${currentUser.avatar}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;"/></span>`;
+    } else {
+      const initials = (currentUser.name||'؟').slice(0,2).toUpperCase();
+      avatarHtml = `<span style="width:24px;height:24px;border-radius:50%;background:rgba(255,255,255,0.2);display:inline-flex;align-items:center;justify-content:center;font-size:0.68rem;font-weight:700;">${initials}</span>`;
+    }
+    btn.innerHTML = `${avatarHtml} ${(currentUser.name||'أنت').split(' ')[0]}`;
+    btn.classList.add('signed-in');
   } else {
     btn.innerHTML = '👤 دخول';
-    btn.style.background = 'linear-gradient(135deg,#7c3aed,#a855f7)';
+    btn.classList.remove('signed-in');
   }
 }
 
@@ -4317,19 +4753,14 @@ function cleanupOnlineListeners() {
 
 </script>
 
-<nav id="bottomNav" style="position:fixed;bottom:0;left:0;right:0;z-index:999;display:none;justify-content:space-around;align-items:center;background:rgba(10,10,15,0.96);backdrop-filter:blur(20px);border-top:1px solid rgba(124,58,237,0.18);padding:10px 0 env(safe-area-inset-bottom,10px);box-shadow:0 -4px 24px rgba(0,0,0,0.4);">
-  <button id="bnHome" onclick="bottomNavGo('home')" style="display:flex;flex-direction:column;align-items:center;gap:3px;background:none;border:none;color:rgba(240,240,240,0.55);font-family:'Cairo',sans-serif;font-size:0.62rem;cursor:pointer;padding:6px 16px;border-radius:12px;transition:all 0.2s;min-width:64px;">
-    <span style="font-size:1.35rem;">🏠</span><span>الرئيسية</span>
+<nav id="bottomNav" style="position:fixed;right:12px;top:50%;transform:translateY(-50%);z-index:999;display:flex;flex-direction:column;gap:6px;align-items:center;background:rgba(10,10,15,0.92);backdrop-filter:blur(20px);border:1px solid rgba(124,58,237,0.2);border-radius:20px;padding:10px 6px;box-shadow:0 8px 32px rgba(0,0,0,0.5);">
+  <button id="bnHome" onclick="bottomNavGo('home')" title="الرئيسية" style="display:flex;flex-direction:column;align-items:center;gap:2px;background:rgba(124,58,237,0.15);border:1px solid rgba(124,58,237,0.3);color:rgba(167,139,250,0.95);font-family:var(--font-ar);font-size:0.5rem;cursor:pointer;padding:8px 6px;border-radius:12px;transition:all 0.2s;width:48px;">
+    <span style="font-size:1.2rem;line-height:1;">🏠</span><span>الرئيسية</span>
   </button>
-  <button id="bnGames" onclick="bottomNavGo('games')" style="display:flex;flex-direction:column;align-items:center;gap:3px;background:none;border:none;color:rgba(240,240,240,0.55);font-family:'Cairo',sans-serif;font-size:0.62rem;cursor:pointer;padding:6px 16px;border-radius:12px;transition:all 0.2s;min-width:64px;">
-    <span style="font-size:1.35rem;">🎮</span><span>الألعاب</span>
+  <button id="bnGames" onclick="bottomNavGo('games')" title="الألعاب" style="display:flex;flex-direction:column;align-items:center;gap:2px;background:none;border:1px solid rgba(255,255,255,0.06);color:rgba(240,240,240,0.35);font-family:var(--font-ar);font-size:0.5rem;cursor:pointer;padding:8px 6px;border-radius:12px;transition:all 0.2s;width:48px;">
+    <span style="font-size:1.2rem;line-height:1;">🎮</span><span>الألعاب</span>
   </button>
-  <button id="bnShare" onclick="bottomNavGo('share')" style="display:flex;flex-direction:column;align-items:center;gap:3px;background:none;border:none;color:rgba(240,240,240,0.55);font-family:'Cairo',sans-serif;font-size:0.62rem;cursor:pointer;padding:6px 16px;border-radius:12px;transition:all 0.2s;min-width:64px;">
-    <span style="font-size:1.35rem;">📤</span><span>مشاركة</span>
+  <button id="bnShare" onclick="bottomNavGo('share')" title="مشاركة" style="display:flex;flex-direction:column;align-items:center;gap:2px;background:none;border:1px solid rgba(255,255,255,0.06);color:rgba(240,240,240,0.35);font-family:var(--font-ar);font-size:0.5rem;cursor:pointer;padding:8px 6px;border-radius:12px;transition:all 0.2s;width:48px;">
+    <span style="font-size:1.2rem;line-height:1;">📤</span><span>مشاركة</span>
   </button>
-  <button id="bnContact" onclick="bottomNavGo('contact')" style="display:flex;flex-direction:column;align-items:center;gap:3px;background:none;border:none;color:rgba(240,240,240,0.55);font-family:'Cairo',sans-serif;font-size:0.62rem;cursor:pointer;padding:6px 16px;border-radius:12px;transition:all 0.2s;min-width:64px;">
-    <span style="font-size:1.35rem;">✉️</span><span>تواصل</span>
-  </button>
-</nav>
-</body>
-</html>
+  <button id="bnContact" onclick="bottomNavGo('contact')" title="تواصل" style="display:flex;flex-direction:column;align-items:center;gap:2px;background:none;border:1px solid rgba(255,255,255,0.06);color:rgba(240,240,240,
