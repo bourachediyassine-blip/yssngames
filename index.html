@@ -23,7 +23,6 @@
   --text:#f1f5f9;--text2:#94a3b8;--text3:#475569;
   --border:rgba(255,255,255,0.07);--border2:rgba(255,255,255,0.12);
   --white:#f1f5f9;--dark:#0a0a0f;--dark2:#1e1e2a;--dark3:#252535;
-  --gold:#fbbf24;
   --radius:16px;--radius2:12px;
   --transition:all 0.3s cubic-bezier(0.4,0,0.2,1);
 }
@@ -34,7 +33,7 @@ body.light-mode{
   --border:rgba(0,0,0,0.08);--border2:rgba(0,0,0,0.14);
   --white:#0f172a;--dark:#f8fafc;--dark2:#ffffff;--dark3:#f1f5f9;
 }
-body{background:var(--bg);color:var(--text);font-family:"Cairo",sans-serif;min-height:100vh;overflow-x:hidden;transition:background 0.4s,color 0.4s;}
+body{background:var(--bg);color:var(--text);font-family:"Cairo",sans-serif;min-height:100vh;overflow-x:hidden;transition:background 0.4s,color 0.4s;padding-bottom:70px;}
 
 /* Noise overlay */
 body::before{content:"";position:fixed;inset:0;background:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");pointer-events:none;z-index:0;opacity:0.4;}
@@ -199,6 +198,154 @@ body.light-mode .cell.dark{background:#b58863;}
 .transition-btn{padding:14px 40px;background:linear-gradient(135deg,var(--accent),var(--accent2));border:none;border-radius:12px;color:#fff;font-family:"Cairo",sans-serif;font-size:1.1rem;font-weight:700;cursor:pointer;letter-spacing:1px;}
 
 
+
+/* ══ SPY CARD PREMIUM STYLES ══ */
+.spy-card-face {
+  position: absolute;
+  inset: 0;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  border-radius: 28px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+  padding: 28px 24px;
+  overflow: hidden;
+}
+.spy-card-front {
+  background: linear-gradient(145deg, #0f0505 0%, #1a0808 40%, #200b0b 100%);
+  border: 1px solid rgba(239,68,68,0.18);
+  box-shadow: 0 30px 80px rgba(239,68,68,0.2), inset 0 1px 0 rgba(255,255,255,0.04);
+}
+.spy-card-back {
+  background: linear-gradient(145deg, #050f09 0%, #081a10 40%, #0b2014 100%);
+  border: 1px solid rgba(74,222,128,0.2);
+  box-shadow: 0 30px 80px rgba(74,222,128,0.15), inset 0 1px 0 rgba(255,255,255,0.04);
+  transform: rotateY(180deg);
+}
+/* Spy role - red variant for imposter */
+.spy-card-back.is-spy {
+  background: linear-gradient(145deg, #0f0505 0%, #1a0808 40%, #200b0b 100%);
+  border-color: rgba(239,68,68,0.25);
+  box-shadow: 0 30px 80px rgba(239,68,68,0.2), inset 0 1px 0 rgba(255,255,255,0.04);
+}
+
+/* Corner brackets */
+.spy-corner { position:absolute; width:18px; height:18px; border-color:rgba(239,68,68,0.4); border-style:solid; }
+.spy-corner-tl { top:14px; left:14px; border-width:2px 0 0 2px; border-radius:4px 0 0 0; }
+.spy-corner-tr { top:14px; right:14px; border-width:2px 2px 0 0; border-radius:0 4px 0 0; }
+.spy-corner-bl { bottom:14px; left:14px; border-width:0 0 2px 2px; border-radius:0 0 0 4px; }
+.spy-corner-br { bottom:14px; right:14px; border-width:0 2px 2px 0; border-radius:0 0 4px 0; }
+
+/* Animated ring behind lock */
+.spy-ring {
+  position: absolute;
+  width: 160px; height: 160px;
+  border-radius: 50%;
+  border: 1px solid rgba(239,68,68,0.08);
+  animation: spyRingPulse 2.5s ease-in-out infinite;
+}
+.spy-ring::before {
+  content:'';
+  position:absolute;
+  inset: 20px;
+  border-radius: 50%;
+  border: 1px solid rgba(239,68,68,0.05);
+  animation: spyRingPulse 2.5s 0.4s ease-in-out infinite;
+}
+@keyframes spyRingPulse {
+  0%, 100% { transform: scale(1); opacity: 0.6; }
+  50% { transform: scale(1.08); opacity: 0.2; }
+}
+
+/* Lock icon glow */
+.spy-lock-icon {
+  position: relative;
+  filter: drop-shadow(0 0 16px rgba(239,68,68,0.3));
+  animation: spyLockFloat 3s ease-in-out infinite;
+}
+@keyframes spyLockFloat {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-6px); }
+}
+
+/* Tap pulse dot */
+.spy-tap-pulse {
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: rgba(239,68,68,0.6);
+  box-shadow: 0 0 0 0 rgba(239,68,68,0.4);
+  animation: spyTapPulse 1.8s ease-out infinite;
+}
+@keyframes spyTapPulse {
+  0% { box-shadow: 0 0 0 0 rgba(239,68,68,0.5); }
+  70% { box-shadow: 0 0 0 12px rgba(239,68,68,0); }
+  100% { box-shadow: 0 0 0 0 rgba(239,68,68,0); }
+}
+
+/* Background orbs */
+.spy-bg-orb {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(60px);
+  pointer-events: none;
+}
+.spy-orb1 {
+  width: 300px; height: 300px;
+  background: radial-gradient(circle, rgba(239,68,68,0.12), transparent 70%);
+  top: -80px; left: -80px;
+  animation: spyOrbDrift 8s ease-in-out infinite;
+}
+.spy-orb2 {
+  width: 250px; height: 250px;
+  background: radial-gradient(circle, rgba(239,68,68,0.08), transparent 70%);
+  bottom: -60px; right: -60px;
+  animation: spyOrbDrift 10s 2s ease-in-out infinite reverse;
+}
+.spy-orb3 {
+  width: 200px; height: 200px;
+  background: radial-gradient(circle, rgba(124,58,237,0.06), transparent 70%);
+  top: 40%; left: 50%;
+  transform: translate(-50%,-50%);
+  animation: spyOrbDrift 12s 4s ease-in-out infinite;
+}
+@keyframes spyOrbDrift {
+  0%, 100% { transform: translate(0,0); }
+  33% { transform: translate(20px,-15px); }
+  66% { transform: translate(-15px,20px); }
+}
+
+/* Scanline */
+.spy-scanline {
+  position: absolute;
+  left: 0; right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, rgba(239,68,68,0.06), transparent);
+  animation: spyScan 4s linear infinite;
+}
+@keyframes spyScan {
+  0% { top: -2px; }
+  100% { top: 100%; }
+}
+
+/* Card enter animation */
+@keyframes spyCardIn {
+  0% { opacity: 0; transform: translateY(30px) scale(0.94); }
+  100% { opacity: 1; transform: translateY(0) scale(1); }
+}
+.spy-card-enter {
+  animation: spyCardIn 0.5s cubic-bezier(0.175,0.885,0.32,1.275) both;
+}
+
+/* Reveal flash */
+@keyframes spyFlash {
+  0% { background: rgba(239,68,68,0.0); }
+  30% { background: rgba(239,68,68,0.08); }
+  100% { background: rgba(239,68,68,0.0); }
+}
+
 </style>
 
 <script data-cfasync="false" type="module">
@@ -242,7 +389,21 @@ body.light-mode .cell.dark{background:#b58863;}
     window.FB_READY = true;
     document.dispatchEvent(new Event('fb-ready'));
     console.log('Firebase ready ✅');
-  </script>
+  
+// ══ FIX: Missing helper functions ══
+
+function showSpyResult() {
+  SFX.play('imposter_reveal');
+  endSpyRound();
+}
+
+function openOnlineLobby() {
+  SFX.play('click');
+  showScreen('online-screen');
+}
+
+
+</script>
 
 </head>
 
@@ -273,17 +434,20 @@ body.light-mode .cell.dark{background:#b58863;}
 <!-- HOME -->
 <div class="screen active" id="home">
   <div class="topbar">
+    <!-- LEFT: Logo + Sound -->
     <div style="display:flex;align-items:center;gap:8px;">
       <div style="width:34px;height:34px;border-radius:10px;background:linear-gradient(135deg,var(--accent),var(--accentG));display:flex;align-items:center;justify-content:center;font-size:1.1rem;animation:logoFloat 3s ease-in-out infinite;">🎮</div>
       <span style="font-family:'Bebas Neue',sans-serif;font-size:1rem;letter-spacing:3px;background:linear-gradient(135deg,var(--accent2),var(--accentG));-webkit-background-clip:text;-webkit-text-fill-color:transparent;">YSSN</span>
       <button id="sfxToggleBtn" onclick="SFX.toggleMute()" title="كتم الصوت" style="background:var(--surface);border:1px solid var(--border2);border-radius:20px;padding:4px 10px;font-size:0.85rem;cursor:pointer;transition:all 0.2s;">🔊</button>
-      <!-- Install PWA Button -->
-      <button id="installPwaBtn" onclick="installPWA()" title="تثبيت التطبيق" style="display:none;align-items:center;gap:5px;background:linear-gradient(135deg,#06d6a0,#0ea5e9);border:none;border-radius:20px;padding:5px 12px;font-size:0.78rem;font-family:'Cairo',sans-serif;font-weight:700;color:#fff;cursor:pointer;transition:all 0.2s;">📲 تثبيت</button> <button id="fsBtn" onclick="toggleFullscreen()" title="ملء الشاشة" style="background:var(--surface);border:1px solid var(--border2);border-radius:20px;padding:4px 10px;font-size:0.85rem;cursor:pointer;transition:all 0.2s;">⛶</button>
     </div>
+    <!-- RIGHT: Actions -->
     <div class="topbar-btns">
-      <button class="topbar-btn" onclick="showScreen('leaderboard')">🏆</button>
-      <button class="topbar-btn" onclick="showScreen('players-mgmt')">👥</button>
-      <button class="theme-btn" onclick="toggleTheme()" title="تغيير الوضع"></button>
+      <button class="topbar-btn" onclick="showScreen('leaderboard')" title="المتصدرون">🏆</button>
+      <button class="topbar-btn" onclick="showScreen('players-mgmt')" title="اللاعبون">👥</button>
+      <button id="installPwaBtn" onclick="installPWA()" title="تثبيت" style="display:none;background:linear-gradient(135deg,#06d6a0,#0ea5e9);border:none;border-radius:20px;padding:4px 10px;font-size:0.82rem;color:#fff;cursor:pointer;">📲</button>
+      <button id="fsBtn" onclick="toggleFullscreen()" title="ملء الشاشة" style="background:var(--surface);border:1px solid var(--border2);border-radius:20px;padding:4px 10px;font-size:0.85rem;cursor:pointer;transition:all 0.2s;">⛶</button>
+      <button class="theme-btn" onclick="toggleTheme()" title="الوضع الليلي"></button>
+      <button id="navToggleBtn" onclick="toggleBottomNav()" title="القائمة" style="background:var(--surface);border:1px solid var(--border2);border-radius:20px;padding:4px 10px;font-size:0.85rem;cursor:pointer;transition:all 0.2s;">☰</button>
       <button id="authTopBtn" onclick="handleAuthTopBtn()" title="الحساب" style="background:linear-gradient(135deg,#7c3aed,#a855f7);border:none;border-radius:20px;padding:5px 12px;font-size:0.8rem;font-family:'Cairo',sans-serif;font-weight:700;color:#fff;cursor:pointer;transition:all 0.2s;display:flex;align-items:center;gap:5px;">👤 دخول</button>
     </div>
   </div>
@@ -538,33 +702,94 @@ body.light-mode .cell.dark{background:#b58863;}
   </div>
 
   <!-- ══ CARD REVEAL ══ -->
-  <div id="spy-reveal-view" style="display:none;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;padding:40px 20px;position:relative;">
-    <div style="position:absolute;inset:0;background:radial-gradient(circle at 50% 40%,rgba(239,68,68,0.06),transparent 60%);pointer-events:none;"></div>
-    <div style="font-size:0.62rem;letter-spacing:5px;color:rgba(239,68,68,0.3);margin-bottom:6px;">الكشف عن الأدوار</div>
-    <div style="font-size:1.1rem;font-weight:700;color:rgba(240,240,240,0.6);margin-bottom:28px;" id="spy-reveal-name">-</div>
+  <div id="spy-reveal-view" style="display:none;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;padding:0;position:relative;overflow:hidden;">
 
-    <!-- 3D Card -->
-    <div id="spy-card-wrap" style="perspective:1000px;cursor:pointer;margin-bottom:28px;" onclick="flipSpyCard()">
-      <div id="spy-card" style="width:min(280px,80vw);height:380px;position:relative;transform-style:preserve-3d;transition:transform 0.6s cubic-bezier(0.4,0,0.2,1);">
-        <!-- Front (tap) -->
-        <div style="position:absolute;inset:0;backface-visibility:hidden;background:linear-gradient(135deg,#1a0a0a,#2d0a0a);border:1px solid rgba(239,68,68,0.2);border-radius:24px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;box-shadow:0 20px 60px rgba(239,68,68,0.15);">
-          <div style="font-size:3rem;opacity:0.4;">🔒</div>
-          <div style="font-size:0.8rem;letter-spacing:3px;color:rgba(239,68,68,0.4);">اضغط للكشف</div>
-          <div style="font-family:'Bebas Neue',sans-serif;font-size:1.2rem;letter-spacing:4px;color:rgba(239,68,68,0.25);">IMPOSTER</div>
-        </div>
-        <!-- Back (role) -->
-        <div id="spy-card-back" style="position:absolute;inset:0;backface-visibility:hidden;transform:rotateY(180deg);background:linear-gradient(135deg,#1a0505,#2d1010);border:1px solid rgba(239,68,68,0.3);border-radius:24px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;padding:24px;box-shadow:0 20px 60px rgba(239,68,68,0.2);">
-          <div id="spy-role-icon" style="font-size:3.5rem;filter:drop-shadow(0 0 16px rgba(239,68,68,0.5));">👤</div>
-          <div id="spy-role-label" style="font-size:0.65rem;letter-spacing:4px;color:rgba(239,68,68,0.5);">دورك</div>
-          <div id="spy-role-word" style="font-size:1.8rem;font-weight:900;color:#fff;text-align:center;">???</div>
-          <div id="spy-role-desc" style="font-size:0.8rem;color:rgba(240,240,240,0.4);text-align:center;line-height:1.6;"></div>
-        </div>
-      </div>
+    <!-- Animated BG -->
+    <div style="position:absolute;inset:0;pointer-events:none;overflow:hidden;">
+      <div class="spy-bg-orb spy-orb1"></div>
+      <div class="spy-bg-orb spy-orb2"></div>
+      <div class="spy-bg-orb spy-orb3"></div>
+      <!-- Grid lines -->
+      <div style="position:absolute;inset:0;background-image:linear-gradient(rgba(239,68,68,0.03) 1px,transparent 1px),linear-gradient(90deg,rgba(239,68,68,0.03) 1px,transparent 1px);background-size:40px 40px;"></div>
+      <!-- Scanline -->
+      <div class="spy-scanline"></div>
     </div>
 
-    <div style="font-size:0.75rem;color:rgba(240,240,240,0.2);margin-bottom:20px;">مرر الهاتف للشخص التالي</div>
-    <button id="spy-next-btn" onclick="nextSpyReveal()" style="padding:13px 36px;background:linear-gradient(135deg,#ef4444,#dc2626);border:none;border-radius:14px;color:#fff;font-family:'Cairo',sans-serif;font-size:0.95rem;font-weight:700;cursor:pointer;box-shadow:0 6px 20px rgba(239,68,68,0.3);transition:all 0.2s;display:none;">التالي →</button>
+    <!-- Top label -->
+    <div style="position:relative;text-align:center;margin-bottom:20px;z-index:2;">
+      <div style="font-size:0.55rem;letter-spacing:8px;color:rgba(239,68,68,0.35);text-transform:uppercase;">كشف الأدوار</div>
+      <div id="revealPlayerName" style="font-family:'Bebas Neue',sans-serif;font-size:clamp(1.8rem,7vw,2.6rem);letter-spacing:6px;color:#fff;margin-top:4px;text-shadow:0 0 30px rgba(239,68,68,0.5);">-</div>
+      <div style="width:60px;height:2px;background:linear-gradient(90deg,transparent,#ef4444,transparent);margin:8px auto 0;"></div>
+    </div>
+
+    <!-- 3D Card -->
+    <div id="spy-card-wrap" style="perspective:1200px;cursor:pointer;position:relative;z-index:2;" onclick="flipSpyCard()">
+      <div id="spy-card" style="width:min(300px,82vw);height:420px;position:relative;transform-style:preserve-3d;">
+        <div id="spyCardInnerAnim" style="width:100%;height:100%;position:relative;transform-style:preserve-3d;transition:transform 0.7s cubic-bezier(0.4,0,0.2,1);">
+
+          <!-- ── FRONT FACE ── -->
+          <div class="spy-card-face spy-card-front">
+            <!-- Corner accents -->
+            <div class="spy-corner spy-corner-tl"></div>
+            <div class="spy-corner spy-corner-tr"></div>
+            <div class="spy-corner spy-corner-bl"></div>
+            <div class="spy-corner spy-corner-br"></div>
+            <!-- Animated ring -->
+            <div class="spy-ring"></div>
+            <div id="tapHint" style="display:flex;flex-direction:column;align-items:center;gap:16px;position:relative;z-index:1;">
+              <div class="spy-lock-icon">
+                <svg width="52" height="52" viewBox="0 0 52 52" fill="none">
+                  <rect x="10" y="22" width="32" height="24" rx="5" stroke="rgba(239,68,68,0.6)" stroke-width="1.5" fill="rgba(239,68,68,0.06)"/>
+                  <path d="M17 22V17a9 9 0 0 1 18 0v5" stroke="rgba(239,68,68,0.6)" stroke-width="1.5" stroke-linecap="round" fill="none"/>
+                  <circle cx="26" cy="33" r="3" fill="rgba(239,68,68,0.5)"/>
+                  <line x1="26" y1="36" x2="26" y2="40" stroke="rgba(239,68,68,0.5)" stroke-width="1.5" stroke-linecap="round"/>
+                </svg>
+              </div>
+              <div style="display:flex;flex-direction:column;align-items:center;gap:6px;">
+                <div style="font-family:'Bebas Neue',sans-serif;font-size:0.75rem;letter-spacing:8px;color:rgba(239,68,68,0.4);">اضغط للكشف</div>
+                <div style="font-family:'Bebas Neue',sans-serif;font-size:1.5rem;letter-spacing:6px;background:linear-gradient(135deg,rgba(239,68,68,0.7),rgba(249,115,22,0.4));-webkit-background-clip:text;-webkit-text-fill-color:transparent;">IMPOSTER</div>
+              </div>
+              <div class="spy-tap-pulse"></div>
+            </div>
+          </div>
+
+          <!-- ── BACK FACE ── -->
+          <div class="spy-card-face spy-card-back">
+            <!-- Corner accents -->
+            <div class="spy-corner spy-corner-tl" style="border-color:rgba(74,222,128,0.4);"></div>
+            <div class="spy-corner spy-corner-tr" style="border-color:rgba(74,222,128,0.4);"></div>
+            <div class="spy-corner spy-corner-bl" style="border-color:rgba(74,222,128,0.4);"></div>
+            <div class="spy-corner spy-corner-br" style="border-color:rgba(74,222,128,0.4);"></div>
+            <div id="spyCardRole" style="font-size:0.7rem;letter-spacing:4px;position:relative;z-index:1;text-align:center;"></div>
+            <div style="position:relative;z-index:1;text-align:center;">
+              <div style="font-size:0.55rem;letter-spacing:4px;color:rgba(255,255,255,0.2);margin-bottom:6px;text-transform:uppercase;">الكلمة السرية</div>
+              <div id="spyCardWord" style="font-family:'Bebas Neue',sans-serif;font-size:clamp(2.2rem,9vw,3rem);letter-spacing:4px;color:#fff;text-align:center;line-height:1;text-shadow:0 0 40px rgba(255,255,255,0.15);">???</div>
+            </div>
+            <div id="spyCardHint" style="display:none;position:relative;z-index:1;padding:10px 18px;border-radius:24px;font-size:0.72rem;letter-spacing:2px;text-align:center;line-height:1.6;max-width:220px;"></div>
+          </div>
+
+        </div>
+      </div>
+      <!-- Tap ripple -->
+      <div id="spyTapRipple" style="position:absolute;inset:0;border-radius:28px;pointer-events:none;"></div>
+    </div>
+
+    <!-- Pass hint -->
+    <div style="margin-top:24px;font-size:0.65rem;letter-spacing:3px;color:rgba(240,240,240,0.15);text-align:center;position:relative;z-index:2;">مرّر الهاتف للشخص التالي</div>
+
+    <!-- Next button -->
+    <button id="spyPassBtn" onclick="nextSpyReveal()" style="display:none;margin-top:20px;padding:14px 44px;background:linear-gradient(135deg,#ef4444,#dc2626);border:none;border-radius:50px;color:#fff;font-family:'Cairo',sans-serif;font-size:1rem;font-weight:700;cursor:pointer;box-shadow:0 8px 32px rgba(239,68,68,0.35),0 0 0 1px rgba(239,68,68,0.2);transition:all 0.25s;letter-spacing:1px;position:relative;z-index:2;opacity:0;" onmouseover="this.style.transform='translateY(-2px)';this.style.boxShadow='0 12px 40px rgba(239,68,68,0.5),0 0 0 1px rgba(239,68,68,0.3)'" onmouseout="this.style.transform='';this.style.boxShadow='0 8px 32px rgba(239,68,68,0.35),0 0 0 1px rgba(239,68,68,0.2)'">التالي ←</button>
   </div>
+  <!-- ══ TIMER ══ -->
+  <div id="spy-timer-view" style="display:none;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;padding:40px 20px;text-align:center;">
+    <div style="font-size:0.62rem;letter-spacing:5px;color:rgba(239,68,68,0.3);margin-bottom:16px;">وقت النقاش</div>
+    <div style="font-family:'Bebas Neue',sans-serif;font-size:5rem;color:#ef4444;margin-bottom:24px;">🕵️</div>
+    <div style="font-size:0.9rem;color:rgba(240,240,240,0.4);line-height:1.8;max-width:320px;margin-bottom:32px;">
+      الآن اسألوا بعضكم! المتسلل يحاول اكتشاف الكلمة السرية بينما يحاول الآخرون كشفه.
+    </div>
+    <button onclick="showSpyView('spy-vote-view')" style="padding:14px 36px;background:linear-gradient(135deg,#ef4444,#dc2626);border:none;border-radius:14px;color:#fff;font-family:'Cairo',sans-serif;font-size:1rem;font-weight:700;cursor:pointer;box-shadow:0 8px 24px rgba(239,68,68,0.3);">🗳️ انتقل للتصويت</button>
+  </div>
+
 
   <!-- ══ VOTE ══ -->
   <div id="spy-vote-view" style="display:none;flex-direction:column;align-items:center;padding:70px 20px 120px;position:relative;">
@@ -577,10 +802,16 @@ body.light-mode .cell.dark{background:#b58863;}
 
   <!-- ══ RESULT ══ -->
   <div id="spy-result-view" style="display:none;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;padding:40px 20px;text-align:center;">
-    <div id="spy-result-content"></div>
-    <button onclick="resetSpyGame()" style="margin-top:24px;padding:13px 36px;background:linear-gradient(135deg,#ef4444,#dc2626);border:none;border-radius:14px;color:#fff;font-family:'Cairo',sans-serif;font-size:0.95rem;font-weight:700;cursor:pointer;box-shadow:0 6px 20px rgba(239,68,68,0.3);transition:all 0.2s;">🔄 لعبة جديدة</button>
+    <div id="spy-result-content">
+      <div style="font-family:'Bebas Neue',sans-serif;font-size:2.5rem;letter-spacing:4px;color:#ef4444;margin-bottom:16px;">النتيجة!</div>
+      <div style="font-size:0.85rem;color:rgba(240,240,240,0.4);margin-bottom:8px;">المتسللون:</div>
+      <div id="spyResultSpies" style="font-size:1.3rem;font-weight:700;color:#ef4444;margin-bottom:16px;"></div>
+      <div style="font-size:0.85rem;color:rgba(240,240,240,0.4);margin-bottom:8px;">الكلمة السرية:</div>
+      <div id="spyResultWord" style="font-size:1.8rem;font-weight:900;color:#fff;margin-bottom:24px;"></div>
+    </div>
+    <button onclick="resetSpyGame()" style="margin-top:8px;padding:13px 36px;background:linear-gradient(135deg,#ef4444,#dc2626);border:none;border-radius:14px;color:#fff;font-family:'Cairo',sans-serif;font-size:0.95rem;font-weight:700;cursor:pointer;box-shadow:0 6px 20px rgba(239,68,68,0.3);transition:all 0.2s;">🔄 لعبة جديدة</button>
   </div>
-</div>
+</div>>
 
 <div class="screen" id="dama-mode">
   <button class="back-btn" onclick="goHome()">← رجوع</button>
@@ -737,7 +968,7 @@ body.light-mode .cell.dark{background:#b58863;}
           <div style="font-size:0.65rem;letter-spacing:3px;color:rgba(160,80,255,0.4);">الأدوار</div>
           <button onclick="toggleLgRoles()" id="lgRolesToggle" style="padding:5px 12px;background:rgba(160,80,255,0.1);border:1px solid rgba(160,80,255,0.2);border-radius:20px;color:rgba(160,80,255,0.6);font-family:'Cairo',sans-serif;font-size:0.75rem;cursor:pointer;transition:all 0.2s;">▼ عرض الأدوار</button>
         </div>
-        <div id="lgRolesPanel" style="display:none;flex-wrap:wrap;gap:6px;" id="lgRolesList"></div>
+        <div id="lgRolesPanel" style="display:none;flex-wrap:wrap;gap:6px;"></div>
       </div>
 
       <!-- Start -->
@@ -749,159 +980,104 @@ body.light-mode .cell.dark{background:#b58863;}
   <div id="lg-reveal" style="display:none;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;padding:40px 20px;position:relative;">
     <div style="position:absolute;inset:0;background:radial-gradient(circle at 50% 40%,rgba(160,80,255,0.07),transparent 60%);pointer-events:none;"></div>
     <div style="font-size:0.62rem;letter-spacing:5px;color:rgba(160,80,255,0.3);margin-bottom:6px;">دور سري</div>
-    <div id="lg-reveal-name" style="font-size:1.1rem;font-weight:700;color:rgba(240,240,240,0.6);margin-bottom:28px;">-</div>
-
-    <!-- 3D Card -->
+    <div id="lgRevealName" style="font-size:1.1rem;font-weight:700;color:rgba(240,240,240,0.6);margin-bottom:28px;">-</div>
     <div style="perspective:1000px;cursor:pointer;margin-bottom:28px;" onclick="flipLgCard()">
       <div id="lg-card" style="width:min(280px,80vw);height:380px;position:relative;transform-style:preserve-3d;transition:transform 0.6s cubic-bezier(0.4,0,0.2,1);">
-        <!-- Front -->
-        <div style="position:absolute;inset:0;backface-visibility:hidden;background:linear-gradient(135deg,#0d0a1a,#1a0d2e);border:1px solid rgba(160,80,255,0.2);border-radius:24px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;box-shadow:0 20px 60px rgba(160,80,255,0.15);">
-          <div style="font-size:3rem;opacity:0.4;">🔒</div>
-          <div style="font-size:0.8rem;letter-spacing:3px;color:rgba(160,80,255,0.4);">اضغط للكشف</div>
-          <div style="font-family:'Bebas Neue',sans-serif;font-size:1.2rem;letter-spacing:4px;color:rgba(160,80,255,0.25);">LOUP GAROU</div>
-        </div>
-        <!-- Back -->
-        <div id="lg-card-back" style="position:absolute;inset:0;backface-visibility:hidden;transform:rotateY(180deg);border-radius:24px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;padding:24px;box-shadow:0 20px 60px rgba(160,80,255,0.25);background:linear-gradient(135deg,#0d0a1a,#1a0d2e);border:1px solid rgba(160,80,255,0.3);">
-          <div id="lg-role-icon" style="font-size:4rem;filter:drop-shadow(0 0 20px rgba(160,80,255,0.6));">🐺</div>
-          <div id="lg-role-name" style="font-family:'Bebas Neue',sans-serif;font-size:1.6rem;letter-spacing:4px;color:#fff;">المستذئب</div>
-          <div id="lg-role-desc" style="font-size:0.8rem;color:rgba(240,240,240,0.4);text-align:center;line-height:1.7;"></div>
-        </div>
-      </div>
-    </div>
-
-    <div style="font-size:0.75rem;color:rgba(240,240,240,0.2);margin-bottom:20px;">مرر الهاتف للشخص التالي</div>
-    <button id="lg-next-btn" onclick="nextLgReveal()" style="padding:13px 36px;background:linear-gradient(135deg,#a050ff,#7c3aed);border:none;border-radius:14px;color:#fff;font-family:'Cairo',sans-serif;font-size:0.95rem;font-weight:700;cursor:pointer;box-shadow:0 6px 20px rgba(160,80,255,0.3);transition:all 0.2s;display:none;">التالي →</button>
-  </div>
-
-  <!-- ══ NIGHT / DAY PHASE ══ -->
-  <div id="lg-phase" style="display:none;flex-direction:column;align-items:center;padding:70px 20px 120px;position:relative;">
-    <div id="lg-phase-content" style="width:min(420px,95vw);"></div>
-  </div>
-
-  <!-- ══ VOTE ══ -->
-  <div id="lg-vote" style="display:none;flex-direction:column;align-items:center;padding:70px 20px 120px;">
-    <div style="font-family:'Bebas Neue',sans-serif;font-size:2rem;letter-spacing:5px;background:linear-gradient(135deg,#a050ff,#7c3aed);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:4px;">التصويت</div>
-    <div style="font-size:0.62rem;letter-spacing:4px;color:rgba(160,80,255,0.3);margin-bottom:24px;">من تريد إعدامه؟</div>
-    <div id="lg-vote-list" style="width:min(420px,95vw);display:flex;flex-direction:column;gap:8px;margin-bottom:20px;"></div>
-    <button onclick="lgConfirmVote()" style="padding:13px 36px;background:linear-gradient(135deg,#a050ff,#7c3aed);border:none;border-radius:14px;color:#fff;font-family:'Cairo',sans-serif;font-size:0.95rem;font-weight:700;cursor:pointer;box-shadow:0 6px 20px rgba(160,80,255,0.3);transition:all 0.2s;">⚖️ تأكيد</button>
-  </div>
-
-  <!-- ══ RESULT ══ -->
-  <div id="lg-result" style="display:none;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;padding:40px 20px;text-align:center;">
-    <div id="lg-result-content"></div>
-    <button onclick="resetLgGame()" style="margin-top:24px;padding:13px 36px;background:linear-gradient(135deg,#a050ff,#7c3aed);border:none;border-radius:14px;color:#fff;font-family:'Cairo',sans-serif;font-size:0.95rem;font-weight:700;cursor:pointer;box-shadow:0 6px 20px rgba(160,80,255,0.3);">🔄 جولة جديدة</button>
-  </div>
-</div>
-
-<div class="screen" id="contact-screen">
-  <button class="back-btn" onclick="goHome()">← رجوع</button>
-  <div style="display:flex;flex-direction:column;align-items:center;min-height:100vh;padding:80px 20px 120px;gap:0;position:relative;overflow:hidden;">
-    <div style="position:absolute;inset:0;background:radial-gradient(circle at 50% 30%,rgba(6,214,160,0.06),transparent 60%);pointer-events:none;"></div>
-    <div style="font-family:'Bebas Neue',sans-serif;font-size:clamp(2.2rem,9vw,3.5rem);letter-spacing:5px;background:linear-gradient(135deg,#06d6a0,#0ea5e9);-webkit-background-clip:text;-webkit-text-fill-color:transparent;animation:fadeDown 0.5s ease both;line-height:1;margin-bottom:4px;">تواصل معنا</div>
-    <div style="font-size:0.62rem;letter-spacing:5px;color:rgba(6,214,160,0.3);margin-bottom:28px;animation:fadeDown 0.5s 0.1s ease both;opacity:0;">نحن هنا دائماً</div>
-
-    <div style="width:min(420px,95vw);display:flex;flex-direction:column;gap:10px;animation:slideUp 0.5s 0.15s ease both;opacity:0;">
-
-      <!-- Instagram -->
-      <a href="https://www.instagram.com/yssn5.5/" target="_blank" style="text-decoration:none;display:flex;align-items:center;gap:14px;padding:16px 18px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.07);border-radius:16px;transition:all 0.2s;" onmouseover="this.style.borderColor='rgba(225,48,108,0.45)';this.style.background='rgba(225,48,108,0.06)'" onmouseout="this.style.borderColor='rgba(255,255,255,0.07)';this.style.background='rgba(255,255,255,0.03)'">
-        <div style="width:46px;height:46px;border-radius:12px;background:linear-gradient(135deg,#f09433,#e6683c,#dc2743,#cc2366,#bc1888);display:flex;align-items:center;justify-content:center;font-size:1.5rem;flex-shrink:0;">📸</div>
-        <div style="flex:1;">
-          <div style="font-size:0.92rem;font-weight:700;color:rgba(240,240,240,0.85);">Instagram</div>
-          <div style="font-size:0.75rem;color:rgba(240,240,240,0.3);margin-top:2px;">@yssn5.5</div>
-        </div>
-        <span style="color:rgba(255,255,255,0.15);font-size:1rem;">↗</span>
-      </a>
-
-      <!-- WhatsApp -->
-      <a href="https://wa.me/213794324821" target="_blank" style="text-decoration:none;display:flex;align-items:center;gap:14px;padding:16px 18px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.07);border-radius:16px;transition:all 0.2s;" onmouseover="this.style.borderColor='rgba(37,211,102,0.45)';this.style.background='rgba(37,211,102,0.06)'" onmouseout="this.style.borderColor='rgba(255,255,255,0.07)';this.style.background='rgba(255,255,255,0.03)'">
-        <div style="width:46px;height:46px;border-radius:12px;background:linear-gradient(135deg,#25d366,#128c7e);display:flex;align-items:center;justify-content:center;font-size:1.5rem;flex-shrink:0;">💬</div>
-        <div style="flex:1;"><div style="font-size:0.92rem;font-weight:700;color:rgba(240,240,240,0.85);">WhatsApp</div><div style="font-size:0.75rem;color:rgba(240,240,240,0.3);">+213 794 324 821</div></div>
-        <span style="color:rgba(255,255,255,0.15);">↗</span>
-      </a>
-
-      <!-- Email -->
-      <a href="/cdn-cgi/l/email-protection#f69499838497959e93929f8f9785859f9893b6919b979f9ad895999b" style="text-decoration:none;display:flex;align-items:center;gap:14px;padding:16px 18px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.07);border-radius:16px;transition:all 0.2s;" onmouseover="this.style.borderColor='rgba(14,165,233,0.45)';this.style.background='rgba(14,165,233,0.06)'" onmouseout="this.style.borderColor='rgba(255,255,255,0.07)';this.style.background='rgba(255,255,255,0.03)'">
-        <div style="width:46px;height:46px;border-radius:12px;background:linear-gradient(135deg,#0ea5e9,#0284c7);display:flex;align-items:center;justify-content:center;font-size:1.5rem;flex-shrink:0;">✉️</div>
-        <div style="flex:1;">
-          <div style="font-size:0.92rem;font-weight:700;color:rgba(240,240,240,0.85);">البريد الإلكتروني</div>
-          <div style="font-size:0.75rem;color:rgba(240,240,240,0.3);margin-top:2px;"><span class="__cf_email__" data-cfemail="74161b010615171c11101d0d1507071d1a11341319151d185a171b19">[email&#160;protected]</span></div>
-        </div>
-        <span style="color:rgba(255,255,255,0.15);font-size:1rem;">↗</span>
-      </a>
-
-      <!-- ══ SUPPORT / REPORT FORM ══ -->
-      <div style="margin-top:6px;padding:20px;background:rgba(124,58,237,0.04);border:1px solid rgba(124,58,237,0.12);border-radius:18px;">
-        <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px;">
-          <span style="font-size:1.4rem;">🛟</span>
-          <div>
-            <div style="font-size:0.9rem;font-weight:700;color:rgba(240,240,240,0.8);">الدعم والبلاغات</div>
-            <div style="font-size:0.7rem;color:rgba(240,240,240,0.25);">أرسل رسالتك مباشرة إلينا</div>
+        <div id="lgCardInner" style="width:100%;height:100%;position:relative;transform-style:preserve-3d;transition:transform 0.6s cubic-bezier(0.4,0,0.2,1);">
+          <!-- Front -->
+          <div style="position:absolute;inset:0;backface-visibility:hidden;background:linear-gradient(135deg,#0d0a1a,#1a0d2e);border:1px solid rgba(160,80,255,0.2);border-radius:24px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;box-shadow:0 20px 60px rgba(160,80,255,0.15);">
+            <div id="tapHint2" style="display:flex;flex-direction:column;align-items:center;gap:12px;">
+              <div style="font-size:3rem;opacity:0.4;">🔒</div>
+              <div style="font-size:0.8rem;letter-spacing:3px;color:rgba(160,80,255,0.4);">اضغط للكشف</div>
+              <div style="font-family:'Bebas Neue',sans-serif;font-size:1.2rem;letter-spacing:4px;color:rgba(160,80,255,0.25);">LOUP GAROU</div>
+            </div>
+          </div>
+          <!-- Back -->
+          <div style="position:absolute;inset:0;backface-visibility:hidden;transform:rotateY(180deg);border-radius:24px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;padding:24px;box-shadow:0 20px 60px rgba(160,80,255,0.25);background:linear-gradient(135deg,#0d0a1a,#1a0d2e);border:1px solid rgba(160,80,255,0.3);">
+            <div id="lgCardIcon" style="font-size:4rem;filter:drop-shadow(0 0 20px rgba(160,80,255,0.6));">🐺</div>
+            <div id="lgCardRole" style="font-family:'Bebas Neue',sans-serif;font-size:1.6rem;letter-spacing:4px;color:#fff;">المستذئب</div>
+            <div id="lgCardDesc" style="font-size:0.8rem;color:rgba(240,240,240,0.4);text-align:center;line-height:1.7;"></div>
           </div>
         </div>
-
-        <!-- Report type -->
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:12px;" id="reportTypeBtns">
-          <button onclick="selectReportType(this,'bug')" class="rtype-btn" style="padding:9px 8px;background:rgba(239,68,68,0.07);border:1px solid rgba(239,68,68,0.15);border-radius:10px;color:rgba(239,68,68,0.65);font-family:'Cairo',sans-serif;font-size:0.78rem;cursor:pointer;transition:all 0.2s;">🐛 تقرير خطأ</button>
-          <button onclick="selectReportType(this,'suggest')" class="rtype-btn" style="padding:9px 8px;background:rgba(6,214,160,0.07);border:1px solid rgba(6,214,160,0.15);border-radius:10px;color:rgba(6,214,160,0.65);font-family:'Cairo',sans-serif;font-size:0.78rem;cursor:pointer;transition:all 0.2s;">💡 اقتراح</button>
-          <button onclick="selectReportType(this,'abuse')" class="rtype-btn" style="padding:9px 8px;background:rgba(245,158,11,0.07);border:1px solid rgba(245,158,11,0.15);border-radius:10px;color:rgba(245,158,11,0.65);font-family:'Cairo',sans-serif;font-size:0.78rem;cursor:pointer;transition:all 0.2s;">🚩 إبلاغ عن إساءة</button>
-          <button onclick="selectReportType(this,'other')" class="rtype-btn" style="padding:9px 8px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:10px;color:rgba(240,240,240,0.4);font-family:'Cairo',sans-serif;font-size:0.78rem;cursor:pointer;transition:all 0.2s;">💬 أخرى</button>
-        </div>
-
-        <!-- Name -->
-        <input id="reportName" type="text" placeholder="اسمك (اختياري)..." maxlength="30" style="width:100%;padding:11px 14px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:11px;color:#fff;font-family:'Cairo',sans-serif;font-size:0.87rem;outline:none;margin-bottom:8px;box-sizing:border-box;transition:border 0.2s;" onfocus="this.style.borderColor='rgba(124,58,237,0.4)'" onblur="this.style.borderColor='rgba(255,255,255,0.08)'"/>
-
-        <!-- Message -->
-        <textarea id="reportMsg" placeholder="اكتب رسالتك هنا..." maxlength="500" rows="4" style="width:100%;padding:11px 14px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:11px;color:#fff;font-family:'Cairo',sans-serif;font-size:0.87rem;outline:none;resize:none;margin-bottom:10px;box-sizing:border-box;transition:border 0.2s;line-height:1.6;" onfocus="this.style.borderColor='rgba(124,58,237,0.4)'" onblur="this.style.borderColor='rgba(255,255,255,0.08)'"></textarea>
-
-        <div id="reportStatus" style="display:none;padding:9px 14px;border-radius:10px;font-size:0.8rem;text-align:center;margin-bottom:8px;"></div>
-
-        <button onclick="submitReport()" style="width:100%;padding:13px;background:linear-gradient(135deg,#7c3aed,#a855f7);border:none;border-radius:12px;color:#fff;font-family:'Cairo',sans-serif;font-size:0.95rem;font-weight:700;cursor:pointer;transition:all 0.2s;box-shadow:0 4px 16px rgba(124,58,237,0.3);" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform=''">إرسال 📤</button>
-      </div>
-
-      <!-- About -->
-      <div style="padding:16px;background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.05);border-radius:14px;margin-top:4px;">
-        <div style="font-size:0.62rem;letter-spacing:4px;color:rgba(240,240,240,0.2);margin-bottom:8px;">عن المشروع</div>
-        <p style="font-size:0.85rem;color:rgba(240,240,240,0.35);line-height:1.8;margin:0;">YSSN Games منصة ألعاب عربية مصممة للأصدقاء والعائلة. نهدف إلى تقديم تجربة ترفيهية ممتعة بلمسة عربية أصيلة.</p>
       </div>
     </div>
+    <div style="font-size:0.75rem;color:rgba(240,240,240,0.2);margin-bottom:20px;">مرر الهاتف للشخص التالي</div>
+    <button id="lgPassBtn" onclick="nextLgReveal()" style="padding:13px 36px;background:linear-gradient(135deg,#a050ff,#7c3aed);border:none;border-radius:14px;color:#fff;font-family:'Cairo',sans-serif;font-size:0.95rem;font-weight:700;cursor:pointer;box-shadow:0 6px 20px rgba(160,80,255,0.3);transition:all 0.2s;display:none;">التالي →</button>
   </div>
-</div>
+  <!-- ══ NIGHT PHASE ══ -->
+  <div id="lg-night" style="display:none;flex-direction:column;align-items:center;padding:70px 20px 120px;position:relative;">
+    <div style="position:absolute;inset:0;background:radial-gradient(circle at 50% 0%,rgba(160,80,255,0.08),transparent 50%);pointer-events:none;"></div>
+    <div id="lgNightTitle" style="font-family:'Bebas Neue',sans-serif;font-size:2.5rem;letter-spacing:5px;color:#fff;margin-bottom:8px;">🌙 الليلة 1</div>
+    <!-- Village Map -->
+    <div style="width:min(420px,95vw);margin-bottom:16px;">
+      <div style="font-size:0.62rem;letter-spacing:4px;color:rgba(160,80,255,0.3);margin-bottom:8px;">خريطة القرية</div>
+      <div id="vmGridNight" style="display:flex;flex-wrap:wrap;gap:8px;justify-content:center;padding:14px;background:rgba(0,0,0,0.2);border:1px solid rgba(160,80,255,0.1);border-radius:14px;min-height:80px;"></div>
+    </div>
+    <!-- Narrator Box -->
+    <div style="width:min(420px,95vw);padding:12px 16px;background:rgba(160,80,255,0.05);border:1px solid rgba(160,80,255,0.12);border-radius:12px;margin-bottom:16px;">
+      <div style="font-size:0.6rem;letter-spacing:3px;color:rgba(160,80,255,0.3);margin-bottom:4px;">الراوي</div>
+      <div id="narratorBox" style="font-size:0.85rem;color:rgba(240,240,240,0.55);line-height:1.7;transition:opacity 0.3s;"></div>
+    </div>
+    <!-- Night Steps -->
+    <div id="lgNightSteps" style="width:min(420px,95vw);display:flex;flex-direction:column;gap:8px;"></div>
+  </div>
 
-<!-- ══ GAMES LIST SCREEN ══ -->
-<div class="screen" id="games-screen">
-  <button class="back-btn" onclick="goHome()">← رجوع</button>
-  <div style="display:flex;flex-direction:column;align-items:center;min-height:100vh;padding:80px 20px 120px;gap:0;position:relative;">
-    <div style="position:absolute;inset:0;background:radial-gradient(circle at 50% 20%,rgba(124,58,237,0.07),transparent 60%);pointer-events:none;"></div>
-    <div style="font-family:'Bebas Neue',sans-serif;font-size:clamp(2.5rem,10vw,4rem);letter-spacing:5px;background:linear-gradient(135deg,#a855f7,#7c3aed);-webkit-background-clip:text;-webkit-text-fill-color:transparent;animation:fadeDown 0.5s ease both;line-height:1;margin-bottom:6px;">الألعاب</div>
-    <div style="font-size:0.65rem;letter-spacing:5px;color:rgba(167,139,250,0.3);margin-bottom:36px;animation:fadeDown 0.5s 0.1s ease both;opacity:0;">اختر لعبتك</div>
-
-    <div style="width:min(420px,95vw);display:flex;flex-direction:column;gap:10px;animation:slideUp 0.5s 0.15s ease both;opacity:0;">
-      <div onclick="SFX.play('click');goHome();setTimeout(()=>openDama(),100);" style="display:flex;align-items:center;gap:14px;padding:16px 18px;background:rgba(14,165,233,0.05);border:1px solid rgba(14,165,233,0.12);border-radius:16px;cursor:pointer;transition:all 0.2s;" onmouseover="this.style.borderColor='rgba(14,165,233,0.35)';this.style.transform='translateX(-4px)'" onmouseout="this.style.borderColor='rgba(14,165,233,0.12)';this.style.transform=''">
-        <div style="width:48px;height:48px;border-radius:14px;background:rgba(14,165,233,0.1);display:flex;align-items:center;justify-content:center;font-size:1.6rem;">🔵</div>
-        <div><div style="font-family:'Bebas Neue',sans-serif;font-size:1.3rem;letter-spacing:2px;color:#fff;">DAMA</div><div style="font-size:0.75rem;color:rgba(240,240,240,0.3);">لعبة الداما الكلاسيكية</div></div>
-        <div style="margin-right:auto;font-size:0.8rem;color:rgba(14,165,233,0.4);">←</div>
-      </div>
-      <div onclick="SFX.play('click');goHome();setTimeout(()=>openChess(),100);" style="display:flex;align-items:center;gap:14px;padding:16px 18px;background:rgba(245,158,11,0.05);border:1px solid rgba(245,158,11,0.12);border-radius:16px;cursor:pointer;transition:all 0.2s;" onmouseover="this.style.borderColor='rgba(245,158,11,0.35)';this.style.transform='translateX(-4px)'" onmouseout="this.style.borderColor='rgba(245,158,11,0.12)';this.style.transform=''">
-        <div style="width:48px;height:48px;border-radius:14px;background:rgba(245,158,11,0.1);display:flex;align-items:center;justify-content:center;font-size:1.6rem;">♟️</div>
-        <div><div style="font-family:'Bebas Neue',sans-serif;font-size:1.3rem;letter-spacing:2px;color:#fff;">CHESS</div><div style="font-size:0.75rem;color:rgba(240,240,240,0.3);">الشطرنج الكلاسيكي</div></div>
-        <div style="margin-right:auto;font-size:0.8rem;color:rgba(245,158,11,0.4);">←</div>
-      </div>
-      <div onclick="SFX.play('click');goHome();setTimeout(()=>openLoup(),100);" style="display:flex;align-items:center;gap:14px;padding:16px 18px;background:rgba(124,58,237,0.05);border:1px solid rgba(124,58,237,0.12);border-radius:16px;cursor:pointer;transition:all 0.2s;" onmouseover="this.style.borderColor='rgba(124,58,237,0.35)';this.style.transform='translateX(-4px)'" onmouseout="this.style.borderColor='rgba(124,58,237,0.12)';this.style.transform=''">
-        <div style="width:48px;height:48px;border-radius:14px;background:rgba(124,58,237,0.1);display:flex;align-items:center;justify-content:center;font-size:1.6rem;">🐺</div>
-        <div><div style="font-family:'Bebas Neue',sans-serif;font-size:1.3rem;letter-spacing:2px;color:#fff;">LOUP GAROU</div><div style="font-size:0.75rem;color:rgba(240,240,240,0.3);">من الذئب بينكم؟</div></div>
-        <div style="margin-right:auto;font-size:0.8rem;color:rgba(124,58,237,0.4);">←</div>
-      </div>
-      <div onclick="SFX.play('click');goHome();setTimeout(()=>openSpy(),100);" style="display:flex;align-items:center;gap:14px;padding:16px 18px;background:rgba(239,68,68,0.05);border:1px solid rgba(239,68,68,0.12);border-radius:16px;cursor:pointer;transition:all 0.2s;" onmouseover="this.style.borderColor='rgba(239,68,68,0.35)';this.style.transform='translateX(-4px)'" onmouseout="this.style.borderColor='rgba(239,68,68,0.12)';this.style.transform=''">
-        <div style="width:48px;height:48px;border-radius:14px;background:rgba(239,68,68,0.1);display:flex;align-items:center;justify-content:center;font-size:1.6rem;">🕵️</div>
-        <div><div style="font-family:'Bebas Neue',sans-serif;font-size:1.3rem;letter-spacing:2px;color:#fff;">IMPOSTER</div><div style="font-size:0.75rem;color:rgba(240,240,240,0.3);">من المتسلل؟</div></div>
-        <div style="margin-right:auto;font-size:0.8rem;color:rgba(239,68,68,0.4);">←</div>
-      </div>
+  <!-- ══ DAY PHASE ══ -->
+  <div id="lg-day" style="display:none;flex-direction:column;align-items:center;padding:70px 20px 120px;position:relative;">
+    <div id="lgDayTitle" style="font-family:'Bebas Neue',sans-serif;font-size:2.5rem;letter-spacing:5px;background:linear-gradient(135deg,#fbbf24,#f59e0b);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:8px;">☀️ النهار 1</div>
+    <!-- Narrator -->
+    <div style="width:min(420px,95vw);padding:12px 16px;background:rgba(251,191,36,0.05);border:1px solid rgba(251,191,36,0.1);border-radius:12px;margin-bottom:14px;">
+      <div style="font-size:0.6rem;letter-spacing:3px;color:rgba(251,191,36,0.3);margin-bottom:4px;">الراوي</div>
+      <div id="narratorBoxDay" style="font-size:0.85rem;color:rgba(240,240,240,0.55);line-height:1.7;"></div>
+    </div>
+    <!-- Village Map Day -->
+    <div style="width:min(420px,95vw);margin-bottom:14px;">
+      <div id="vmGridDay" style="display:flex;flex-wrap:wrap;gap:8px;justify-content:center;padding:14px;background:rgba(0,0,0,0.1);border:1px solid rgba(255,255,255,0.06);border-radius:14px;min-height:80px;"></div>
+    </div>
+    <!-- Deaths -->
+    <div style="width:min(420px,95vw);padding:14px 16px;background:rgba(239,68,68,0.05);border:1px solid rgba(239,68,68,0.12);border-radius:12px;margin-bottom:14px;">
+      <div style="font-size:0.62rem;letter-spacing:3px;color:rgba(239,68,68,0.35);margin-bottom:8px;">أحداث الليلة</div>
+      <div id="lgDeathMsg" style="font-size:0.9rem;color:rgba(240,240,240,0.6);line-height:1.8;"></div>
+    </div>
+    <!-- Vote section -->
+    <div style="font-family:'Bebas Neue',sans-serif;font-size:1.5rem;letter-spacing:4px;color:#fff;margin-bottom:8px;">🗳️ التصويت</div>
+    <div style="font-size:0.62rem;letter-spacing:4px;color:rgba(160,80,255,0.3);margin-bottom:14px;">من تريد إعدامه؟</div>
+    <div id="lgVoteList" style="width:min(420px,95vw);display:flex;flex-direction:column;gap:8px;margin-bottom:16px;"></div>
+    <div style="display:flex;gap:10px;">
+      <button onclick="eliminateLgVote()" style="padding:13px 28px;background:linear-gradient(135deg,#ef4444,#dc2626);border:none;border-radius:14px;color:#fff;font-family:'Cairo',sans-serif;font-size:0.95rem;font-weight:700;cursor:pointer;box-shadow:0 6px 20px rgba(239,68,68,0.3);">⚖️ تأكيد الإعدام</button>
+      <button onclick="skipLgVote()" style="padding:13px 20px;background:var(--surface);border:1px solid var(--border2);border-radius:14px;color:var(--text2);font-family:'Cairo',sans-serif;font-size:0.9rem;cursor:pointer;">تخطّ</button>
+    </div>
+    <!-- History log -->
+    <div style="width:min(420px,95vw);margin-top:20px;">
+      <div style="font-size:0.6rem;letter-spacing:4px;color:rgba(240,240,240,0.2);margin-bottom:8px;">سجل الأحداث</div>
+      <div id="lgHistoryList" style="display:flex;flex-direction:column;gap:6px;max-height:200px;overflow-y:auto;"></div>
     </div>
   </div>
-</div>
+
+  <!-- ══ GAME OVER ══ -->
+  <div id="lg-over" style="display:none;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;padding:40px 20px;text-align:center;">
+    <div id="lgOverIcon" style="font-size:5rem;animation:pop 0.5s cubic-bezier(0.175,0.885,0.32,1.275) both;">🎉</div>
+    <div id="lgOverTitle" style="font-family:'Bebas Neue',sans-serif;font-size:clamp(2rem,9vw,3.5rem);letter-spacing:4px;margin-top:16px;color:#00ff87;"></div>
+    <div id="lgOverMsg" style="font-size:0.9rem;color:rgba(240,240,240,0.45);margin-top:12px;line-height:1.8;max-width:340px;"></div>
+    <!-- Narrator summary -->
+    <div style="margin-top:20px;width:min(420px,95vw);">
+      <div style="font-size:0.6rem;letter-spacing:4px;color:rgba(240,240,240,0.2);margin-bottom:10px;">ملخص الأدوار</div>
+      <div id="narratorSummaryListPreview" style="display:flex;flex-direction:column;gap:6px;"></div>
+    </div>
+    <button onclick="showNarratorSummary()" style="margin-top:16px;padding:10px 24px;background:rgba(160,80,255,0.12);border:1px solid rgba(160,80,255,0.25);border-radius:12px;color:rgba(167,139,250,0.8);font-family:'Cairo',sans-serif;font-size:0.85rem;cursor:pointer;">📋 ملخص الأدوار</button>
+    <button onclick="resetLgGame()" style="margin-top:10px;padding:13px 36px;background:linear-gradient(135deg,#a050ff,#7c3aed);border:none;border-radius:14px;color:#fff;font-family:'Cairo',sans-serif;font-size:0.95rem;font-weight:700;cursor:pointer;box-shadow:0 6px 20px rgba(160,80,255,0.3);">🔄 جولة جديدة</button>
+  </div>
+
+  <!-- ══ NARRATOR SUMMARY ══ -->
+  <div id="lg-narrator-summary" style="display:none;flex-direction:column;align-items:center;padding:70px 20px 120px;">
+    <div style="font-family:'Bebas Neue',sans-serif;font-size:2rem;letter-spacing:4px;color:#fff;margin-bottom:20px;">📋 ملخص الأدوار</div>
+    <div id="narratorSummaryList" style="width:min(420px,95vw);display:flex;flex-direction:column;gap:8px;"></div>
+    <button onclick="showLgView('lg-over')" style="margin-top:20px;padding:12px 28px;background:rgba(160,80,255,0.15);border:1px solid rgba(160,80,255,0.3);border-radius:12px;color:rgba(167,139,250,0.8);font-family:'Cairo',sans-serif;font-size:0.9rem;cursor:pointer;">← رجوع</button>
+  </div>
+</div>>
 
 
-<!-- ══ LOGIN SCREEN ══ -->
+
 <!-- ══ LOGIN SCREEN ══ -->
 <div class="screen" id="login-screen">
   <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;padding:40px 20px 80px;position:relative;overflow:hidden;">
@@ -1077,6 +1253,7 @@ function initAuth() {
   document.addEventListener('fb-ready', () => {
     if(window.FB_onAuthStateChanged && window.FB_AUTH) {
       window.FB_onAuthStateChanged(window.FB_AUTH, user => {
+        window.FB_USER = user;
         if(user && !user.isAnonymous) {
           currentUser = {uid:user.uid, name:user.displayName||user.email||'لاعب', username:user.email||user.uid, isAnon:false};
           updateUserUI();
@@ -1217,50 +1394,6 @@ function showShareOverlay() {
 }
 
 
-// ══ SPLASH: Simulated resource loading ══
-(function(){
-  const bar = document.getElementById('splashBar');
-  const pct = document.getElementById('splashPct');
-  const label = document.getElementById('splashLabel');
-  const splash = document.getElementById('splashScreen');
-  if(!splash) return;
-
-  const steps = [
-    {p:15, txt:"تحميل الواجهة..."},
-    {p:30, txt:"تهيئة الألعاب..."},
-    {p:50, txt:"تحميل الداما والشطرنج..."},
-    {p:68, txt:"تحميل لوغارو والإمبوستر..."},
-    {p:82, txt:"تحضير الأصوات..."},
-    {p:93, txt:"اللمسات الأخيرة..."},
-    {p:100, txt:"جاهز! 🎮"},
-  ];
-  let cur=0, p=0;
-
-  function setProgress(target, txt){
-    if(label) label.textContent = txt;
-    const iv = setInterval(()=>{
-      p += 1.5;
-      if(p >= target){ p=target; clearInterval(iv);
-        if(bar) bar.style.width=p+'%';
-        if(pct) pct.textContent=Math.floor(p)+'%';
-        cur++;
-        if(cur < steps.length){
-          setTimeout(()=>setProgress(steps[cur].p, steps[cur].txt), 120);
-        } else {
-          setTimeout(()=>{
-            splash.style.opacity='0';
-            splash.style.transform='scale(1.04)';
-            setTimeout(()=>{ splash.style.display='none'; },650);
-          },500);
-        }
-        return;
-      }
-      if(bar) bar.style.width=p+'%';
-      if(pct) pct.textContent=Math.floor(p)+'%';
-    }, 18);
-  }
-  setTimeout(()=>setProgress(steps[0].p, steps[0].txt), 600);
-})();
 
 
 // ══════════════════════════════════════
@@ -1645,28 +1778,52 @@ function showSpyReveal(){
   showSpyView("spy-reveal-view");
   cardFlipped=false;
   const a=spyAssignments[spyCurrentReveal];
-  document.getElementById("revealPlayerName").textContent=a.name.toUpperCase();
-  const inner2=document.getElementById("spyCardInnerAnim"); if(inner2) inner2.style.transform="";
-  document.getElementById("spyPassBtn").style.display="none";
-  document.getElementById("tapHint").style.display="block";
+
+  // Update player name
+  const nameEl=document.getElementById("revealPlayerName");
+  if(nameEl) nameEl.textContent=a.name.toUpperCase();
+
+  // Reset card flip without animation
+  const inner2=document.getElementById("spyCardInnerAnim");
+  if(inner2){
+    inner2.style.transition="none";
+    inner2.style.transform="rotateY(0deg)";
+    void inner2.offsetHeight;
+    inner2.style.transition="transform 0.7s cubic-bezier(0.4,0,0.2,1)";
+  }
+
+  // Card enter animation
+  const wrap=document.getElementById("spy-card-wrap");
+  if(wrap){ wrap.style.animation="none"; void wrap.offsetHeight; wrap.style.animation="spyCardIn 0.5s cubic-bezier(0.175,0.885,0.32,1.275) both"; }
+
+  // Style the card back based on role
+  const backFace=document.querySelector(".spy-card-back");
+  if(backFace){
+    if(a.isSpy){ backFace.classList.add("is-spy"); }
+    else { backFace.classList.remove("is-spy"); }
+  }
+
+  // Reset pass button
+  const passBtn=document.getElementById("spyPassBtn");
+  if(passBtn){ passBtn.style.display="none"; passBtn.style.opacity="0"; }
+
+  // Show tap hint
+  const tapHintEl=document.getElementById("tapHint");
+  if(tapHintEl) tapHintEl.style.display="flex";
   const hintEl=document.getElementById("spyCardHint");
   const hintBtn=document.getElementById("spyCardHintBtn");
   if(hintEl) hintEl.style.display="none";
   if(hintBtn) hintBtn.style.display="none";
   if(a.isSpy){
-    document.getElementById("spyCardRole").innerHTML="🕵️ <span style='font-size:0.7rem;letter-spacing:3px;color:rgba(239,68,68,0.6);'>أنت المتسلل</span>";
+    document.getElementById("spyCardRole").innerHTML="<span style='display:inline-flex;align-items:center;gap:8px;padding:6px 16px;background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.25);border-radius:50px;'>🕵️ <span style=\'font-size:0.68rem;letter-spacing:4px;color:rgba(239,68,68,0.8);font-weight:700;\'>أنت المتسلل</span></span>";
     document.getElementById("spyCardWord").textContent="???";
-    document.getElementById("spyCardWord").style.fontSize="2.5rem";
-    document.getElementById("spyCardWord").style.color="rgba(239,68,68,0.5)";
-    // Show hint automatically
-    if(hintEl){ hintEl.textContent="تلميح: "+a.hint; hintEl.style.display="block"; }
+    document.getElementById("spyCardWord").style.color="rgba(239,68,68,0.45)";
+    if(hintEl){ hintEl.textContent="تلميح: "+a.hint; hintEl.style.cssText="display:block;padding:10px 18px;background:rgba(239,68,68,0.07);border:1px solid rgba(239,68,68,0.2);border-radius:24px;font-size:0.72rem;letter-spacing:2px;color:rgba(239,68,68,0.65);text-align:center;line-height:1.6;"; }
   } else {
-    document.getElementById("spyCardRole").innerHTML="✅ <span style='font-size:0.7rem;letter-spacing:3px;color:rgba(74,222,128,0.7);'>مواطن</span>";
+    document.getElementById("spyCardRole").innerHTML="<span style='display:inline-flex;align-items:center;gap:8px;padding:6px 16px;background:rgba(74,222,128,0.08);border:1px solid rgba(74,222,128,0.2);border-radius:50px;'>✅ <span style=\'font-size:0.68rem;letter-spacing:4px;color:rgba(74,222,128,0.8);font-weight:700;\'>مواطن</span></span>";
     document.getElementById("spyCardWord").textContent=a.word;
-    document.getElementById("spyCardWord").style.fontSize="1.8rem";
     document.getElementById("spyCardWord").style.color="#fff";
-    // Show description automatically for citizen
-    if(hintEl && a.desc){ hintEl.textContent=a.desc; hintEl.style.cssText="display:block;margin-top:6px;padding:8px 14px;background:rgba(74,222,128,0.08);border:1px solid rgba(74,222,128,0.2);border-radius:20px;font-size:0.72rem;letter-spacing:1px;color:rgba(74,222,128,0.7);text-align:center;line-height:1.5;"; }
+    if(hintEl && a.desc){ hintEl.textContent=a.desc; hintEl.style.cssText="display:block;padding:10px 18px;background:rgba(74,222,128,0.06);border:1px solid rgba(74,222,128,0.18);border-radius:24px;font-size:0.72rem;letter-spacing:1.5px;color:rgba(74,222,128,0.7);text-align:center;line-height:1.6;"; }
   }
 }
 
@@ -1675,12 +1832,26 @@ function flipSpyCard(){
   cardFlipped=true;
   SFX.play("card_flip");
   const inner=document.getElementById("spyCardInnerAnim");
-  if(inner) inner.style.transform="rotateY(180deg)";
-  document.getElementById("tapHint").style.display="none";
+  if(inner){
+    inner.style.transition="transform 0.7s cubic-bezier(0.4,0,0.2,1)";
+    inner.style.transform="rotateY(180deg)";
+  }
+  const tapHintEl=document.getElementById("tapHint");
+  if(tapHintEl) tapHintEl.style.display="none";
+  // Show pass button after flip
   setTimeout(()=>{
     const btn=document.getElementById("spyPassBtn");
-    if(btn){btn.style.display="block";}
-  },700);
+    if(btn){
+      btn.style.display="block";
+      btn.style.opacity="0";
+      btn.style.transform="translateY(10px)";
+      btn.style.transition="opacity 0.4s, transform 0.4s";
+      requestAnimationFrame(()=>{ btn.style.opacity="1"; btn.style.transform="translateY(0)"; });
+    }
+    // Flash the reveal background
+    const rv=document.getElementById("spy-reveal-view");
+    if(rv){ rv.style.animation="spyFlash 0.6s ease"; setTimeout(()=>{ rv.style.animation=""; },600); }
+  },680);
 }
 
 function nextSpyReveal(){ window.spyCardFlipped=false; const c=document.getElementById("spy-card"); if(c) c.style.transform=""; const nb=document.getElementById("spy-next-btn"); if(nb) nb.style.display="none";
@@ -1712,8 +1883,12 @@ function endSpyRound(){
 }
 
 function showSpyView(id){
-  ["spy-setup-view","spy-reveal-view","spy-timer-view","spy-result-view"].forEach(v=>document.getElementById(v).style.display="none");
-  document.getElementById(id).style.display="flex";
+  ["spy-setup-view","spy-reveal-view","spy-timer-view","spy-vote-view","spy-result-view"].forEach(v=>{
+    const el=document.getElementById(v); if(el) el.style.display="none";
+  });
+  const target=document.getElementById(id); if(target) target.style.display="flex";
+  // Reset card state on setup
+  if(id==="spy-setup-view"){ cardFlipped=false; window.spyCardFlipped=false; }
 }
 
 // ══════════════════════════════
@@ -2481,8 +2656,10 @@ function checkLgWin(){
 }
 
 function showLgView(id){
-  ["lg-setup","lg-reveal","lg-night","lg-day","lg-over"].forEach(v=>document.getElementById(v).style.display="none");
-  document.getElementById(id).style.display="flex";
+  ["lg-setup","lg-reveal","lg-night","lg-day","lg-over","lg-narrator-summary"].forEach(v=>{
+    const el=document.getElementById(v); if(el) el.style.display="none";
+  });
+  const target=document.getElementById(id); if(target) target.style.display="flex";
 }
 
 // ══════════════════════════════
@@ -3697,103 +3874,9 @@ const SFX = (() => {
   return { play, toggleMute, isMuted: ()=>muted };
 })();
 
-
-// ══ SPLASH INIT ══
-(function(){
-  const bar = document.getElementById('splashBar');
-  const pct = document.getElementById('splashPct');
-  const label = document.getElementById('splashLabel');
-  const splash = document.getElementById('splashScreen');
-  if(!splash) return;
-  const steps = [
-    {p:20, txt:"تحميل الواجهة..."},
-    {p:40, txt:"تهيئة الألعاب..."},
-    {p:60, txt:"تحميل الداما والشطرنج..."},
-    {p:80, txt:"تحضير الأصوات..."},
-    {p:95, txt:"اللمسات الأخيرة..."},
-    {p:100, txt:"جاهز! 🎮"},
-  ];
-  let cur=0, p=0;
-  function setProgress(target, txt){
-    if(label) label.textContent = txt;
-    const iv = setInterval(()=>{
-      p += 1.5;
-      if(p >= target){ p=target; clearInterval(iv);
-        if(bar) bar.style.width=p+'%';
-        if(pct) pct.textContent=Math.floor(p)+'%';
-        cur++;
-        if(cur < steps.length){ setTimeout(()=>setProgress(steps[cur].p, steps[cur].txt), 120); }
-        else { setTimeout(()=>{ splash.style.opacity='0'; splash.style.transform='scale(1.04)'; setTimeout(()=>{ splash.style.display='none'; },650); },500); }
-        return;
-      }
-      if(bar) bar.style.width=p+'%';
-      if(pct) pct.textContent=Math.floor(p)+'%';
-    }, 18);
-  }
-  setTimeout(()=>setProgress(steps[0].p, steps[0].txt), 600);
-})();
-
-// ══ BOTTOM NAV ══
-
-
-// Reset nav highlight when going home
-function resetNavHighlight(active) {
-  ['bnHome','bnGames','bnShare','bnContact'].forEach(id=>{
-    const btn = document.getElementById(id);
-    if(!btn) return;
-    const span = btn.querySelectorAll('span')[1];
-    if(span) span.style.color = id===active ? 'var(--accent2)' : 'rgba(240,240,240,0.3)';
-  });
-}
-
 // ══ SHARE OVERLAY ══
 
 
-
-// ══ SPLASH: Simulated resource loading ══
-(function(){
-  const bar = document.getElementById('splashBar');
-  const pct = document.getElementById('splashPct');
-  const label = document.getElementById('splashLabel');
-  const splash = document.getElementById('splashScreen');
-  if(!splash) return;
-
-  const steps = [
-    {p:15, txt:"تحميل الواجهة..."},
-    {p:30, txt:"تهيئة الألعاب..."},
-    {p:50, txt:"تحميل الداما والشطرنج..."},
-    {p:68, txt:"تحميل لوغارو والإمبوستر..."},
-    {p:82, txt:"تحضير الأصوات..."},
-    {p:93, txt:"اللمسات الأخيرة..."},
-    {p:100, txt:"جاهز! 🎮"},
-  ];
-  let cur=0, p=0;
-
-  function setProgress(target, txt){
-    if(label) label.textContent = txt;
-    const iv = setInterval(()=>{
-      p += 1.5;
-      if(p >= target){ p=target; clearInterval(iv);
-        if(bar) bar.style.width=p+'%';
-        if(pct) pct.textContent=Math.floor(p)+'%';
-        cur++;
-        if(cur < steps.length){
-          setTimeout(()=>setProgress(steps[cur].p, steps[cur].txt), 120);
-        } else {
-          setTimeout(()=>{
-            splash.style.opacity='0';
-            splash.style.transform='scale(1.04)';
-            setTimeout(()=>{ splash.style.display='none'; },650);
-          },500);
-        }
-        return;
-      }
-      if(bar) bar.style.width=p+'%';
-      if(pct) pct.textContent=Math.floor(p)+'%';
-    }, 18);
-  }
-  setTimeout(()=>setProgress(steps[0].p, steps[0].txt), 600);
-})();
 
 
 // ══════════════════════════════════════
@@ -3802,82 +3885,7 @@ function resetNavHighlight(active) {
 
 
 // ══════════════════════════════════════
-// ⛶ FULLSCREEN
-// ══════════════════════════════════════
-
-document.addEventListener('fullscreenchange',()=>{
-  const btn = document.getElementById('fsBtn');
-  if(btn) btn.textContent = document.fullscreenElement ? '⊠' : '⛶';
-});
-
-// ══════════════════════════════════════
-// 🔐 AUTH (localStorage-based)
-// ══════════════════════════════════════
-
-
-// ── Helpers ──────────────────────────────────────────────
-function waitForFirebase(cb) {
-  if(window.FB_READY) { cb(); return; }
-  document.addEventListener('fb-ready', cb, {once:true});
-}
-
-function genRoomCode() {
-  return Math.random().toString(36).substring(2,8).toUpperCase();
-}
-
-function getMyName() {
-  if(window.currentUser) return window.currentUser.name || window.currentUser.username || 'لاعب';
-  return 'لاعب';
-}
-
-function getMyUID() {
-  if(window.FB_USER) return window.FB_USER.uid;
-  return 'anon_' + Math.random().toString(36).substr(2,8);
-}
-
-// ── Auth for online ──────────────────────────────────────
-function renderOnlineAuth() {
-  const box = document.getElementById('onlineAuthBox');
-  if(!box) return;
-  if(window.FB_USER && !window.FB_USER.isAnonymous) {
-    box.innerHTML = `<div style="display:flex;align-items:center;gap:10px;padding:10px 14px;background:rgba(6,214,160,0.06);border:1px solid rgba(6,214,160,0.15);border-radius:12px;">
-      <span style="font-size:1.2rem;">✅</span>
-      <div style="flex:1;font-size:0.82rem;color:rgba(6,214,160,0.8);">مسجّل كـ <b>${window.FB_USER.displayName || window.FB_USER.email}</b></div>
-      <button onclick="FB_signOut(FB_AUTH).then(renderOnlineAuth)" style="font-size:0.72rem;color:rgba(239,68,68,0.5);background:none;border:none;cursor:pointer;">خروج</button>
-    </div>`;
-  } else {
-    box.innerHTML = `<div style="display:flex;flex-direction:column;gap:8px;">
-      <button onclick="signInGoogle()" style="display:flex;align-items:center;justify-content:center;gap:10px;padding:12px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.12);border-radius:12px;color:rgba(240,240,240,0.7);font-family:'Cairo',sans-serif;font-size:0.9rem;cursor:pointer;transition:all 0.2s;" onmouseover="this.style.background='rgba(255,255,255,0.09)'" onmouseout="this.style.background='rgba(255,255,255,0.05)'">
-        <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" style="width:18px;height:18px;"/>
-        تسجيل الدخول بـ Google
-      </button>
-      <button onclick="signInAnon()" style="padding:10px;background:transparent;border:1px solid rgba(255,255,255,0.07);border-radius:12px;color:rgba(240,240,240,0.3);font-family:'Cairo',sans-serif;font-size:0.82rem;cursor:pointer;">دخول كضيف (بدون حفظ)</button>
-    </div>`;
-  }
-  // Update greeting
-  const lbl = document.getElementById('onlineUserLabel');
-  if(lbl && window.FB_USER) lbl.textContent = 'مرحباً ' + (window.FB_USER.displayName || 'لاعب') + '!';
-}
-
-
-
-function signInAnon() {
-  if(!window.FB_AUTH) return;
-  window.FB_signInAnonymously(window.FB_AUTH)
-    .then(()=>renderOnlineAuth())
-    .catch(e=>console.error(e));
-}
-
-// ── Open lobby ───────────────────────────────────────────
-function openOnlineLobby() {
-  SFX.play('click');
-  showScreen('online-screen');
-  waitForFirebase(()=>{
-    renderOnlineAuth();
-    // Auto anon if not signed in
-    if(!window.FB_USER) signInAnon();
-  });
-}
+// ⛶ FULLSCREEN}
 
 function leaveOnlineLobby() {
   cleanupOnlineListeners();
@@ -4146,12 +4154,17 @@ function leaveRoom() {
 }
 
 // ══ PWA SERVICE WORKER ══
+// Only register SW on real deployment (not preview/localhost)
 if('serviceWorker' in navigator){
-  window.addEventListener('load', ()=>{
-    navigator.serviceWorker.register('./sw.js')
-      .then(()=>console.log('SW registered ✅'))
-      .catch(e=>console.log('SW error:',e));
-  });
+  const host = location.hostname;
+  const isPreview = host.includes('claudeusercontent.com') || host === 'localhost' || host === '127.0.0.1';
+  if(!isPreview){
+    window.addEventListener('load', ()=>{
+      navigator.serviceWorker.register('./sw.js')
+        .then(()=>console.log('SW registered ✅'))
+        .catch(e=>{}); // silent fail
+    });
+  }
 }
 
 // ══ PWA INSTALL PROMPT ══
@@ -4231,31 +4244,92 @@ function toggleLgRoles(){
   }
 }
 
-// ══ FLIP SPY CARD ══
-function flipSpyCard(){
-  if(window.spyCardFlipped) return;
-  window.spyCardFlipped = true;
-  const card = document.getElementById('spy-card');
-  if(card) card.style.transform = 'rotateY(180deg)';
-  SFX.play('card_flip');
-  // Show next button after flip
-  setTimeout(()=>{
-    const btn = document.getElementById('spy-next-btn');
-    if(btn) btn.style.display = 'block';
-  }, 700);
+
+
+
+// ══ MISSING FUNCTIONS ══
+
+function nextLgReveal() {
+  window.lgCardFlipped = false;
+  const card = document.getElementById('lg-card');
+  if(card) { card.style.transform = ''; }
+  const inner = document.getElementById('lgCardInner');
+  if(inner) inner.style.transform = '';
+  const btn = document.getElementById('lgPassBtn');
+  if(btn) btn.style.display = 'none';
 }
 
-// ══ FLIP LG CARD ══
-function flipLgCard(){
-  if(window.lgCardFlipped) return;
-  window.lgCardFlipped = true;
-  const card = document.getElementById('lg-card');
-  if(card) card.style.transform = 'rotateY(180deg)';
-  SFX.play('card_flip');
-  setTimeout(()=>{
-    const btn = document.getElementById('lg-next-btn');
-    if(btn) btn.style.display = 'block';
-  }, 700);
+function resetLgGame() {
+  lgPlayers = []; lgRoles = []; lgNumWolves = 1; lgNight = 0;
+  lgNightKilled = null; lgSorciereKillUsed = false; lgSorciereSaveUsed = false;
+  lg3facesNight = 0; lgInfecteUsed = false; lgLovers = []; lgGardeTarget = null; lgMaire = null;
+  lgCardFlipped = false; lgHistory = []; narratorLog = [];
+  showLgView('lg-setup');
 }
+
+function resetSpyGame() {
+  spyPlayers = []; spyCurrentReveal = 0; spyAssignments = [];
+  numSpies = 1; cardFlipped = false;
+  showSpyView('spy-setup-view');
+}
+
+// Fix flipSpyCard to use correct inner ID
+window.spyCardFlipped = false;
+
+// ══ FIX LG ROLES PANEL IDs ══
+function initLgRolesPanel() {
+  const rolesConfig = [
+    {id:'role_infecte', icon:'🧛', name:'مصاب بالذئبية'},
+    {id:'role_voyante', icon:'🔮', name:'العرّافة'},
+    {id:'role_sorciere', icon:'🧙', name:'الساحرة'},
+    {id:'role_chasseur', icon:'🔫', name:'الصياد'},
+    {id:'role_troisvisage', icon:'🃏', name:'ثلاثة وجوه'},
+    {id:'role_garde', icon:'🛡️', name:'الحارس'},
+    {id:'lgكيوبيد', icon:'💘', name:'كيوبيد'},
+    {id:'role_petite', icon:'👧', name:'الفتاة الصغيرة'},
+    {id:'role_maire', icon:'🧑‍⚖️', name:'العمدة'},
+    {id:'role_salvateur', icon:'💤', name:'المنقذ'},
+    {id:'role_renard', icon:'🦊', name:'الثعلب'},
+    {id:'lgClown', icon:'🤡', name:'المهرج'},
+  ];
+  const panel = document.getElementById('lgRolesPanel');
+  if(!panel || panel.innerHTML.trim()) return;
+  panel.innerHTML = rolesConfig.map(r => `
+    <label style="display:flex;align-items:center;gap:6px;padding:7px 12px;background:rgba(160,80,255,0.06);border:1px solid rgba(160,80,255,0.12);border-radius:10px;font-size:0.8rem;color:rgba(240,240,240,0.5);cursor:pointer;">
+      <input type="checkbox" id="${r.id}" checked style="accent-color:#a050ff;">
+      <span>${r.icon}</span><span>${r.name}</span>
+    </label>`).join('');
+}
+
+// Init roles panel on load
+document.addEventListener('DOMContentLoaded', initLgRolesPanel);
+setTimeout(initLgRolesPanel, 500);
+
+// ══ FIX: cleanupOnlineListeners ══
+function cleanupOnlineListeners() {
+  onlineListeners.forEach(({ref, listener}) => {
+    try { window.FB_off(ref, 'value', listener); } catch(e) {}
+  });
+  onlineListeners = [];
+  goHome();
+}
+
 
 </script>
+
+<nav id="bottomNav" style="position:fixed;bottom:0;left:0;right:0;z-index:999;display:none;justify-content:space-around;align-items:center;background:rgba(10,10,15,0.96);backdrop-filter:blur(20px);border-top:1px solid rgba(124,58,237,0.18);padding:10px 0 env(safe-area-inset-bottom,10px);box-shadow:0 -4px 24px rgba(0,0,0,0.4);">
+  <button id="bnHome" onclick="bottomNavGo('home')" style="display:flex;flex-direction:column;align-items:center;gap:3px;background:none;border:none;color:rgba(240,240,240,0.55);font-family:'Cairo',sans-serif;font-size:0.62rem;cursor:pointer;padding:6px 16px;border-radius:12px;transition:all 0.2s;min-width:64px;">
+    <span style="font-size:1.35rem;">🏠</span><span>الرئيسية</span>
+  </button>
+  <button id="bnGames" onclick="bottomNavGo('games')" style="display:flex;flex-direction:column;align-items:center;gap:3px;background:none;border:none;color:rgba(240,240,240,0.55);font-family:'Cairo',sans-serif;font-size:0.62rem;cursor:pointer;padding:6px 16px;border-radius:12px;transition:all 0.2s;min-width:64px;">
+    <span style="font-size:1.35rem;">🎮</span><span>الألعاب</span>
+  </button>
+  <button id="bnShare" onclick="bottomNavGo('share')" style="display:flex;flex-direction:column;align-items:center;gap:3px;background:none;border:none;color:rgba(240,240,240,0.55);font-family:'Cairo',sans-serif;font-size:0.62rem;cursor:pointer;padding:6px 16px;border-radius:12px;transition:all 0.2s;min-width:64px;">
+    <span style="font-size:1.35rem;">📤</span><span>مشاركة</span>
+  </button>
+  <button id="bnContact" onclick="bottomNavGo('contact')" style="display:flex;flex-direction:column;align-items:center;gap:3px;background:none;border:none;color:rgba(240,240,240,0.55);font-family:'Cairo',sans-serif;font-size:0.62rem;cursor:pointer;padding:6px 16px;border-radius:12px;transition:all 0.2s;min-width:64px;">
+    <span style="font-size:1.35rem;">✉️</span><span>تواصل</span>
+  </button>
+</nav>
+</body>
+</html>
