@@ -4,6 +4,12 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>YSSN Games 🎮</title>
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#0a0a0f">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="YSSN Games">
+<link rel="apple-touch-icon" href="icon.png">
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&family=Bebas+Neue&display=swap" rel="stylesheet">
 <style>
 
@@ -195,7 +201,7 @@ body.light-mode .cell.dark{background:#b58863;}
 
 </style>
 
-<script type="module">
+<script data-cfasync="false" type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
     import { getDatabase, ref, set, get, onValue, push, update, remove, serverTimestamp, off }
       from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
@@ -271,12 +277,14 @@ body.light-mode .cell.dark{background:#b58863;}
       <div style="width:34px;height:34px;border-radius:10px;background:linear-gradient(135deg,var(--accent),var(--accentG));display:flex;align-items:center;justify-content:center;font-size:1.1rem;animation:logoFloat 3s ease-in-out infinite;">🎮</div>
       <span style="font-family:'Bebas Neue',sans-serif;font-size:1rem;letter-spacing:3px;background:linear-gradient(135deg,var(--accent2),var(--accentG));-webkit-background-clip:text;-webkit-text-fill-color:transparent;">YSSN</span>
       <button id="sfxToggleBtn" onclick="SFX.toggleMute()" title="كتم الصوت" style="background:var(--surface);border:1px solid var(--border2);border-radius:20px;padding:4px 10px;font-size:0.85rem;cursor:pointer;transition:all 0.2s;">🔊</button>
-      <button id="fsBtn" onclick="toggleFullscreen()" title="ملء الشاشة" style="background:var(--surface);border:1px solid var(--border2);border-radius:20px;padding:4px 10px;font-size:0.85rem;cursor:pointer;transition:all 0.2s;">⛶</button>
+      <!-- Install PWA Button -->
+      <button id="installPwaBtn" onclick="installPWA()" title="تثبيت التطبيق" style="display:none;align-items:center;gap:5px;background:linear-gradient(135deg,#06d6a0,#0ea5e9);border:none;border-radius:20px;padding:5px 12px;font-size:0.78rem;font-family:'Cairo',sans-serif;font-weight:700;color:#fff;cursor:pointer;transition:all 0.2s;">📲 تثبيت</button> <button id="fsBtn" onclick="toggleFullscreen()" title="ملء الشاشة" style="background:var(--surface);border:1px solid var(--border2);border-radius:20px;padding:4px 10px;font-size:0.85rem;cursor:pointer;transition:all 0.2s;">⛶</button>
     </div>
     <div class="topbar-btns">
       <button class="topbar-btn" onclick="showScreen('leaderboard')">🏆</button>
       <button class="topbar-btn" onclick="showScreen('players-mgmt')">👥</button>
       <button class="theme-btn" onclick="toggleTheme()" title="تغيير الوضع"></button>
+      <button id="authTopBtn" onclick="handleAuthTopBtn()" title="الحساب" style="background:linear-gradient(135deg,#7c3aed,#a855f7);border:none;border-radius:20px;padding:5px 12px;font-size:0.8rem;font-family:'Cairo',sans-serif;font-weight:700;color:#fff;cursor:pointer;transition:all 0.2s;display:flex;align-items:center;gap:5px;">👤 دخول</button>
     </div>
   </div>
 
@@ -478,77 +486,102 @@ body.light-mode .cell.dark{background:#b58863;}
 <!-- SPY -->
 <div class="screen" id="imposter">
   <button class="back-btn" onclick="goHome()">← رجوع</button>
-  <div id="spy-setup-view" style="display:flex;flex-direction:column;align-items:center;gap:14px;width:100%;padding-top:50px;">
-    <h2 class="spy-title">🕵️ IMPOSTER</h2>
-    <p class="spy-sub">من المتسلل؟</p>
-    <div class="spy-setup">
-      <p class="input-label">اللاعبون (3 على الأقل):</p>
-      <div class="players-list" id="spyPlayersList">
-        <div class="player-row"><input class="player-input" placeholder="اللاعب 1..." maxlength="12"/><button class="rm-btn" onclick="removeSpyPlayer(this)">✕</button></div>
-        <div class="player-row"><input class="player-input" placeholder="اللاعب 2..." maxlength="12"/><button class="rm-btn" onclick="removeSpyPlayer(this)">✕</button></div>
-        <div class="player-row"><input class="player-input" placeholder="اللاعب 3..." maxlength="12"/><button class="rm-btn" onclick="removeSpyPlayer(this)">✕</button></div>
-      </div>
-      <button class="add-player-btn" onclick="addSpyPlayer()">+ إضافة لاعب</button>
-      <button onclick="fillSavedPlayers('spyPlayersList','player-input')" style="width:100%;padding:9px;background:transparent;border:1.5px dashed rgba(255,255,255,0.1);border-radius:6px;color:rgba(240,240,240,0.25);font-family:'Cairo',sans-serif;font-size:0.85rem;cursor:pointer;">💾 تحميل اللاعبين</button>
-      <p class="input-label" style="margin-top:8px;">عدد المتسللين:</p>
-      <div class="spies-row">
-        <span class="spies-label">عدد المتسللين:</span>
-        <div class="counter-wrap">
-          <button class="counter-btn" onclick="changeSpies(-1)">−</button>
-          <span class="counter-val" id="spiesVal">1</span>
-          <button class="counter-btn" onclick="changeSpies(1)">+</button>
+
+  <!-- ══ SETUP ══ -->
+  <div id="spy-setup-view" style="display:flex;flex-direction:column;align-items:center;min-height:100vh;padding:70px 20px 120px;position:relative;overflow:hidden;">
+    <!-- BG glow -->
+    <div style="position:absolute;inset:0;pointer-events:none;background:radial-gradient(ellipse at 50% 0%,rgba(239,68,68,0.08),transparent 60%);"></div>
+
+    <!-- Header -->
+    <div style="text-align:center;margin-bottom:28px;position:relative;">
+      <div style="font-size:3rem;margin-bottom:6px;filter:drop-shadow(0 0 20px rgba(239,68,68,0.6));">🕵️</div>
+      <div style="font-family:'Bebas Neue',sans-serif;font-size:clamp(2.8rem,10vw,4.5rem);letter-spacing:6px;background:linear-gradient(135deg,#ef4444,#f97316);-webkit-background-clip:text;-webkit-text-fill-color:transparent;line-height:1;">IMPOSTER</div>
+      <div style="font-size:0.62rem;letter-spacing:5px;color:rgba(239,68,68,0.35);margin-top:4px;">اكتشف المتسلل</div>
+    </div>
+
+    <!-- Card -->
+    <div style="width:min(420px,95vw);background:rgba(255,255,255,0.02);border:1px solid rgba(239,68,68,0.12);border-radius:20px;padding:22px;display:flex;flex-direction:column;gap:14px;">
+
+      <!-- Players section -->
+      <div>
+        <div style="font-size:0.65rem;letter-spacing:4px;color:rgba(239,68,68,0.4);margin-bottom:10px;">اللاعبون</div>
+        <div id="spyPlayersList" style="display:flex;flex-direction:column;gap:7px;margin-bottom:10px;">
+          <div class="player-row"><input class="player-input" placeholder="اللاعب 1..." maxlength="12"/><button class="rm-btn" onclick="removeSpyPlayer(this)">✕</button></div>
+          <div class="player-row"><input class="player-input" placeholder="اللاعب 2..." maxlength="12"/><button class="rm-btn" onclick="removeSpyPlayer(this)">✕</button></div>
+          <div class="player-row"><input class="player-input" placeholder="اللاعب 3..." maxlength="12"/><button class="rm-btn" onclick="removeSpyPlayer(this)">✕</button></div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+          <button onclick="addSpyPlayer()" style="padding:10px;background:rgba(239,68,68,0.07);border:1px dashed rgba(239,68,68,0.25);border-radius:12px;color:rgba(239,68,68,0.6);font-family:'Cairo',sans-serif;font-size:0.85rem;cursor:pointer;transition:all 0.2s;" onmouseover="this.style.background='rgba(239,68,68,0.14)'" onmouseout="this.style.background='rgba(239,68,68,0.07)'">+ لاعب</button>
+          <button onclick="fillSavedPlayers('spyPlayersList','player-input')" style="padding:10px;background:rgba(255,255,255,0.03);border:1px dashed rgba(255,255,255,0.1);border-radius:12px;color:rgba(255,255,255,0.25);font-family:'Cairo',sans-serif;font-size:0.85rem;cursor:pointer;transition:all 0.2s;" onmouseover="this.style.background='rgba(255,255,255,0.07)'" onmouseout="this.style.background='rgba(255,255,255,0.03)'">💾 محفوظون</button>
         </div>
       </div>
-      <button class="big-btn btn-orange" style="margin-top:8px;" onclick="startSpyGame()">🕵️ ابدأ اللعبة</button>
+
+      <!-- Divider -->
+      <div style="height:1px;background:rgba(239,68,68,0.1);"></div>
+
+      <!-- Spies counter -->
+      <div style="display:flex;align-items:center;justify-content:space-between;">
+        <div>
+          <div style="font-size:0.65rem;letter-spacing:3px;color:rgba(239,68,68,0.4);">المتسللون</div>
+          <div style="font-size:0.82rem;color:rgba(240,240,240,0.4);margin-top:2px;">عدد اللاعبين الجواسيس</div>
+        </div>
+        <div style="display:flex;align-items:center;gap:0;background:rgba(239,68,68,0.08);border:1px solid rgba(239,68,68,0.2);border-radius:12px;overflow:hidden;">
+          <button onclick="changeSpies(-1)" style="width:40px;height:40px;background:transparent;border:none;color:rgba(239,68,68,0.7);font-size:1.3rem;cursor:pointer;transition:all 0.15s;" onmouseover="this.style.background='rgba(239,68,68,0.15)'" onmouseout="this.style.background='transparent'">−</button>
+          <span id="spiesVal" style="width:36px;text-align:center;font-size:1.1rem;font-weight:700;color:#ef4444;">1</span>
+          <button onclick="changeSpies(1)" style="width:40px;height:40px;background:transparent;border:none;color:rgba(239,68,68,0.7);font-size:1.3rem;cursor:pointer;transition:all 0.15s;" onmouseover="this.style.background='rgba(239,68,68,0.15)'" onmouseout="this.style.background='transparent'">+</button>
+        </div>
+      </div>
+
+      <!-- Start button -->
+      <button onclick="startSpyGame()" style="width:100%;padding:15px;background:linear-gradient(135deg,#ef4444,#dc2626);border:none;border-radius:14px;color:#fff;font-family:'Cairo',sans-serif;font-size:1.05rem;font-weight:700;cursor:pointer;box-shadow:0 8px 24px rgba(239,68,68,0.3);transition:all 0.2s;letter-spacing:1px;" onmouseover="this.style.transform='translateY(-2px)';this.style.boxShadow='0 12px 32px rgba(239,68,68,0.45)'" onmouseout="this.style.transform='';this.style.boxShadow='0 8px 24px rgba(239,68,68,0.3)'">🕵️ ابدأ اللعبة</button>
     </div>
   </div>
 
-  <!-- Card reveal -->
-  <div id="spy-reveal-view" style="display:none;flex-direction:column;align-items:center;gap:14px;padding-top:50px;width:100%;">
-    <p class="reveal-instruction">سلّم الجهاز للاعب التالي</p>
-    <div class="reveal-player" id="revealPlayerName">-</div>
-    <div class="spy-card" id="spyCardFlip" onclick="flipSpyCard()">
-      <div class="spy-card-inner">
-        <div class="spy-card-front">
-          <span class="spy-card-front-icon">🕵️</span>
-          <span class="spy-card-front-text">اضغط للكشف</span>
+  <!-- ══ CARD REVEAL ══ -->
+  <div id="spy-reveal-view" style="display:none;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;padding:40px 20px;position:relative;">
+    <div style="position:absolute;inset:0;background:radial-gradient(circle at 50% 40%,rgba(239,68,68,0.06),transparent 60%);pointer-events:none;"></div>
+    <div style="font-size:0.62rem;letter-spacing:5px;color:rgba(239,68,68,0.3);margin-bottom:6px;">الكشف عن الأدوار</div>
+    <div style="font-size:1.1rem;font-weight:700;color:rgba(240,240,240,0.6);margin-bottom:28px;" id="spy-reveal-name">-</div>
+
+    <!-- 3D Card -->
+    <div id="spy-card-wrap" style="perspective:1000px;cursor:pointer;margin-bottom:28px;" onclick="flipSpyCard()">
+      <div id="spy-card" style="width:min(280px,80vw);height:380px;position:relative;transform-style:preserve-3d;transition:transform 0.6s cubic-bezier(0.4,0,0.2,1);">
+        <!-- Front (tap) -->
+        <div style="position:absolute;inset:0;backface-visibility:hidden;background:linear-gradient(135deg,#1a0a0a,#2d0a0a);border:1px solid rgba(239,68,68,0.2);border-radius:24px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;box-shadow:0 20px 60px rgba(239,68,68,0.15);">
+          <div style="font-size:3rem;opacity:0.4;">🔒</div>
+          <div style="font-size:0.8rem;letter-spacing:3px;color:rgba(239,68,68,0.4);">اضغط للكشف</div>
+          <div style="font-family:'Bebas Neue',sans-serif;font-size:1.2rem;letter-spacing:4px;color:rgba(239,68,68,0.25);">IMPOSTER</div>
         </div>
-        <div class="spy-card-back">
-          <span class="spy-card-role" id="spyCardRole"></span>
-          <span class="spy-card-word" id="spyCardWord"></span>
+        <!-- Back (role) -->
+        <div id="spy-card-back" style="position:absolute;inset:0;backface-visibility:hidden;transform:rotateY(180deg);background:linear-gradient(135deg,#1a0505,#2d1010);border:1px solid rgba(239,68,68,0.3);border-radius:24px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;padding:24px;box-shadow:0 20px 60px rgba(239,68,68,0.2);">
+          <div id="spy-role-icon" style="font-size:3.5rem;filter:drop-shadow(0 0 16px rgba(239,68,68,0.5));">👤</div>
+          <div id="spy-role-label" style="font-size:0.65rem;letter-spacing:4px;color:rgba(239,68,68,0.5);">دورك</div>
+          <div id="spy-role-word" style="font-size:1.8rem;font-weight:900;color:#fff;text-align:center;">???</div>
+          <div id="spy-role-desc" style="font-size:0.8rem;color:rgba(240,240,240,0.4);text-align:center;line-height:1.6;"></div>
         </div>
       </div>
     </div>
-    <p class="tap-hint" id="tapHint">✦ اضغط للكشف على البطاقة ✦</p>
-    <button class="pass-btn" id="spyPassBtn" onclick="nextSpyReveal()">مرّر الجهاز للاعب التالي →</button>
+
+    <div style="font-size:0.75rem;color:rgba(240,240,240,0.2);margin-bottom:20px;">مرر الهاتف للشخص التالي</div>
+    <button id="spy-next-btn" onclick="nextSpyReveal()" style="padding:13px 36px;background:linear-gradient(135deg,#ef4444,#dc2626);border:none;border-radius:14px;color:#fff;font-family:'Cairo',sans-serif;font-size:0.95rem;font-weight:700;cursor:pointer;box-shadow:0 6px 20px rgba(239,68,68,0.3);transition:all 0.2s;display:none;">التالي →</button>
   </div>
 
-  <!-- Vote -->
-  <div id="spy-timer-view" style="display:none;flex-direction:column;align-items:center;gap:20px;padding-top:80px;width:100%;text-align:center;">
-    <span style="font-size:4rem;">🗳️</span>
-    <div style="font-family:'Bebas Neue',sans-serif;font-size:clamp(2rem,8vw,3.5rem);color:var(--accent);">وقت التصويت!</div>
-    <p style="font-size:1rem;color:rgba(240,240,240,0.4);max-width:340px;line-height:1.7;">كل واحد يسأل الآخر سؤالاً واحداً</p>
-    <button class="big-btn btn-orange" style="max-width:340px;" onclick="endSpyRound()">🗳️ اكشفوا! صوتوا!</button>
-    <button style="max-width:340px;width:100%;padding:12px;background:transparent;border:1.5px solid rgba(255,255,255,0.08);border-radius:6px;color:rgba(240,240,240,0.3);font-family:'Cairo',sans-serif;font-size:0.95rem;cursor:pointer;margin-top:4px;" onclick="goHome()">← العودة للرئيسية</button>
+  <!-- ══ VOTE ══ -->
+  <div id="spy-vote-view" style="display:none;flex-direction:column;align-items:center;padding:70px 20px 120px;position:relative;">
+    <div style="position:absolute;inset:0;background:radial-gradient(circle at 50% 10%,rgba(239,68,68,0.07),transparent 55%);pointer-events:none;"></div>
+    <div style="font-family:'Bebas Neue',sans-serif;font-size:2rem;letter-spacing:5px;background:linear-gradient(135deg,#ef4444,#f97316);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:4px;">التصويت</div>
+    <div style="font-size:0.62rem;letter-spacing:4px;color:rgba(239,68,68,0.3);margin-bottom:24px;">من هو المتسلل؟</div>
+    <div id="spy-vote-list" style="width:min(420px,95vw);display:flex;flex-direction:column;gap:8px;margin-bottom:20px;"></div>
+    <button onclick="showSpyResult()" style="padding:13px 36px;background:linear-gradient(135deg,#ef4444,#dc2626);border:none;border-radius:14px;color:#fff;font-family:'Cairo',sans-serif;font-size:0.95rem;font-weight:700;cursor:pointer;box-shadow:0 6px 20px rgba(239,68,68,0.3);transition:all 0.2s;">🗳️ كشف النتيجة</button>
   </div>
 
-  <!-- Result -->
-  <div id="spy-result-view" style="display:none;flex-direction:column;align-items:center;gap:20px;padding-top:60px;width:100%;text-align:center;">
-    <span style="font-size:4rem;">🕵️</span>
-    <div style="font-family:'Bebas Neue',sans-serif;font-size:clamp(1.5rem,6vw,2.5rem);color:var(--gold);margin-bottom:4px;">THE IMPOSTERS:</div>
-    <div id="spyResultSpies" style="font-family:'Bebas Neue',sans-serif;font-size:clamp(2rem,8vw,3.5rem);color:var(--accent);text-shadow:0 0 20px rgba(255,107,53,0.4);"></div>
-    <div style="padding:20px 28px;background:var(--dark2);border:1.5px solid rgba(255,107,53,0.2);border-radius:8px;width:min(380px,90vw);">
-      <div style="font-size:0.75rem;letter-spacing:3px;text-transform:uppercase;color:rgba(240,240,240,0.2);margin-bottom:8px;">THE WORD WAS:</div>
-      <div id="spyResultWord" style="font-size:1.8rem;font-weight:900;color:var(--white);"></div>
-    </div>
-    <p style="font-size:0.9rem;color:rgba(240,240,240,0.35);line-height:1.7;">إذا خمنوا الكلمة — <span style="color:var(--accent);">الجواسيس فازوا! 😈</span><br>إذا اكتشفوهم — <span style="color:#00ff87;">المواطنون فازوا! 🎉</span></p>
-    <button class="big-btn btn-orange" style="max-width:340px;" onclick="showSpyView('spy-setup-view')">🔄 العب مجدداً!</button>
-    <button style="max-width:340px;width:100%;padding:12px;background:transparent;border:1.5px solid rgba(255,255,255,0.08);border-radius:6px;color:rgba(240,240,240,0.3);font-family:'Cairo',sans-serif;font-size:0.95rem;cursor:pointer;" onclick="goHome()">← العودة للرئيسية</button>
+  <!-- ══ RESULT ══ -->
+  <div id="spy-result-view" style="display:none;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;padding:40px 20px;text-align:center;">
+    <div id="spy-result-content"></div>
+    <button onclick="resetSpyGame()" style="margin-top:24px;padding:13px 36px;background:linear-gradient(135deg,#ef4444,#dc2626);border:none;border-radius:14px;color:#fff;font-family:'Cairo',sans-serif;font-size:0.95rem;font-weight:700;cursor:pointer;box-shadow:0 6px 20px rgba(239,68,68,0.3);transition:all 0.2s;">🔄 لعبة جديدة</button>
   </div>
 </div>
 
-<!-- DAMA -->
-<!-- DAMA MODE SELECT -->
 <div class="screen" id="dama-mode">
   <button class="back-btn" onclick="goHome()">← رجوع</button>
   <div style="min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;padding:70px 20px 40px;">
@@ -652,141 +685,114 @@ body.light-mode .cell.dark{background:#b58863;}
 <div class="screen" id="loup">
   <button class="back-btn" onclick="goHome()">← رجوع</button>
 
-  <!-- Setup -->
-  <div id="lg-setup" style="display:flex;flex-direction:column;align-items:center;gap:14px;width:100%;padding-top:55px;">
-    <div style="font-family:'Bebas Neue',sans-serif;font-size:clamp(2.5rem,8vw,4rem);color:#a050ff;text-shadow:0 0 20px rgba(160,80,255,0.4);text-align:center;">🐺 Loup Garou</div>
-    <p style="font-size:0.85rem;letter-spacing:3px;text-transform:uppercase;color:rgba(240,240,240,0.25);text-align:center;">من Loup Garou؟</p>
-    <div style="width:min(440px,95vw);display:flex;flex-direction:column;gap:12px;align-items:center;">
-      <p class="input-label">اللاعبون (5 على الأقل):</p>
-      <div class="players-list" id="lgPlayersList">
-        <div class="player-row"><input class="player-input" placeholder="اللاعب 1..." maxlength="12" style="border-color:rgba(160,80,255,0.2);"/><button class="rm-btn" onclick="removeLgPlayer(this)">✕</button></div>
-        <div class="player-row"><input class="player-input" placeholder="اللاعب 2..." maxlength="12" style="border-color:rgba(160,80,255,0.2);"/><button class="rm-btn" onclick="removeLgPlayer(this)">✕</button></div>
-        <div class="player-row"><input class="player-input" placeholder="اللاعب 3..." maxlength="12" style="border-color:rgba(160,80,255,0.2);"/><button class="rm-btn" onclick="removeLgPlayer(this)">✕</button></div>
-        <div class="player-row"><input class="player-input" placeholder="اللاعب 4..." maxlength="12" style="border-color:rgba(160,80,255,0.2);"/><button class="rm-btn" onclick="removeLgPlayer(this)">✕</button></div>
-        <div class="player-row"><input class="player-input" placeholder="اللاعب 5..." maxlength="12" style="border-color:rgba(160,80,255,0.2);"/><button class="rm-btn" onclick="removeLgPlayer(this)">✕</button></div>
-      </div>
-      <button class="add-player-btn" style="border-color:rgba(160,80,255,0.25);color:rgba(160,80,255,0.5);" onmouseover="this.style.borderColor='rgba(160,80,255,0.6)';this.style.color='#a050ff'" onmouseout="this.style.borderColor='rgba(160,80,255,0.25)';this.style.color='rgba(160,80,255,0.5)'" onclick="addLgPlayer()">+ إضافة لاعب</button>
-      <button onclick="fillSavedPlayers('lgPlayersList','player-input')" style="width:100%;padding:9px;background:transparent;border:1.5px dashed rgba(160,80,255,0.15);border-radius:6px;color:rgba(160,80,255,0.3);font-family:'Cairo',sans-serif;font-size:0.85rem;cursor:pointer;">💾 تحميل اللاعبين</button>
-      
-      <p class="input-label" style="margin-top:6px;">عدد الذئاب:</p>
-      <div class="spies-row">
-        <span class="spies-label">اختر عدد الذئاب:</span>
-        <div class="counter-wrap" style="border-color:rgba(160,80,255,0.3);">
-          <button class="counter-btn" style="color:#a050ff;" onclick="changeLgWolves(-1)">−</button>
-          <span class="counter-val" id="lgWolvesVal">1</span>
-          <button class="counter-btn" style="color:#a050ff;" onclick="changeLgWolves(1)">+</button>
+  <!-- ══ SETUP ══ -->
+  <div id="lg-setup" style="display:flex;flex-direction:column;align-items:center;min-height:100vh;padding:70px 20px 120px;position:relative;overflow:hidden;">
+    <div style="position:absolute;inset:0;pointer-events:none;background:radial-gradient(ellipse at 50% 0%,rgba(160,80,255,0.08),transparent 60%);"></div>
+
+    <!-- Header -->
+    <div style="text-align:center;margin-bottom:28px;position:relative;">
+      <div style="font-size:3rem;margin-bottom:6px;filter:drop-shadow(0 0 20px rgba(160,80,255,0.7));">🐺</div>
+      <div style="font-family:'Bebas Neue',sans-serif;font-size:clamp(2.8rem,10vw,4.5rem);letter-spacing:6px;background:linear-gradient(135deg,#a050ff,#7c3aed);-webkit-background-clip:text;-webkit-text-fill-color:transparent;line-height:1;">LOUP GAROU</div>
+      <div style="font-size:0.62rem;letter-spacing:5px;color:rgba(160,80,255,0.35);margin-top:4px;">من الذئب المختبئ؟</div>
+    </div>
+
+    <!-- Card -->
+    <div style="width:min(420px,95vw);background:rgba(255,255,255,0.02);border:1px solid rgba(160,80,255,0.12);border-radius:20px;padding:22px;display:flex;flex-direction:column;gap:14px;">
+
+      <!-- Players -->
+      <div>
+        <div style="font-size:0.65rem;letter-spacing:4px;color:rgba(160,80,255,0.4);margin-bottom:10px;">اللاعبون</div>
+        <div id="lgPlayersList" style="display:flex;flex-direction:column;gap:7px;margin-bottom:10px;">
+          <div class="player-row"><input class="player-input" placeholder="اللاعب 1..." maxlength="12" style="border-color:rgba(160,80,255,0.2);"/><button class="rm-btn" onclick="removeLgPlayer(this)">✕</button></div>
+          <div class="player-row"><input class="player-input" placeholder="اللاعب 2..." maxlength="12" style="border-color:rgba(160,80,255,0.2);"/><button class="rm-btn" onclick="removeLgPlayer(this)">✕</button></div>
+          <div class="player-row"><input class="player-input" placeholder="اللاعب 3..." maxlength="12" style="border-color:rgba(160,80,255,0.2);"/><button class="rm-btn" onclick="removeLgPlayer(this)">✕</button></div>
+          <div class="player-row"><input class="player-input" placeholder="اللاعب 4..." maxlength="12" style="border-color:rgba(160,80,255,0.2);"/><button class="rm-btn" onclick="removeLgPlayer(this)">✕</button></div>
+          <div class="player-row"><input class="player-input" placeholder="اللاعب 5..." maxlength="12" style="border-color:rgba(160,80,255,0.2);"/><button class="rm-btn" onclick="removeLgPlayer(this)">✕</button></div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+          <button onclick="addLgPlayer()" style="padding:10px;background:rgba(160,80,255,0.07);border:1px dashed rgba(160,80,255,0.25);border-radius:12px;color:rgba(160,80,255,0.6);font-family:'Cairo',sans-serif;font-size:0.85rem;cursor:pointer;transition:all 0.2s;" onmouseover="this.style.background='rgba(160,80,255,0.14)'" onmouseout="this.style.background='rgba(160,80,255,0.07)'">+ لاعب</button>
+          <button onclick="fillSavedPlayers('lgPlayersList','player-input')" style="padding:10px;background:rgba(255,255,255,0.03);border:1px dashed rgba(255,255,255,0.1);border-radius:12px;color:rgba(255,255,255,0.25);font-family:'Cairo',sans-serif;font-size:0.85rem;cursor:pointer;transition:all 0.2s;" onmouseover="this.style.background='rgba(255,255,255,0.07)'" onmouseout="this.style.background='rgba(255,255,255,0.03)'">💾 محفوظون</button>
         </div>
       </div>
 
-      <p class="input-label" style="margin-top:6px;">الأدوار الخاصة:</p>
-      <div style="width:100%;display:flex;flex-direction:column;gap:8px;">
-        <label style="display:flex;align-items:center;gap:10px;padding:10px 14px;background:var(--dark3);border-radius:6px;cursor:pointer;"><input type="checkbox" id="role_voyante" checked style="accent-color:#a050ff;width:16px;height:16px;"><span style="font-size:0.95rem;">🔮 Voyante</span></label>
-        <label style="display:flex;align-items:center;gap:10px;padding:10px 14px;background:var(--dark3);border-radius:6px;cursor:pointer;"><input type="checkbox" id="role_sorciere" checked style="accent-color:#a050ff;width:16px;height:16px;"><span style="font-size:0.95rem;">🧙 الساحرة (قتل ×1 + إنقاذ ×1)</span></label>
-        <label style="display:flex;align-items:center;gap:10px;padding:10px 14px;background:var(--dark3);border-radius:6px;cursor:pointer;"><input type="checkbox" id="role_chasseur" checked style="accent-color:#a050ff;width:16px;height:16px;"><span style="font-size:0.95rem;">🔫 الصياد (يطلق عند موته)</span></label>
-        <label style="display:flex;align-items:center;gap:10px;padding:10px 14px;background:var(--dark3);border-radius:6px;cursor:pointer;"><input type="checkbox" id="role_troisvisage" checked style="accent-color:#a050ff;width:16px;height:16px;"><span style="font-size:0.95rem;">🃏 ثلاثة وجوه</span></label>
-        <label style="display:flex;align-items:center;gap:10px;padding:10px 14px;background:var(--dark3);border-radius:6px;cursor:pointer;"><input type="checkbox" id="role_garde" checked style="accent-color:#a050ff;width:16px;height:16px;"><span style="font-size:0.95rem;">🛡️ الحارس الشخصي</span></label>
-        <label style="display:flex;align-items:center;gap:10px;padding:10px 14px;background:var(--dark3);border-radius:6px;cursor:pointer;"><input type="checkbox" id="lgكيوبيد" checked style="accent-color:#a050ff;width:16px;height:16px;"><span style="font-size:0.95rem;">💘 كيوبيد</span></label>
-        <label style="display:flex;align-items:center;gap:10px;padding:10px 14px;background:var(--dark3);border-radius:6px;cursor:pointer;"><input type="checkbox" id="role_petite" checked style="accent-color:#a050ff;width:16px;height:16px;"><span style="font-size:0.95rem;">👧 الفتاة الصغيرة</span></label>
-        <label style="display:flex;align-items:center;gap:10px;padding:10px 14px;background:var(--dark3);border-radius:6px;cursor:pointer;"><input type="checkbox" id="role_maire" checked style="accent-color:#a050ff;width:16px;height:16px;"><span style="font-size:0.95rem;">🧑‍⚖️ العمدة (صوت مضاعف)</span></label>
-        <label style="display:flex;align-items:center;gap:10px;padding:10px 14px;background:var(--dark3);border-radius:6px;cursor:pointer;"><input type="checkbox" id="role_salvateur" checked style="accent-color:#a050ff;width:16px;height:16px;"><span style="font-size:0.95rem;">💤 المنقذ (يتحمل موتة واحدة)</span></label>
-        <label style="display:flex;align-items:center;gap:10px;padding:10px 14px;background:var(--dark3);border-radius:6px;cursor:pointer;"><input type="checkbox" id="role_renard" checked style="accent-color:#a050ff;width:16px;height:16px;"><span style="font-size:0.95rem;">🦊 الثعلب</span></label>
-        <label style="display:flex;align-items:center;gap:10px;padding:10px 14px;background:var(--dark3);border-radius:6px;cursor:pointer;"><input type="checkbox" id="role_infecte" checked style="accent-color:#a050ff;width:16px;height:16px;"><span style="font-size:0.95rem;">🧛 مصاب بالذئبية</span></label>
-        <label style="display:flex;align-items:center;gap:10px;padding:10px 14px;background:var(--dark3);border-radius:6px;cursor:pointer;"><input type="checkbox" id="role_loupbleu" checked style="accent-color:#a050ff;width:16px;height:16px;"><span style="font-size:0.95rem;">🔵 الذئب الأزرق (يظهر للعرّافة كقروي)</span></label>
-        <label style="display:flex;align-items:center;gap:10px;padding:10px 14px;background:var(--dark3);border-radius:6px;cursor:pointer;"><input type="checkbox" id="lgClown" checked style="accent-color:#a050ff;width:16px;height:16px;"><span style="font-size:0.95rem;">🤡 المهرج (يفوز إذا طُرد بالتصويت)</span></label>
-      </div>
+      <!-- Divider -->
+      <div style="height:1px;background:rgba(160,80,255,0.1);"></div>
 
-      <button style="width:100%;padding:15px;border:none;border-radius:6px;font-family:'Cairo',sans-serif;font-size:1.1rem;font-weight:900;letter-spacing:2px;cursor:pointer;background:linear-gradient(135deg,#a050ff,#6020cc);color:#fff;box-shadow:0 0 25px rgba(160,80,255,0.3);margin-top:8px;" onclick="startLgGame()">🐺 ابدأ!</button>
-    </div>
-  </div>
-
-  <!-- Card reveal -->
-  <div id="lg-reveal" style="display:none;flex-direction:column;align-items:center;gap:16px;padding-top:55px;width:100%;text-align:center;">
-    <p style="font-size:0.9rem;letter-spacing:3px;text-transform:uppercase;color:rgba(240,240,240,0.3);">سلّم الجهاز للاعب التالي</p>
-    <div style="font-family:'Bebas Neue',sans-serif;font-size:clamp(2rem,7vw,3.5rem);color:#a050ff;" id="lgRevealName">-</div>
-    <div id="lgCard" onclick="flipLgCard()" style="width:200px;height:280px;perspective:800px;cursor:pointer;margin:8px 0;">
-      <div id="lgCardInner" style="width:100%;height:100%;position:relative;transform-style:preserve-3d;transition:transform 0.6s cubic-bezier(.4,0,.2,1);">
-        <div style="position:absolute;width:100%;height:100%;backface-visibility:hidden;border-radius:10px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;background:linear-gradient(135deg,#0d0020,#1a0040);border:2px solid rgba(160,80,255,0.3);">
-          <span style="font-size:3rem;">🐺</span>
-          <span style="font-size:0.8rem;letter-spacing:3px;text-transform:uppercase;color:rgba(160,80,255,0.5);">اضغط للكشف</span>
+      <!-- Wolves counter -->
+      <div style="display:flex;align-items:center;justify-content:space-between;">
+        <div>
+          <div style="font-size:0.65rem;letter-spacing:3px;color:rgba(160,80,255,0.4);">الذئاب</div>
+          <div style="font-size:0.82rem;color:rgba(240,240,240,0.4);margin-top:2px;">عدد المستذئبين</div>
         </div>
-        <div id="lgCardBack" style="position:absolute;width:100%;height:100%;backface-visibility:hidden;border-radius:10px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;background:linear-gradient(135deg,#0d0020,#1a0040);border:2px solid rgba(160,80,255,0.6);transform:rotateY(180deg);padding:16px;">
-          <span id="lgCardIcon" style="font-size:3.5rem;"></span>
-          <span id="lgCardRole" style="font-family:'Bebas Neue',sans-serif;font-size:1.4rem;letter-spacing:2px;color:#a050ff;text-align:center;"></span>
-          <span id="lgCardDesc" style="font-size:0.85rem;color:rgba(240,240,240,0.5);text-align:center;line-height:1.5;"></span>
+        <div style="display:flex;align-items:center;background:rgba(160,80,255,0.08);border:1px solid rgba(160,80,255,0.2);border-radius:12px;overflow:hidden;">
+          <button onclick="changeLgWolves(-1)" style="width:40px;height:40px;background:transparent;border:none;color:rgba(160,80,255,0.7);font-size:1.3rem;cursor:pointer;transition:all 0.15s;" onmouseover="this.style.background='rgba(160,80,255,0.15)'" onmouseout="this.style.background='transparent'">−</button>
+          <span id="lgWolvesVal" style="width:36px;text-align:center;font-size:1.1rem;font-weight:700;color:#a050ff;">1</span>
+          <button onclick="changeLgWolves(1)" style="width:40px;height:40px;background:transparent;border:none;color:rgba(160,80,255,0.7);font-size:1.3rem;cursor:pointer;transition:all 0.15s;" onmouseover="this.style.background='rgba(160,80,255,0.15)'" onmouseout="this.style.background='transparent'">+</button>
         </div>
       </div>
-    </div>
-    <p style="font-size:0.75rem;letter-spacing:2px;color:rgba(240,240,240,0.2);text-transform:uppercase;animation:pulse 2s ease-in-out infinite;" id="lgTapHint">✦ اضغط للكشف على البطاقة ✦</p>
-    <button id="lgPassBtn" onclick="nextLgReveal()" style="display:none;width:min(380px,95vw);padding:14px;background:var(--dark3);border:1.5px solid rgba(255,255,255,0.08);border-radius:6px;color:rgba(240,240,240,0.5);font-family:'Cairo',sans-serif;font-size:0.95rem;cursor:pointer;letter-spacing:1px;">مرّر الجهاز للاعب التالي →</button>
-  </div>
 
-  <!-- Night phase -->
-  <div id="lg-night" style="display:none;flex-direction:column;align-items:center;gap:0;width:100%;padding-top:55px;">
-    <div id="villageMapNight" style="width:min(480px,97vw);margin-bottom:12px;background:rgba(124,58,237,0.04);border:1px solid rgba(124,58,237,0.12);border-radius:16px;padding:12px 14px;overflow:hidden;">
-      <div style="font-size:0.6rem;letter-spacing:4px;color:rgba(167,139,250,0.35);margin-bottom:10px;text-align:center;">🗺️ خريطة القرية — اضغط على لاعب لكشف دوره</div>
-      <div id="vmGridNight" style="display:flex;flex-wrap:wrap;gap:8px;justify-content:center;"></div>
-    </div>
-    <div style="font-family:'Bebas Neue',sans-serif;font-size:clamp(2rem,7vw,3.5rem);color:#a050ff;text-align:center;margin-bottom:6px;" id="lgNightTitle">🌙 الليلة 1</div>
-    <div id="narratorBox" style="width:min(440px,95vw);padding:12px 16px;background:rgba(160,80,255,0.06);border:1px solid rgba(160,80,255,0.15);border-radius:8px;font-size:0.9rem;color:rgba(240,240,240,0.6);line-height:1.6;font-style:italic;text-align:center;transition:opacity 0.5s;margin-bottom:4px;"></div>
-    <div id="lgNightSteps" style="width:min(440px,95vw);display:flex;flex-direction:column;gap:0;"></div>
-  </div>
+      <!-- Roles toggle -->
+      <div>
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
+          <div style="font-size:0.65rem;letter-spacing:3px;color:rgba(160,80,255,0.4);">الأدوار</div>
+          <button onclick="toggleLgRoles()" id="lgRolesToggle" style="padding:5px 12px;background:rgba(160,80,255,0.1);border:1px solid rgba(160,80,255,0.2);border-radius:20px;color:rgba(160,80,255,0.6);font-family:'Cairo',sans-serif;font-size:0.75rem;cursor:pointer;transition:all 0.2s;">▼ عرض الأدوار</button>
+        </div>
+        <div id="lgRolesPanel" style="display:none;flex-wrap:wrap;gap:6px;" id="lgRolesList"></div>
+      </div>
 
-  <!-- Day phase -->
-  <div id="lg-day" style="display:none;flex-direction:column;align-items:center;gap:14px;width:100%;padding-top:55px;text-align:center;">
-    <div id="villageMapDay" style="width:min(480px,97vw);margin-bottom:12px;background:rgba(251,191,36,0.04);border:1px solid rgba(251,191,36,0.12);border-radius:16px;padding:12px 14px;overflow:hidden;">
-      <div style="font-size:0.6rem;letter-spacing:4px;color:rgba(251,191,36,0.35);margin-bottom:10px;text-align:center;">☀️ خريطة القرية — اضغط على لاعب لكشف دوره</div>
-      <div id="vmGridDay" style="display:flex;flex-wrap:wrap;gap:8px;justify-content:center;"></div>
-    </div>
-    <div style="font-family:'Bebas Neue',sans-serif;font-size:clamp(2rem,7vw,3.5rem);color:var(--gold);text-shadow:0 0 20px rgba(255,215,0,0.3);" id="lgDayTitle">☀️ النهار 1</div>
-    <div id="lgDeathMsg" style="padding:14px 20px;background:rgba(255,60,110,0.08);border:1px solid rgba(255,60,110,0.2);border-radius:8px;width:min(420px,92vw);font-size:0.95rem;line-height:1.7;"></div>
-    <p style="font-size:0.9rem;color:rgba(240,240,240,0.4);max-width:380px;">تداولوا وصوتوا لطرد مشتبه به!</p>
-    <div style="width:min(420px,92vw);display:flex;flex-direction:column;gap:8px;" id="lgVoteList"></div>
-    <button style="width:min(420px,92vw);padding:14px;border:none;border-radius:6px;font-family:'Cairo',sans-serif;font-size:1rem;font-weight:900;letter-spacing:2px;cursor:pointer;background:linear-gradient(135deg,var(--accent2),#aa0044);color:#fff;margin-top:6px;" onclick="eliminateLgVote()">☠️ طرد!</button>
-    <button style="width:min(420px,92vw);padding:12px;background:transparent;border:1.5px solid rgba(255,255,255,0.08);border-radius:6px;color:rgba(240,240,240,0.3);font-family:'Cairo',sans-serif;font-size:0.9rem;cursor:pointer;" onclick="skipLgVote()">لا أحد (تجاوز)</button>
-    <!-- Narrator Log -->
-    <div style="width:min(420px,92vw);margin-top:8px;">
-      <div style="font-size:0.75rem;letter-spacing:3px;text-transform:uppercase;color:rgba(160,80,255,0.3);margin-bottom:8px;text-align:left;">📜 سجل الأحداث</div>
-      <div id="narratorLogList" style="display:flex;flex-direction:column;gap:6px;max-height:220px;overflow-y:auto;padding-right:4px;"></div>
+      <!-- Start -->
+      <button onclick="startLgGame()" style="width:100%;padding:15px;background:linear-gradient(135deg,#a050ff,#7c3aed);border:none;border-radius:14px;color:#fff;font-family:'Cairo',sans-serif;font-size:1.05rem;font-weight:700;cursor:pointer;box-shadow:0 8px 24px rgba(160,80,255,0.3);transition:all 0.2s;letter-spacing:1px;" onmouseover="this.style.transform='translateY(-2px)';this.style.boxShadow='0 12px 32px rgba(160,80,255,0.45)'" onmouseout="this.style.transform='';this.style.boxShadow='0 8px 24px rgba(160,80,255,0.3)'">🐺 ابدأ اللعبة</button>
     </div>
   </div>
 
-  <!-- Game Over -->
-  <div id="lg-over" style="display:none;flex-direction:column;align-items:center;gap:20px;width:100%;padding-top:60px;text-align:center;">
-    <span id="lgOverIcon" style="font-size:5rem;"></span>
-    <div id="lgOverTitle" style="font-family:'Bebas Neue',sans-serif;font-size:clamp(2rem,8vw,4rem);"></div>
-    <div id="lgOverMsg" style="font-size:1rem;color:rgba(240,240,240,0.5);max-width:380px;line-height:1.7;"></div>
-    <button style="width:min(380px,92vw);padding:14px;border:none;border-radius:6px;font-family:'Cairo',sans-serif;font-size:1rem;font-weight:900;letter-spacing:2px;cursor:pointer;background:linear-gradient(135deg,#a050ff,#6020cc);color:#fff;" onclick="showLgView('lg-setup')">🔄 العب مجدداً!</button>
-    <button style="width:min(380px,92vw);padding:12px;background:transparent;border:1.5px solid rgba(255,255,255,0.08);border-radius:6px;color:rgba(240,240,240,0.3);font-family:'Cairo',sans-serif;font-size:0.9rem;cursor:pointer;" onclick="goHome()">← العودة للرئيسية</button>
+  <!-- ══ CARD REVEAL ══ -->
+  <div id="lg-reveal" style="display:none;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;padding:40px 20px;position:relative;">
+    <div style="position:absolute;inset:0;background:radial-gradient(circle at 50% 40%,rgba(160,80,255,0.07),transparent 60%);pointer-events:none;"></div>
+    <div style="font-size:0.62rem;letter-spacing:5px;color:rgba(160,80,255,0.3);margin-bottom:6px;">دور سري</div>
+    <div id="lg-reveal-name" style="font-size:1.1rem;font-weight:700;color:rgba(240,240,240,0.6);margin-bottom:28px;">-</div>
+
+    <!-- 3D Card -->
+    <div style="perspective:1000px;cursor:pointer;margin-bottom:28px;" onclick="flipLgCard()">
+      <div id="lg-card" style="width:min(280px,80vw);height:380px;position:relative;transform-style:preserve-3d;transition:transform 0.6s cubic-bezier(0.4,0,0.2,1);">
+        <!-- Front -->
+        <div style="position:absolute;inset:0;backface-visibility:hidden;background:linear-gradient(135deg,#0d0a1a,#1a0d2e);border:1px solid rgba(160,80,255,0.2);border-radius:24px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;box-shadow:0 20px 60px rgba(160,80,255,0.15);">
+          <div style="font-size:3rem;opacity:0.4;">🔒</div>
+          <div style="font-size:0.8rem;letter-spacing:3px;color:rgba(160,80,255,0.4);">اضغط للكشف</div>
+          <div style="font-family:'Bebas Neue',sans-serif;font-size:1.2rem;letter-spacing:4px;color:rgba(160,80,255,0.25);">LOUP GAROU</div>
+        </div>
+        <!-- Back -->
+        <div id="lg-card-back" style="position:absolute;inset:0;backface-visibility:hidden;transform:rotateY(180deg);border-radius:24px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;padding:24px;box-shadow:0 20px 60px rgba(160,80,255,0.25);background:linear-gradient(135deg,#0d0a1a,#1a0d2e);border:1px solid rgba(160,80,255,0.3);">
+          <div id="lg-role-icon" style="font-size:4rem;filter:drop-shadow(0 0 20px rgba(160,80,255,0.6));">🐺</div>
+          <div id="lg-role-name" style="font-family:'Bebas Neue',sans-serif;font-size:1.6rem;letter-spacing:4px;color:#fff;">المستذئب</div>
+          <div id="lg-role-desc" style="font-size:0.8rem;color:rgba(240,240,240,0.4);text-align:center;line-height:1.7;"></div>
+        </div>
+      </div>
+    </div>
+
+    <div style="font-size:0.75rem;color:rgba(240,240,240,0.2);margin-bottom:20px;">مرر الهاتف للشخص التالي</div>
+    <button id="lg-next-btn" onclick="nextLgReveal()" style="padding:13px 36px;background:linear-gradient(135deg,#a050ff,#7c3aed);border:none;border-radius:14px;color:#fff;font-family:'Cairo',sans-serif;font-size:0.95rem;font-weight:700;cursor:pointer;box-shadow:0 6px 20px rgba(160,80,255,0.3);transition:all 0.2s;display:none;">التالي →</button>
+  </div>
+
+  <!-- ══ NIGHT / DAY PHASE ══ -->
+  <div id="lg-phase" style="display:none;flex-direction:column;align-items:center;padding:70px 20px 120px;position:relative;">
+    <div id="lg-phase-content" style="width:min(420px,95vw);"></div>
+  </div>
+
+  <!-- ══ VOTE ══ -->
+  <div id="lg-vote" style="display:none;flex-direction:column;align-items:center;padding:70px 20px 120px;">
+    <div style="font-family:'Bebas Neue',sans-serif;font-size:2rem;letter-spacing:5px;background:linear-gradient(135deg,#a050ff,#7c3aed);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:4px;">التصويت</div>
+    <div style="font-size:0.62rem;letter-spacing:4px;color:rgba(160,80,255,0.3);margin-bottom:24px;">من تريد إعدامه؟</div>
+    <div id="lg-vote-list" style="width:min(420px,95vw);display:flex;flex-direction:column;gap:8px;margin-bottom:20px;"></div>
+    <button onclick="lgConfirmVote()" style="padding:13px 36px;background:linear-gradient(135deg,#a050ff,#7c3aed);border:none;border-radius:14px;color:#fff;font-family:'Cairo',sans-serif;font-size:0.95rem;font-weight:700;cursor:pointer;box-shadow:0 6px 20px rgba(160,80,255,0.3);transition:all 0.2s;">⚖️ تأكيد</button>
+  </div>
+
+  <!-- ══ RESULT ══ -->
+  <div id="lg-result" style="display:none;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;padding:40px 20px;text-align:center;">
+    <div id="lg-result-content"></div>
+    <button onclick="resetLgGame()" style="margin-top:24px;padding:13px 36px;background:linear-gradient(135deg,#a050ff,#7c3aed);border:none;border-radius:14px;color:#fff;font-family:'Cairo',sans-serif;font-size:0.95rem;font-weight:700;cursor:pointer;box-shadow:0 6px 20px rgba(160,80,255,0.3);">🔄 جولة جديدة</button>
   </div>
 </div>
 
-
-
-
-<!-- ══ BOTTOM NAV ══ -->
-<div id="bottomNav" style="position:fixed;top:50%;right:0;transform:translateY(-50%);z-index:1000;background:rgba(10,10,15,0.92);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border:1px solid rgba(255,255,255,0.07);border-right:none;border-radius:16px 0 0 16px;padding:8px 0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;">
-  <button onclick="bottomNavGo('home')" id="bnHome" class="bn-btn" style="display:flex;flex-direction:column;align-items:center;gap:3px;background:none;border:none;cursor:pointer;padding:10px 14px;border-radius:12px;transition:all 0.2s;min-width:58px;">
-    <span style="font-size:1.3rem;">🏠</span>
-    <span style="font-family:'Cairo',sans-serif;font-size:0.55rem;letter-spacing:0.5px;color:var(--accent2);">الرئيسية</span>
-  </button>
-  <div style="width:30px;height:1px;background:rgba(255,255,255,0.06);margin:2px auto;"></div>
-  <button onclick="bottomNavGo('games')" id="bnGames" class="bn-btn" style="display:flex;flex-direction:column;align-items:center;gap:3px;background:none;border:none;cursor:pointer;padding:10px 14px;border-radius:12px;transition:all 0.2s;min-width:58px;">
-    <span style="font-size:1.3rem;">🎮</span>
-    <span style="font-family:'Cairo',sans-serif;font-size:0.55rem;letter-spacing:0.5px;color:rgba(240,240,240,0.3);">الألعاب</span>
-  </button>
-  <div style="width:30px;height:1px;background:rgba(255,255,255,0.06);margin:2px auto;"></div>
-  <button onclick="bottomNavGo('share')" id="bnShare" class="bn-btn" style="display:flex;flex-direction:column;align-items:center;gap:3px;background:none;border:none;cursor:pointer;padding:10px 14px;border-radius:12px;transition:all 0.2s;min-width:58px;">
-    <span style="font-size:1.3rem;">🔗</span>
-    <span style="font-family:'Cairo',sans-serif;font-size:0.55rem;letter-spacing:0.5px;color:rgba(240,240,240,0.3);">مشاركة</span>
-  </button>
-  <div style="width:30px;height:1px;background:rgba(255,255,255,0.06);margin:2px auto;"></div>
-  <button onclick="bottomNavGo('contact')" id="bnContact" class="bn-btn" style="display:flex;flex-direction:column;align-items:center;gap:3px;background:none;border:none;cursor:pointer;padding:10px 14px;border-radius:12px;transition:all 0.2s;min-width:58px;">
-    <span style="font-size:1.3rem;">✉️</span>
-    <span style="font-family:'Cairo',sans-serif;font-size:0.55rem;letter-spacing:0.5px;color:rgba(240,240,240,0.3);">تواصل</span>
-  </button>
-</div>
-
-<!-- ══ CONTACT SCREEN ══ -->
 <div class="screen" id="contact-screen">
   <button class="back-btn" onclick="goHome()">← رجوع</button>
   <div style="display:flex;flex-direction:column;align-items:center;min-height:100vh;padding:80px 20px 120px;gap:0;position:relative;overflow:hidden;">
@@ -1000,7 +1006,7 @@ body.light-mode .cell.dark{background:#b58863;}
   </div>
 </div>
 
-<script>
+<script data-cfasync="false">
 // ══ REPORT/SUPPORT SYSTEM ══
 let selectedReportType = 'تقرير خطأ';
 function selectReportType(btn, type) {
@@ -1028,7 +1034,8 @@ function submitReport() {
     'المستخدم: ' + (currentUser?.username||'غير مسجل') + '\n\n' +
     'الرسالة:\n' + msg
   );
-  window.location.href = 'mailto:bourachediyassine@gmail.com?subject=' + subject + '&body=' + body;
+  const em = ['bourachediyassine','gmail.com'].join('@');
+  window.location.href = 'mailto:' + em + '?subject=' + subject + '&body=' + body;
   if(status){ 
     status.style.display='block'; 
     status.style.background='rgba(6,214,160,0.1)'; 
@@ -1381,7 +1388,8 @@ function guestLogin(){
   localStorage.setItem('yssn_visited','1');
   updateUserUI();
   goHome();
-}
+
+  updateAuthTopBtn();}
 
 function logoutUser(){
   currentUser = null;
@@ -1389,7 +1397,7 @@ function logoutUser(){
   showScreen('login-screen');
 }
 
-function updateUserUI(){
+function updateUserUI(){ updateAuthTopBtn();
   // Update topbar with user avatar
   const existing = document.getElementById('userAvatarBtn');
   if(existing) existing.remove();
@@ -1675,7 +1683,8 @@ function flipSpyCard(){
   },700);
 }
 
-function nextSpyReveal(){
+function nextSpyReveal(){ window.spyCardFlipped=false; const c=document.getElementById("spy-card"); if(c) c.style.transform=""; const nb=document.getElementById("spy-next-btn"); if(nb) nb.style.display="none";
+  // original logic below:
   // Hide card immediately before transition
   const inner=document.getElementById("spyCardInnerAnim");
   if(inner) inner.style.transform="";
@@ -4135,7 +4144,118 @@ function leaveRoom() {
     }
   }
 }
-</script>
 
-</body>
-</html>
+// ══ PWA SERVICE WORKER ══
+if('serviceWorker' in navigator){
+  window.addEventListener('load', ()=>{
+    navigator.serviceWorker.register('./sw.js')
+      .then(()=>console.log('SW registered ✅'))
+      .catch(e=>console.log('SW error:',e));
+  });
+}
+
+// ══ PWA INSTALL PROMPT ══
+let deferredInstallPrompt = null;
+window.addEventListener('beforeinstallprompt', e=>{
+  e.preventDefault();
+  deferredInstallPrompt = e;
+  // Show install button in topbar
+  const btn = document.getElementById('installPwaBtn');
+  if(btn) btn.style.display = 'flex';
+});
+
+function installPWA(){
+  if(!deferredInstallPrompt){ 
+    alert('التطبيق مثبت بالفعل أو المتصفح لا يدعم التثبيت'); 
+    return; 
+  }
+  deferredInstallPrompt.prompt();
+  deferredInstallPrompt.userChoice.then(r=>{
+    if(r.outcome==='accepted') console.log('PWA installed');
+    deferredInstallPrompt = null;
+    const btn = document.getElementById('installPwaBtn');
+    if(btn) btn.style.display = 'none';
+  });
+}
+
+
+function handleAuthTopBtn(){
+  if(currentUser && !currentUser.isAnon){
+    showUserMenu();
+  } else {
+    showScreen('login-screen');
+  }
+}
+
+function updateAuthTopBtn(){
+  const btn = document.getElementById('authTopBtn');
+  if(!btn) return;
+  if(currentUser && !currentUser.isAnon){
+    btn.innerHTML = '👤 ' + (currentUser.name||'أنت').split(' ')[0];
+    btn.style.background = 'linear-gradient(135deg,#06d6a0,#0ea5e9)';
+  } else {
+    btn.innerHTML = '👤 دخول';
+    btn.style.background = 'linear-gradient(135deg,#7c3aed,#a855f7)';
+  }
+}
+
+
+// ══ ROLES PANEL TOGGLE ══
+function toggleLgRoles(){
+  const panel = document.getElementById('lgRolesPanel');
+  const btn = document.getElementById('lgRolesToggle');
+  if(!panel) return;
+  if(panel.style.display==='none'||!panel.style.display){
+    panel.style.display='flex';
+    if(btn) btn.textContent='▲ إخفاء الأدوار';
+    // Populate roles if empty
+    if(!panel.innerHTML.trim()){
+      const roles = [
+        {icon:'🐺',name:'المستذئب'},{icon:'🧛',name:'مصاب بالذئبية'},
+        {icon:'🔵',name:'الذئب الأزرق'},{icon:'🦊',name:'الثعلب'},
+        {icon:'🔮',name:'العرّافة'},{icon:'🧙',name:'الساحرة'},
+        {icon:'🔫',name:'الصياد'},{icon:'🛡️',name:'الحارس'},
+        {icon:'💘',name:'كيوبيد'},{icon:'👧',name:'الفتاة الصغيرة'},
+        {icon:'🧑‍⚖️',name:'العمدة'},{icon:'💤',name:'المنقذ'},
+        {icon:'🤡',name:'المهرج'},{icon:'🃏',name:'ثلاثة وجوه'},
+        {icon:'🏘️',name:'قروي'}
+      ];
+      panel.innerHTML = roles.map(r=>`
+        <div style="display:flex;align-items:center;gap:6px;padding:7px 12px;background:rgba(160,80,255,0.06);border:1px solid rgba(160,80,255,0.12);border-radius:10px;font-size:0.8rem;color:rgba(240,240,240,0.5);">
+          <span>${r.icon}</span><span>${r.name}</span>
+        </div>`).join('');
+    }
+  } else {
+    panel.style.display='none';
+    if(btn) btn.textContent='▼ عرض الأدوار';
+  }
+}
+
+// ══ FLIP SPY CARD ══
+function flipSpyCard(){
+  if(window.spyCardFlipped) return;
+  window.spyCardFlipped = true;
+  const card = document.getElementById('spy-card');
+  if(card) card.style.transform = 'rotateY(180deg)';
+  SFX.play('card_flip');
+  // Show next button after flip
+  setTimeout(()=>{
+    const btn = document.getElementById('spy-next-btn');
+    if(btn) btn.style.display = 'block';
+  }, 700);
+}
+
+// ══ FLIP LG CARD ══
+function flipLgCard(){
+  if(window.lgCardFlipped) return;
+  window.lgCardFlipped = true;
+  const card = document.getElementById('lg-card');
+  if(card) card.style.transform = 'rotateY(180deg)';
+  SFX.play('card_flip');
+  setTimeout(()=>{
+    const btn = document.getElementById('lg-next-btn');
+    if(btn) btn.style.display = 'block';
+  }, 700);
+}
+
+</script>
